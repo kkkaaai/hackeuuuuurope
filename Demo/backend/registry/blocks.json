@@ -1,0 +1,2001 @@
+[
+  {
+    "id": "web_search",
+    "name": "Web Search",
+    "description": "Search the web for information on any topic. Returns a list of results with titles, URLs, and snippets. Use this as the first step whenever the user needs real-time or factual information from the internet. Do NOT use for tasks that only require reasoning or text generation.",
+    "category": "input",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query — be specific and include key terms for better results"
+        },
+        "num_results": {
+          "type": "integer",
+          "default": 5,
+          "description": "Number of search results to return (1-10)"
+        }
+      },
+      "required": ["query"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "List of search results, each with title, url, and snippet",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string", "description": "Page title" },
+              "url": { "type": "string", "description": "Page URL" },
+              "snippet": { "type": "string", "description": "Short excerpt from the page" }
+            },
+            "required": ["title", "url", "snippet"]
+          }
+        }
+      },
+      "required": ["results"]
+    },
+    "prompt_template": "Using your knowledge, find information about: {query}. Return the top {num_results} results as a JSON array. Each result must have fields: title (string), url (a real, plausible URL), snippet (a 1-2 sentence description). Provide REAL results with actual information — do NOT return empty arrays.",
+    "web_search_enabled": true,
+    "use_when": "The user needs to look up facts, prices, news, product info, or any real-world data. This is a generic search block — change the query input to search for ANYTHING. Do not create a new block just to search for a specific topic.",
+    "tags": ["search", "web", "lookup", "find", "query", "information", "retrieve", "internet"],
+    "examples": [
+      {
+        "inputs": { "query": "AirPods Pro price 2025", "num_results": 3 },
+        "outputs": { "results": [{"title": "AirPods Pro 2 - Apple", "url": "https://apple.com/airpods-pro", "snippet": "AirPods Pro 2nd generation available for $249."}] }
+      },
+      {
+        "inputs": { "query": "best restaurants in Paris", "num_results": 5 },
+        "outputs": { "results": [{"title": "Top 10 Paris Restaurants", "url": "https://example.com/paris-food", "snippet": "Le Cinq, L'Ambroisie, and more top-rated restaurants."}] }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "claude_summarize",
+    "name": "Summarize Content",
+    "description": "Summarize any text content into a shorter form. Supports different styles (concise, detailed, bullet-points) and length limits. Use this whenever you need to condense information. Do NOT use for analysis, comparison, or decision-making — use claude_analyze or claude_decide instead.",
+    "category": "process",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The text content to summarize"
+        },
+        "style": {
+          "type": "string",
+          "default": "concise",
+          "description": "Summary style: 'concise', 'detailed', 'bullet-points', 'eli5'"
+        },
+        "max_length": {
+          "type": "integer",
+          "default": 300,
+          "description": "Maximum word count for the summary"
+        }
+      },
+      "required": ["content"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "summary": {
+          "type": "string",
+          "description": "The generated summary text"
+        }
+      },
+      "required": ["summary"]
+    },
+    "prompt_template": "Summarize the following in {style} style, max {max_length} words:\n\n{content}",
+    "use_when": "You need to shorten or condense text. Works for articles, search results, reports, or any long-form content. Parameterize with different style/max_length values — do not create a new block just to summarize a specific topic.",
+    "tags": ["summarize", "condense", "shorten", "tldr", "digest", "text", "content"],
+    "examples": [
+      {
+        "inputs": { "content": "Long article text about climate change...", "style": "bullet-points", "max_length": 100 },
+        "outputs": { "summary": "- Global temperatures rising 1.5°C\n- Ice caps melting faster than predicted\n- Renewable energy adoption accelerating" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "claude_decide",
+    "name": "Make a Decision",
+    "description": "Choose the best option from a set of alternatives based on specified criteria and optional context. Returns the selected option with reasoning. Use this when the pipeline needs to pick one path or item from several candidates.",
+    "category": "process",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "options": {
+          "type": "string",
+          "description": "The options to choose from, as a comma-separated list or structured text"
+        },
+        "criteria": {
+          "type": "string",
+          "description": "The criteria or goal to optimize for when selecting"
+        },
+        "context": {
+          "type": "string",
+          "default": "",
+          "description": "Additional context to inform the decision (e.g., user preferences, constraints)"
+        }
+      },
+      "required": ["options", "criteria"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "selected": {
+          "type": "string",
+          "description": "The chosen option"
+        },
+        "reasoning": {
+          "type": "string",
+          "description": "Explanation of why this option was selected"
+        }
+      },
+      "required": ["selected", "reasoning"]
+    },
+    "prompt_template": "Options:\n{options}\n\nCriteria: {criteria}\nContext: {context}\n\nPick the best option.",
+    "use_when": "The pipeline needs to select one option from multiple alternatives. Use for recommendations, comparisons where a winner must be chosen, or routing decisions. Do NOT use for general analysis — use claude_analyze instead.",
+    "tags": ["decide", "choose", "select", "pick", "recommend", "compare", "decision"],
+    "examples": [
+      {
+        "inputs": { "options": "iPhone 15, Samsung S24, Pixel 8", "criteria": "best camera under $1000", "context": "User prefers Android" },
+        "outputs": { "selected": "Samsung S24", "reasoning": "Best camera performance among Android options and within budget." }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "claude_analyze",
+    "name": "Analyze Data",
+    "description": "Analyze, interpret, or extract insights from any data or text. Supports different analysis types (general, comparison, sentiment, extraction, trend). Returns a textual analysis and a list of key findings. Use this as a general-purpose data processing block.",
+    "category": "process",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "string",
+          "description": "The data or text to analyze — can be raw text, JSON stringified data, search results, etc."
+        },
+        "analysis_type": {
+          "type": "string",
+          "default": "general",
+          "description": "Type of analysis: 'general', 'comparison', 'sentiment', 'extraction', 'trend', 'pricing'"
+        }
+      },
+      "required": ["data"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "analysis": {
+          "type": "string",
+          "description": "The full analysis text"
+        },
+        "key_findings": {
+          "type": "array",
+          "description": "List of key findings or extracted data points",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["analysis", "key_findings"]
+    },
+    "prompt_template": "Analyze ({analysis_type}):\n\n{data}\n\nReturn analysis and key findings.",
+    "use_when": "You need to interpret, extract information from, or reason about data. Use analysis_type='extraction' to pull specific fields (prices, names, dates) from text. Use analysis_type='comparison' to compare items. This is generic — do NOT create a narrow block like 'extract_airpods_price' when you can use claude_analyze with extraction type.",
+    "tags": ["analyze", "extract", "interpret", "insight", "data", "comparison", "sentiment", "pricing"],
+    "examples": [
+      {
+        "inputs": { "data": "[{\"title\": \"AirPods Pro\", \"snippet\": \"Available for $249 at Apple Store\"}]", "analysis_type": "extraction" },
+        "outputs": { "analysis": "The AirPods Pro are priced at $249 at the Apple Store.", "key_findings": ["AirPods Pro price: $249", "Source: Apple Store"] }
+      },
+      {
+        "inputs": { "data": "Q1 revenue: $10M, Q2 revenue: $12M, Q3 revenue: $9M", "analysis_type": "trend" },
+        "outputs": { "analysis": "Revenue peaked in Q2 at $12M then declined 25% in Q3.", "key_findings": ["Peak revenue: $12M in Q2", "Q3 decline: 25%", "Overall trend: volatile"] }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "claude_generate",
+    "name": "Generate Content",
+    "description": "Generate text content from a prompt. Supports different output formats (paragraph, bullet-points, email, report, code). Use this when the pipeline needs to produce new text rather than processing existing text.",
+    "category": "process",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "description": "The generation prompt — describe what content to create"
+        },
+        "format": {
+          "type": "string",
+          "default": "paragraph",
+          "description": "Output format: 'paragraph', 'bullet-points', 'email', 'report', 'code', 'json'"
+        }
+      },
+      "required": ["prompt"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The generated content"
+        }
+      },
+      "required": ["content"]
+    },
+    "prompt_template": "{prompt}\n\nFormat: {format}",
+    "use_when": "You need to create new text content — emails, reports, descriptions, explanations, or any creative/structured text. Do NOT use for summarization (use claude_summarize) or analysis (use claude_analyze).",
+    "tags": ["generate", "create", "write", "compose", "content", "text", "email", "report"],
+    "examples": [
+      {
+        "inputs": { "prompt": "Write a price comparison report for wireless earbuds under $300", "format": "report" },
+        "outputs": { "content": "# Wireless Earbuds Price Comparison\n\n## Under $300\n..." }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "filter_threshold",
+    "name": "Compare Value to Threshold",
+    "description": "Check if a numeric value passes a comparison against a threshold. Returns a boolean result and the original value. Use this for any numeric gate/filter in the pipeline (e.g., price under budget, score above minimum).",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "number",
+          "description": "The numeric value to test"
+        },
+        "operator": {
+          "type": "string",
+          "enum": ["<", "<=", ">", ">=", "==", "!="],
+          "description": "Comparison operator"
+        },
+        "threshold": {
+          "type": "number",
+          "description": "The threshold to compare against"
+        }
+      },
+      "required": ["value", "operator", "threshold"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "passed": {
+          "type": "boolean",
+          "description": "Whether the comparison passed (true) or failed (false)"
+        },
+        "value": {
+          "type": "number",
+          "description": "The original value that was tested"
+        }
+      },
+      "required": ["passed", "value"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/filter_threshold/main.py"
+    },
+    "use_when": "You need to check if a number meets a condition — price under budget, score above threshold, count within range. This is a generic numeric comparator — do NOT create a new block for specific comparisons like 'check_price_under_250'.",
+    "tags": ["filter", "threshold", "compare", "number", "gate", "condition", "math"],
+    "examples": [
+      {
+        "inputs": { "value": 249, "operator": "<=", "threshold": 300 },
+        "outputs": { "passed": true, "value": 249 }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "conditional_branch",
+    "name": "Conditional Branch",
+    "description": "Route pipeline execution based on a boolean condition. Returns 'yes' or 'no' branch label and passes through associated data. Use this to implement if/else logic in pipelines.",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "condition": {
+          "type": "boolean",
+          "description": "The boolean condition to evaluate — truthy values go to 'yes' branch, falsy to 'no'"
+        },
+        "data": {
+          "description": "Arbitrary data to pass through to the chosen branch"
+        }
+      },
+      "required": ["condition"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "string",
+          "description": "The selected branch: 'yes' or 'no'"
+        },
+        "data": {
+          "description": "The pass-through data from the input"
+        }
+      },
+      "required": ["branch"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/conditional_branch/main.py"
+    },
+    "use_when": "You need if/else logic in the pipeline — e.g., only notify if a threshold was passed, take different actions based on a decision. Pair with filter_threshold to create condition-based routing.",
+    "tags": ["branch", "condition", "if-else", "route", "logic", "flow-control"],
+    "examples": [
+      {
+        "inputs": { "condition": true, "data": {"price": 249} },
+        "outputs": { "branch": "yes", "data": {"price": 249} }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "notify_push",
+    "name": "Send Notification",
+    "description": "Send a push notification to the user with a title and body message. Currently logs to console (hackathon mode). Use this as the final step to deliver results to the user.",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Notification title — short, descriptive headline"
+        },
+        "body": {
+          "type": "string",
+          "description": "Notification body — the main message content"
+        }
+      },
+      "required": ["title", "body"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "delivered": {
+          "type": "boolean",
+          "description": "Whether the notification was successfully delivered"
+        }
+      },
+      "required": ["delivered"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/notify_push/main.py"
+    },
+    "use_when": "The pipeline needs to deliver results, alerts, or messages to the user. Use as the last step in most pipelines.",
+    "tags": ["notify", "push", "alert", "message", "deliver", "output", "action"],
+    "examples": [
+      {
+        "inputs": { "title": "Price Alert", "body": "AirPods Pro are $249, within your budget of $300." },
+        "outputs": { "delivered": true }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "memory_read",
+    "name": "Read Memory",
+    "description": "Read a previously stored value from the user's persistent memory by key. Returns null if the key doesn't exist. Use this to retrieve user preferences, saved data, or state from previous pipeline runs.",
+    "category": "memory",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The memory key to read (e.g., 'user_budget', 'favorite_products')"
+        }
+      },
+      "required": ["key"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "The stored value (any JSON type), or null if key not found"
+        }
+      },
+      "required": ["value"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/memory_read/main.py"
+    },
+    "use_when": "The pipeline needs to retrieve previously stored data — user preferences, past results, saved thresholds. Always pair with memory_write for persistence.",
+    "tags": ["memory", "read", "retrieve", "state", "persistence", "storage"],
+    "examples": [
+      {
+        "inputs": { "key": "user_budget" },
+        "outputs": { "value": 300 }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "memory_write",
+    "name": "Write Memory",
+    "description": "Store a value in the user's persistent memory under a given key. Overwrites any existing value for that key. Use this to save user preferences, computation results, or any state that should persist across pipeline runs.",
+    "category": "memory",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The memory key to write to (e.g., 'user_budget', 'last_search_results')"
+        },
+        "value": {
+          "description": "The value to store (any JSON-serializable type)"
+        }
+      },
+      "required": ["key", "value"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Whether the write operation succeeded"
+        }
+      },
+      "required": ["success"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/memory_write/main.py"
+    },
+    "use_when": "The pipeline needs to save data for future use — user preferences, intermediate results, state. Always pair with memory_read for retrieval.",
+    "tags": ["memory", "write", "store", "save", "state", "persistence", "storage"],
+    "examples": [
+      {
+        "inputs": { "key": "user_budget", "value": 300 },
+        "outputs": { "success": true }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+
+  {
+    "id": "trigger_cron",
+    "name": "Scheduled Trigger (Cron)",
+    "description": "Triggers pipeline execution on a cron schedule. Supports standard cron expressions for recurring automation.",
+    "category": "trigger",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "schedule": {
+          "type": "string",
+          "description": "Cron expression (e.g., '0 9 * * *' for daily at 9am)"
+        },
+        "timezone": {
+          "type": "string",
+          "default": "UTC",
+          "description": "Timezone for the schedule (e.g., 'UTC', 'Europe/Berlin')"
+        }
+      },
+      "required": ["schedule"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "triggered_at": {
+          "type": "string",
+          "description": "ISO timestamp when the trigger fired"
+        }
+      },
+      "required": ["triggered_at"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/trigger_cron/main.py"
+    },
+    "use_when": "Pipeline needs to run on a schedule",
+    "tags": ["trigger", "cron", "schedule", "timer", "recurring"],
+    "examples": [
+      {
+        "inputs": { "schedule": "0 9 * * *", "timezone": "UTC" },
+        "outputs": { "triggered_at": "2026-02-21T09:00:00Z" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "trigger_manual",
+    "name": "Manual Trigger",
+    "description": "Starts pipeline execution immediately when invoked by the user. Optionally accepts user input text.",
+    "category": "trigger",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "user_input": {
+          "type": "string",
+          "description": "Optional text input from the user"
+        }
+      }
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "triggered_at": {
+          "type": "string",
+          "description": "ISO timestamp when the trigger fired"
+        },
+        "user_input": {
+          "type": "string",
+          "description": "The user input passed through"
+        }
+      },
+      "required": ["triggered_at"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/trigger_manual/main.py"
+    },
+    "use_when": "Pipeline should run immediately when user requests",
+    "tags": ["trigger", "manual", "start", "immediate"],
+    "examples": [
+      {
+        "inputs": { "user_input": "Check my portfolio" },
+        "outputs": { "triggered_at": "2026-02-21T14:30:00Z", "user_input": "Check my portfolio" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "trigger_file_upload",
+    "name": "File Upload Trigger",
+    "description": "Triggers pipeline execution when a file is uploaded. Provides file path, type, and size information to downstream blocks.",
+    "category": "trigger",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "Path to the uploaded file"
+        },
+        "file_type": {
+          "type": "string",
+          "description": "MIME type or extension of the file"
+        }
+      },
+      "required": ["file_path"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "Path to the uploaded file"
+        },
+        "file_type": {
+          "type": "string",
+          "description": "Detected file type"
+        },
+        "file_size_bytes": {
+          "type": "integer",
+          "description": "File size in bytes"
+        }
+      },
+      "required": ["file_path", "file_type", "file_size_bytes"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/trigger_file_upload/main.py"
+    },
+    "use_when": "Pipeline should start when a file is uploaded",
+    "tags": ["trigger", "file", "upload", "document", "image"],
+    "examples": [
+      {
+        "inputs": { "file_path": "/uploads/receipt.jpg", "file_type": "image/jpeg" },
+        "outputs": { "file_path": "/uploads/receipt.jpg", "file_type": "image/jpeg", "file_size_bytes": 245760 }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "trigger_webhook",
+    "name": "Webhook Trigger",
+    "description": "Triggers pipeline execution when an external service sends an HTTP POST request to the configured endpoint path.",
+    "category": "trigger",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "endpoint_path": {
+          "type": "string",
+          "description": "The webhook endpoint path (e.g., '/hooks/my-pipeline')"
+        }
+      },
+      "required": ["endpoint_path"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "payload": {
+          "type": "object",
+          "description": "The JSON payload from the incoming request"
+        },
+        "headers": {
+          "type": "object",
+          "description": "HTTP headers from the incoming request"
+        },
+        "method": {
+          "type": "string",
+          "description": "HTTP method used (typically POST)"
+        }
+      },
+      "required": ["payload", "headers", "method"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/trigger_webhook/main.py"
+    },
+    "use_when": "Pipeline should start when an external service sends a webhook",
+    "tags": ["trigger", "webhook", "http", "api", "external"],
+    "examples": [
+      {
+        "inputs": { "endpoint_path": "/hooks/stripe-payment" },
+        "outputs": { "payload": {"event": "payment.completed", "amount": 4999}, "headers": {"content-type": "application/json"}, "method": "POST" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "web_scrape",
+    "name": "Web Scrape",
+    "description": "Extract text content from a URL. Optionally filter by CSS selector to get specific page sections. Returns the extracted text, page title, and URL.",
+    "category": "input",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "The URL to scrape"
+        },
+        "selector": {
+          "type": "string",
+          "description": "Optional CSS selector to extract specific content (e.g., 'article', '.main-content')"
+        }
+      },
+      "required": ["url"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The extracted text content"
+        },
+        "title": {
+          "type": "string",
+          "description": "The page title"
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL that was scraped"
+        }
+      },
+      "required": ["text", "title", "url"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/web_scrape/main.py"
+    },
+    "use_when": "Need to extract text content from a specific webpage URL",
+    "tags": ["scrape", "web", "extract", "html", "page", "url"],
+    "examples": [
+      {
+        "inputs": { "url": "https://example.com/article", "selector": "article" },
+        "outputs": { "text": "Article content here...", "title": "Example Article", "url": "https://example.com/article" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "web_scrape_structured",
+    "name": "Structured Web Scrape",
+    "description": "Extract structured fields from a webpage by mapping field names to CSS selectors. Returns an object with the requested fields populated from the page.",
+    "category": "input",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "The URL to scrape"
+        },
+        "fields": {
+          "type": "object",
+          "description": "Mapping of field names to CSS selectors (e.g., {\"price\": \".product-price\", \"name\": \"h1.title\"})"
+        }
+      },
+      "required": ["url", "fields"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "description": "Object with field names as keys and extracted text as values"
+        }
+      },
+      "required": ["data"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/web_scrape_structured/main.py"
+    },
+    "use_when": "Need to extract specific structured data fields from a webpage",
+    "tags": ["scrape", "structured", "extract", "fields", "css", "selector"],
+    "examples": [
+      {
+        "inputs": { "url": "https://example.com/product", "fields": {"price": ".product-price", "name": "h1.title"} },
+        "outputs": { "data": {"price": "$29.99", "name": "Example Product"} }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "gemini_analyze_image",
+    "name": "Analyze Image (Gemini)",
+    "description": "Analyze an image using Gemini Vision. Returns a description, list of objects detected, and any text found in the image.",
+    "category": "input",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "image_path": {
+          "type": "string",
+          "description": "Path or URL to the image to analyze"
+        },
+        "prompt": {
+          "type": "string",
+          "default": "Describe this image in detail",
+          "description": "Custom prompt for the image analysis"
+        }
+      },
+      "required": ["image_path"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the image"
+        },
+        "objects": {
+          "type": "array",
+          "description": "List of objects detected in the image",
+          "items": { "type": "string" }
+        },
+        "text_found": {
+          "type": "string",
+          "description": "Any text visible in the image"
+        }
+      },
+      "required": ["description", "objects", "text_found"]
+    },
+    "prompt_template": "Analyze this image at {image_path}. {prompt}\n\nReturn a JSON with: description (string), objects (array of strings found in image), text_found (any text visible in image).",
+    "use_when": "Need to understand or describe contents of an image",
+    "tags": ["image", "vision", "gemini", "analyze", "describe", "visual"],
+    "examples": [
+      {
+        "inputs": { "image_path": "/uploads/photo.jpg", "prompt": "Describe this image in detail" },
+        "outputs": { "description": "A modern office workspace with a laptop, coffee cup, and notebook on a wooden desk.", "objects": ["laptop", "coffee cup", "notebook", "desk"], "text_found": "MacBook Pro" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "gemini_ocr",
+    "name": "OCR Extract Text (Gemini)",
+    "description": "Extract all visible text from an image using Gemini Vision OCR. Returns the extracted text and a confidence score.",
+    "category": "input",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "image_path": {
+          "type": "string",
+          "description": "Path or URL to the image containing text"
+        }
+      },
+      "required": ["image_path"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "All text extracted from the image"
+        },
+        "confidence": {
+          "type": "number",
+          "description": "Confidence score from 0 to 1"
+        }
+      },
+      "required": ["text", "confidence"]
+    },
+    "prompt_template": "Extract ALL text visible in the image at {image_path}. Return JSON with: text (all extracted text), confidence (0-1 score).",
+    "use_when": "Need to extract text from an image using OCR",
+    "tags": ["ocr", "text", "extract", "image", "gemini", "vision"],
+    "examples": [
+      {
+        "inputs": { "image_path": "/uploads/document.png" },
+        "outputs": { "text": "Invoice #12345\nDate: 2026-01-15\nTotal: $150.00", "confidence": 0.95 }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "gemini_read_receipt",
+    "name": "Read Receipt (Gemini)",
+    "description": "Extract structured data from a receipt image using Gemini Vision. Returns store name, date, line items with quantities and prices, total, and currency.",
+    "category": "input",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "image_path": {
+          "type": "string",
+          "description": "Path or URL to the receipt image"
+        }
+      },
+      "required": ["image_path"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "store": {
+          "type": "string",
+          "description": "Store or merchant name"
+        },
+        "date": {
+          "type": "string",
+          "description": "Receipt date"
+        },
+        "items": {
+          "type": "array",
+          "description": "Line items on the receipt",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "description": "Item name" },
+              "quantity": { "type": "integer", "description": "Quantity purchased" },
+              "price": { "type": "number", "description": "Price per item" }
+            },
+            "required": ["name", "quantity", "price"]
+          }
+        },
+        "total": {
+          "type": "number",
+          "description": "Total amount"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., EUR, USD)"
+        }
+      },
+      "required": ["store", "date", "items", "total", "currency"]
+    },
+    "prompt_template": "Extract structured data from this receipt image at {image_path}. Return JSON with: store (string), date (string), items (array of {name, quantity, price}), total (number), currency (string).",
+    "use_when": "Need to extract structured line items from a receipt photo",
+    "tags": ["receipt", "ocr", "extract", "gemini", "vision", "expense"],
+    "examples": [
+      {
+        "inputs": { "image_path": "/uploads/receipt.jpg" },
+        "outputs": { "store": "REWE", "date": "2026-02-20", "items": [{"name": "Milk", "quantity": 2, "price": 1.29}, {"name": "Bread", "quantity": 1, "price": 2.49}], "total": 5.07, "currency": "EUR" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "social_hackernews_top",
+    "name": "Hacker News Top Stories",
+    "description": "Fetch the current top stories from Hacker News. Returns a list of stories with titles, URLs, scores, authors, and comment counts.",
+    "category": "input",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "default": 10,
+          "description": "Number of top stories to fetch (1-30)"
+        }
+      }
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "stories": {
+          "type": "array",
+          "description": "List of top Hacker News stories",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": { "type": "string", "description": "Story title" },
+              "url": { "type": "string", "description": "Story URL" },
+              "score": { "type": "integer", "description": "Upvote score" },
+              "author": { "type": "string", "description": "Author username" },
+              "comments": { "type": "integer", "description": "Number of comments" }
+            },
+            "required": ["title", "url", "score", "author", "comments"]
+          }
+        }
+      },
+      "required": ["stories"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/social_hackernews_top/main.py"
+    },
+    "use_when": "Need to fetch current top stories from Hacker News",
+    "tags": ["hackernews", "news", "tech", "stories", "feed", "social"],
+    "examples": [
+      {
+        "inputs": { "count": 3 },
+        "outputs": { "stories": [{"title": "Show HN: AgentFlow – AI Automation Platform", "url": "https://agentflow.dev", "score": 342, "author": "techfounder", "comments": 87}] }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "product_get_price",
+    "name": "Get Product Price",
+    "description": "Scrape the current price of a product from a URL. Returns price, currency, product name, and stock status.",
+    "category": "input",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Product page URL"
+        },
+        "price_selector": {
+          "type": "string",
+          "description": "Optional CSS selector for the price element"
+        }
+      },
+      "required": ["url"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "number",
+          "description": "Product price as a number"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency code (e.g., EUR, USD)"
+        },
+        "product_name": {
+          "type": "string",
+          "description": "Name of the product"
+        },
+        "in_stock": {
+          "type": "boolean",
+          "description": "Whether the product is in stock"
+        }
+      },
+      "required": ["price", "currency", "product_name", "in_stock"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/product_get_price/main.py"
+    },
+    "use_when": "Need to check or track the price of a specific product from a URL",
+    "tags": ["price", "product", "scrape", "shop", "ecommerce", "track"],
+    "examples": [
+      {
+        "inputs": { "url": "https://store.example.com/airpods-pro" },
+        "outputs": { "price": 249.99, "currency": "EUR", "product_name": "AirPods Pro 2", "in_stock": true }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "claude_recommend",
+    "name": "Recommend (Claude)",
+    "description": "Suggest the best option from a list based on user preferences and optional history. Returns a recommendation with reasoning and alternatives.",
+    "category": "process",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "options": {
+          "type": "array",
+          "description": "List of options to choose from (array of objects)",
+          "items": { "type": "object" }
+        },
+        "preferences": {
+          "type": "object",
+          "description": "User preferences to optimize for"
+        },
+        "history": {
+          "type": "array",
+          "description": "Past choices or interactions for personalization",
+          "items": { "type": "object" }
+        }
+      },
+      "required": ["options"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "recommendation": {
+          "type": "object",
+          "description": "The recommended option"
+        },
+        "reasoning": {
+          "type": "string",
+          "description": "Explanation of why this was recommended"
+        },
+        "alternatives": {
+          "type": "array",
+          "description": "Other good alternatives",
+          "items": { "type": "object" }
+        }
+      },
+      "required": ["recommendation", "reasoning", "alternatives"]
+    },
+    "prompt_template": "Options:\n{options}\n\nPreferences: {preferences}\nPast choices: {history}\n\nRecommend the best option. Return JSON with: recommendation (the chosen item), reasoning (why), alternatives (other good options).",
+    "use_when": "Need personalized recommendation from multiple options based on user preferences",
+    "tags": ["recommend", "suggest", "personalize", "preference", "choice"],
+    "examples": [
+      {
+        "inputs": { "options": [{"name": "Restaurant A", "cuisine": "Italian", "rating": 4.5}, {"name": "Restaurant B", "cuisine": "Japanese", "rating": 4.8}], "preferences": {"cuisine": "Japanese"}, "history": [] },
+        "outputs": { "recommendation": {"name": "Restaurant B", "cuisine": "Japanese", "rating": 4.8}, "reasoning": "Best match for Japanese cuisine preference with highest rating.", "alternatives": [{"name": "Restaurant A", "cuisine": "Italian", "rating": 4.5}] }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "claude_categorize",
+    "name": "Categorize (Claude)",
+    "description": "Classify content into categories using AI. Supports predefined categories or automatic category inference. Returns the category, confidence score, and reasoning.",
+    "category": "process",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The text content to categorize"
+        },
+        "categories": {
+          "type": "array",
+          "description": "Optional predefined list of categories to choose from",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["content"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "The assigned category"
+        },
+        "confidence": {
+          "type": "number",
+          "description": "Confidence score from 0 to 1"
+        },
+        "reasoning": {
+          "type": "string",
+          "description": "Explanation of why this category was chosen"
+        }
+      },
+      "required": ["category", "confidence", "reasoning"]
+    },
+    "prompt_template": "Content: {content}\n\nCategories: {categories}\n\nClassify this content. Return JSON with: category (string), confidence (0-1), reasoning (string).",
+    "use_when": "Need to classify or categorize text content into predefined or inferred categories",
+    "tags": ["categorize", "classify", "label", "sort", "tag", "content"],
+    "examples": [
+      {
+        "inputs": { "content": "The new MacBook Pro features an M3 chip with improved GPU performance.", "categories": ["technology", "sports", "finance", "health"] },
+        "outputs": { "category": "technology", "confidence": 0.97, "reasoning": "Content discusses a MacBook Pro with technical specifications (M3 chip, GPU), which is clearly technology." }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "stripe_pay",
+    "name": "Make Payment (Stripe)",
+    "description": "Process a one-time payment via Stripe. Creates a payment intent for the specified amount and returns the payment status.",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "amount_cents": {
+          "type": "integer",
+          "description": "Payment amount in cents (e.g., 2499 for $24.99)"
+        },
+        "currency": {
+          "type": "string",
+          "default": "eur",
+          "description": "Currency code (e.g., 'eur', 'usd')"
+        },
+        "description": {
+          "type": "string",
+          "description": "Payment description"
+        },
+        "metadata": {
+          "type": "object",
+          "description": "Additional metadata to attach to the payment"
+        }
+      },
+      "required": ["amount_cents"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "payment_id": {
+          "type": "string",
+          "description": "Stripe payment intent ID"
+        },
+        "status": {
+          "type": "string",
+          "description": "Payment status (e.g., 'succeeded', 'pending', 'failed')"
+        },
+        "amount_cents": {
+          "type": "integer",
+          "description": "Amount charged in cents"
+        },
+        "currency": {
+          "type": "string",
+          "description": "Currency used"
+        }
+      },
+      "required": ["payment_id", "status", "amount_cents", "currency"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/stripe_pay/main.py"
+    },
+    "use_when": "Need to process a one-time payment via Stripe",
+    "tags": ["payment", "stripe", "pay", "charge", "money", "transaction"],
+    "examples": [
+      {
+        "inputs": { "amount_cents": 2499, "currency": "eur", "description": "Product purchase" },
+        "outputs": { "payment_id": "pi_3abc123def456", "status": "succeeded", "amount_cents": 2499, "currency": "eur" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "email_send",
+    "name": "Send Email",
+    "description": "Send an email to a recipient via SendGrid. Supports subject, body text, and sender name customization.",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "to": {
+          "type": "string",
+          "description": "Recipient email address"
+        },
+        "subject": {
+          "type": "string",
+          "description": "Email subject line"
+        },
+        "body": {
+          "type": "string",
+          "description": "Email body text"
+        },
+        "from_name": {
+          "type": "string",
+          "default": "AgentFlow",
+          "description": "Sender display name"
+        }
+      },
+      "required": ["to", "subject", "body"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "message_id": {
+          "type": "string",
+          "description": "SendGrid message ID"
+        },
+        "status": {
+          "type": "string",
+          "description": "Delivery status"
+        }
+      },
+      "required": ["message_id", "status"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/email_send/main.py"
+    },
+    "use_when": "Need to send an email to a recipient",
+    "tags": ["email", "send", "mail", "message", "sendgrid", "notify"],
+    "examples": [
+      {
+        "inputs": { "to": "user@example.com", "subject": "Price Alert: AirPods Pro", "body": "The AirPods Pro are now $229 — below your budget!", "from_name": "AgentFlow" },
+        "outputs": { "message_id": "msg_abc123", "status": "sent" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "commerce_place_order",
+    "name": "Place Order",
+    "description": "Place an order for a product. Captures product details, quantity, and shipping information. Returns an order confirmation with estimated delivery.",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "product_url": {
+          "type": "string",
+          "description": "URL of the product to order"
+        },
+        "product_name": {
+          "type": "string",
+          "description": "Name of the product"
+        },
+        "quantity": {
+          "type": "integer",
+          "default": 1,
+          "description": "Number of items to order"
+        },
+        "price": {
+          "type": "number",
+          "description": "Price per unit"
+        },
+        "shipping_address": {
+          "type": "string",
+          "description": "Shipping address for the order"
+        }
+      },
+      "required": ["product_name", "price"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Order confirmation ID"
+        },
+        "status": {
+          "type": "string",
+          "description": "Order status (e.g., 'confirmed', 'pending')"
+        },
+        "total": {
+          "type": "number",
+          "description": "Total order amount"
+        },
+        "estimated_delivery": {
+          "type": "string",
+          "description": "Estimated delivery date"
+        }
+      },
+      "required": ["order_id", "status", "total", "estimated_delivery"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/commerce_place_order/main.py"
+    },
+    "use_when": "Need to place an order for a product",
+    "tags": ["order", "buy", "purchase", "commerce", "shop", "product"],
+    "examples": [
+      {
+        "inputs": { "product_name": "AirPods Pro 2", "quantity": 1, "price": 249.00, "shipping_address": "123 Main St, Berlin" },
+        "outputs": { "order_id": "ORD-2026-00451", "status": "confirmed", "total": 249.00, "estimated_delivery": "2026-02-28" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "code_run_python",
+    "name": "Run Python Code",
+    "description": "Execute sandboxed Python code for data processing or computation. Returns stdout, stderr, return value, and success status. Code runs in an isolated environment with a configurable timeout.",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Python code to execute"
+        },
+        "timeout_seconds": {
+          "type": "integer",
+          "default": 30,
+          "description": "Maximum execution time in seconds"
+        }
+      },
+      "required": ["code"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "stdout": {
+          "type": "string",
+          "description": "Standard output from the code"
+        },
+        "stderr": {
+          "type": "string",
+          "description": "Standard error output"
+        },
+        "return_value": {
+          "type": "string",
+          "description": "Return value of the last expression"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "Whether the code executed without errors"
+        }
+      },
+      "required": ["stdout", "stderr", "return_value", "success"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/code_run_python/main.py"
+    },
+    "use_when": "Need to execute custom Python code for data processing or computation",
+    "tags": ["code", "python", "execute", "run", "script", "compute"],
+    "examples": [
+      {
+        "inputs": { "code": "import math\nresult = math.sqrt(144)\nprint(f'Square root: {result}')", "timeout_seconds": 10 },
+        "outputs": { "stdout": "Square root: 12.0", "stderr": "", "return_value": "12.0", "success": true }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "elevenlabs_speak",
+    "name": "Text to Speech (ElevenLabs)",
+    "description": "Convert text into spoken audio using ElevenLabs text-to-speech API. Returns a URL to the generated audio file and its duration.",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The text to convert to speech"
+        },
+        "voice_id": {
+          "type": "string",
+          "description": "Optional ElevenLabs voice ID (uses default voice if not specified)"
+        }
+      },
+      "required": ["text"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "audio_url": {
+          "type": "string",
+          "description": "URL to the generated audio file"
+        },
+        "duration_seconds": {
+          "type": "number",
+          "description": "Duration of the audio in seconds"
+        }
+      },
+      "required": ["audio_url", "duration_seconds"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/elevenlabs_speak/main.py"
+    },
+    "use_when": "Need to convert text into spoken audio",
+    "tags": ["tts", "speech", "audio", "voice", "elevenlabs", "speak"],
+    "examples": [
+      {
+        "inputs": { "text": "Your order has been confirmed. Estimated delivery is February 28th." },
+        "outputs": { "audio_url": "/audio/tts_abc123.mp3", "duration_seconds": 4.2 }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "notify_in_app",
+    "name": "In-App Notification",
+    "description": "Show a notification in the AgentFlow UI. Supports different severity levels (info, success, warning, error).",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Notification title"
+        },
+        "message": {
+          "type": "string",
+          "description": "Notification message body"
+        },
+        "level": {
+          "type": "string",
+          "enum": ["info", "success", "warning", "error"],
+          "default": "info",
+          "description": "Notification severity level"
+        }
+      },
+      "required": ["title", "message"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "notification_id": {
+          "type": "string",
+          "description": "Unique notification ID"
+        },
+        "delivered": {
+          "type": "boolean",
+          "description": "Whether the notification was delivered"
+        }
+      },
+      "required": ["notification_id", "delivered"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/notify_in_app/main.py"
+    },
+    "use_when": "Need to show a notification in the AgentFlow UI",
+    "tags": ["notify", "alert", "ui", "in-app", "message", "notification"],
+    "examples": [
+      {
+        "inputs": { "title": "Pipeline Complete", "message": "Your price tracking pipeline finished successfully.", "level": "success" },
+        "outputs": { "notification_id": "notif_abc123", "delivered": true }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "ask_user_confirm",
+    "name": "Ask User Confirmation",
+    "description": "Pause pipeline execution and ask the user for confirmation before proceeding. Useful as a safety gate before destructive or expensive actions.",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "description": "The confirmation question to ask the user"
+        },
+        "details": {
+          "type": "object",
+          "description": "Additional context to show the user (e.g., order details, amounts)"
+        }
+      },
+      "required": ["question"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "confirmed": {
+          "type": "boolean",
+          "description": "Whether the user confirmed (true) or denied (false)"
+        },
+        "user_message": {
+          "type": "string",
+          "description": "Optional message from the user"
+        }
+      },
+      "required": ["confirmed", "user_message"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/ask_user_confirm/main.py"
+    },
+    "use_when": "Pipeline needs user approval before proceeding with an action",
+    "tags": ["confirm", "ask", "approve", "pause", "user-input", "gate"],
+    "examples": [
+      {
+        "inputs": { "question": "Place order for AirPods Pro at $249?", "details": {"product": "AirPods Pro 2", "price": 249, "store": "Apple"} },
+        "outputs": { "confirmed": true, "user_message": "Yes, go ahead!" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "present_summary_card",
+    "name": "Present Summary Card",
+    "description": "Format data as a visual summary card for display to the user. Takes structured data and highlights the most important information.",
+    "category": "action",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Card title"
+        },
+        "data": {
+          "type": "object",
+          "description": "Data to display in the card"
+        },
+        "highlight": {
+          "type": "string",
+          "description": "The most important piece of information to emphasize"
+        }
+      },
+      "required": ["title", "data"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "card": {
+          "type": "object",
+          "description": "Formatted summary card with title, fields, and highlight",
+          "properties": {
+            "title": { "type": "string" },
+            "fields": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "label": { "type": "string" },
+                  "value": { "type": "string" }
+                }
+              }
+            },
+            "highlight": { "type": "string" }
+          }
+        }
+      },
+      "required": ["card"]
+    },
+    "prompt_template": "Create a summary card titled '{title}' from this data: {data}. The most important info is: {highlight}. Return JSON with: card (object with title, fields array of {label, value}, highlight).",
+    "use_when": "Need to present data as a formatted summary card to the user",
+    "tags": ["summary", "card", "display", "present", "format", "output"],
+    "examples": [
+      {
+        "inputs": { "title": "Price Check Result", "data": {"product": "AirPods Pro 2", "price": 249, "store": "Apple", "in_stock": true}, "highlight": "Price: $249" },
+        "outputs": { "card": {"title": "Price Check Result", "fields": [{"label": "Product", "value": "AirPods Pro 2"}, {"label": "Price", "value": "$249"}, {"label": "Store", "value": "Apple"}, {"label": "In Stock", "value": "Yes"}], "highlight": "Price: $249"} }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "memory_append",
+    "name": "Append to Memory List",
+    "description": "Append a value to a list stored in persistent memory. Creates the list if it doesn't exist. Useful for accumulating items over multiple pipeline runs.",
+    "category": "memory",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "The memory key for the list (e.g., 'price_history', 'tracked_items')"
+        },
+        "value": {
+          "description": "The value to append to the list (any JSON-serializable type)"
+        },
+        "namespace": {
+          "type": "string",
+          "default": "default",
+          "description": "Memory namespace for isolation"
+        }
+      },
+      "required": ["key", "value"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Whether the append succeeded"
+        },
+        "list_length": {
+          "type": "integer",
+          "description": "Length of the list after appending"
+        }
+      },
+      "required": ["success", "list_length"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/memory_append/main.py"
+    },
+    "use_when": "Need to add an item to a list stored in memory",
+    "tags": ["memory", "append", "list", "add", "store", "accumulate"],
+    "examples": [
+      {
+        "inputs": { "key": "price_history", "value": {"date": "2026-02-21", "price": 249}, "namespace": "default" },
+        "outputs": { "success": true, "list_length": 5 }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "miro_add_node",
+    "name": "Add Miro Node",
+    "description": "Add a sticky note or concept node to a Miro board. Supports colored notes and tags for visual organization of knowledge.",
+    "category": "memory",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Text content for the sticky note"
+        },
+        "color": {
+          "type": "string",
+          "default": "yellow",
+          "description": "Sticky note color (e.g., 'yellow', 'blue', 'green', 'red', 'purple')"
+        },
+        "tags": {
+          "type": "array",
+          "description": "Tags to attach to the node",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["content"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "node_id": {
+          "type": "string",
+          "description": "Miro node/widget ID"
+        },
+        "board_url": {
+          "type": "string",
+          "description": "URL to the Miro board"
+        }
+      },
+      "required": ["node_id", "board_url"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/miro_add_node/main.py"
+    },
+    "use_when": "Need to add a concept or note to the Miro memory board",
+    "tags": ["miro", "node", "sticky", "board", "visual", "memory"],
+    "examples": [
+      {
+        "inputs": { "content": "AirPods Pro price dropped to $229", "color": "green", "tags": ["price-alert", "apple"] },
+        "outputs": { "node_id": "miro_node_abc123", "board_url": "https://miro.com/app/board/abc123" }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "miro_add_connection",
+    "name": "Connect Miro Nodes",
+    "description": "Draw a labeled connection between two existing nodes on a Miro board. Useful for representing relationships between concepts.",
+    "category": "memory",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "from_node_id": {
+          "type": "string",
+          "description": "Source node ID"
+        },
+        "to_node_id": {
+          "type": "string",
+          "description": "Target node ID"
+        },
+        "label": {
+          "type": "string",
+          "description": "Label for the connection (e.g., 'triggers', 'leads to')"
+        }
+      },
+      "required": ["from_node_id", "to_node_id"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "connection_id": {
+          "type": "string",
+          "description": "Miro connection/connector ID"
+        },
+        "success": {
+          "type": "boolean",
+          "description": "Whether the connection was created"
+        }
+      },
+      "required": ["connection_id", "success"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/miro_add_connection/main.py"
+    },
+    "use_when": "Need to draw a connection between two nodes on the Miro board",
+    "tags": ["miro", "connect", "link", "relationship", "board", "visual"],
+    "examples": [
+      {
+        "inputs": { "from_node_id": "miro_node_abc123", "to_node_id": "miro_node_def456", "label": "price drop triggers" },
+        "outputs": { "connection_id": "miro_conn_xyz789", "success": true }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "data_transform",
+    "name": "Transform Data",
+    "description": "Reshape data using a field mapping. Maps source fields to new field names or expressions, producing a transformed output object.",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "description": "The input data object to transform"
+        },
+        "mapping": {
+          "type": "object",
+          "description": "Mapping of new field names to source field expressions (e.g., {\"full_name\": \"first_name + ' ' + last_name\"})"
+        }
+      },
+      "required": ["data", "mapping"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "transformed": {
+          "type": "object",
+          "description": "The transformed data object"
+        }
+      },
+      "required": ["transformed"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/data_transform/main.py"
+    },
+    "use_when": "Need to reshape, map, or transform data fields from one format to another",
+    "tags": ["transform", "map", "reshape", "convert", "data", "format"],
+    "examples": [
+      {
+        "inputs": { "data": {"first_name": "John", "last_name": "Doe", "age": 30}, "mapping": {"full_name": "first_name", "years": "age"} },
+        "outputs": { "transformed": {"full_name": "John", "years": 30} }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "loop_for_each",
+    "name": "For-Each Loop",
+    "description": "Execute a specified block once for each item in a list. Collects all results into an array. Useful for batch processing.",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "items": {
+          "type": "array",
+          "description": "The list of items to iterate over"
+        },
+        "block_id": {
+          "type": "string",
+          "description": "The ID of the block to execute for each item"
+        }
+      },
+      "required": ["items", "block_id"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "Array of results from each iteration"
+        },
+        "count": {
+          "type": "integer",
+          "description": "Number of items processed"
+        }
+      },
+      "required": ["results", "count"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/loop_for_each/main.py"
+    },
+    "use_when": "Need to process each item in a list with the same block",
+    "tags": ["loop", "for-each", "iterate", "batch", "list", "repeat"],
+    "examples": [
+      {
+        "inputs": { "items": ["https://example.com/a", "https://example.com/b"], "block_id": "web_scrape" },
+        "outputs": { "results": [{"text": "Page A content"}, {"text": "Page B content"}], "count": 2 }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  },
+  {
+    "id": "data_diff",
+    "name": "Data Diff",
+    "description": "Compare two datasets and find differences. Returns whether changes exist, along with lists of added, removed, and modified items, plus a human-readable summary.",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "old_data": {
+          "description": "The previous/baseline data (any JSON type)"
+        },
+        "new_data": {
+          "description": "The new/current data to compare against (any JSON type)"
+        }
+      },
+      "required": ["old_data", "new_data"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "has_changes": {
+          "type": "boolean",
+          "description": "Whether any differences were found"
+        },
+        "added": {
+          "type": "array",
+          "description": "Items present in new_data but not in old_data"
+        },
+        "removed": {
+          "type": "array",
+          "description": "Items present in old_data but not in new_data"
+        },
+        "modified": {
+          "type": "array",
+          "description": "Items that changed between old and new"
+        },
+        "summary": {
+          "type": "string",
+          "description": "Human-readable summary of the differences"
+        }
+      },
+      "required": ["has_changes", "added", "removed", "modified", "summary"]
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/data_diff/main.py"
+    },
+    "use_when": "Need to compare two versions of data and find differences",
+    "tags": ["diff", "compare", "changes", "delta", "track", "monitor"],
+    "examples": [
+      {
+        "inputs": { "old_data": {"price": 279, "in_stock": true}, "new_data": {"price": 249, "in_stock": true} },
+        "outputs": { "has_changes": true, "added": [], "removed": [], "modified": [{"field": "price", "old": 279, "new": 249}], "summary": "1 field changed: price decreased from 279 to 249." }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 1
+    }
+  }
+]
