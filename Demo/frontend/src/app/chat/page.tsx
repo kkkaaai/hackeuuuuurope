@@ -429,9 +429,17 @@ export default function AgentStudioPage() {
                   <div className="w-[340px] h-full flex flex-col bg-gray-900/40 backdrop-blur-md">
                     <div className="px-4 py-2.5 border-b border-white/5 flex items-center gap-2">
                       <div className={`w-1.5 h-1.5 rounded-full ${
-                        isThinking ? "bg-blue-400 animate-glow-pulse" : "bg-green-400/60"
+                        state.phase === "error"
+                          ? "bg-red-400 animate-pulse"
+                          : isThinking
+                          ? "bg-blue-400 animate-glow-pulse"
+                          : state.phase === "executing"
+                          ? "bg-yellow-400 animate-glow-pulse"
+                          : "bg-green-400/60"
                       }`} />
-                      <span className="text-xs font-medium text-gray-400">AI Thinking</span>
+                      <span className="text-xs font-medium text-gray-400">
+                        {state.phase === "error" ? "Error" : isThinking ? "AI Thinking" : state.phase === "executing" ? "Executing" : "Complete"}
+                      </span>
                     </div>
                     <div className="flex-1 overflow-hidden">
                       <ThinkerLog events={state.events} />
@@ -486,7 +494,7 @@ export default function AgentStudioPage() {
                         animate={{ y: 0 }}
                         exit={{ y: "100%" }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="absolute bottom-0 left-0 right-0 z-20 max-h-[50%] bg-gray-950/90 backdrop-blur-xl border-t border-white/10 rounded-t-2xl shadow-2xl shadow-black/50"
+                        className="absolute bottom-0 left-0 right-0 z-20 max-h-[85%] bg-gray-950/90 backdrop-blur-xl border-t border-white/10 rounded-t-2xl shadow-2xl shadow-black/50"
                       >
                         <button
                           onClick={() => setResultsExpanded(!resultsExpanded)}
@@ -513,7 +521,7 @@ export default function AgentStudioPage() {
                         </button>
 
                         {resultsExpanded && (
-                          <div className="overflow-y-auto max-h-[calc(50vh-48px)] px-6 pb-6 thin-scrollbar">
+                          <div className="overflow-y-auto max-h-[calc(85vh-48px)] px-6 pb-6 thin-scrollbar">
                             {state.executionResult!.errors.length > 0 && (
                               <p className="text-xs text-red-300 mb-3">
                                 {state.executionResult!.errors.join(", ")}
@@ -538,11 +546,33 @@ export default function AgentStudioPage() {
                     )}
                   </AnimatePresence>
                 </>
+              ) : state.phase === "error" ? (
+                <div className="flex-1 flex items-center justify-center">
+                  <div className="text-center max-w-md">
+                    <AlertCircle className="w-10 h-10 mx-auto mb-3 text-red-400/70" />
+                    <p className="text-sm font-medium text-red-400 mb-2">Pipeline creation failed</p>
+                    {state.errorMessage && (
+                      <p className="text-xs text-red-300/60 bg-red-500/5 border border-red-500/10 rounded-lg px-4 py-2">
+                        {state.errorMessage}
+                      </p>
+                    )}
+                  </div>
+                </div>
               ) : (
                 <div className="flex-1 flex items-center justify-center text-gray-600">
                   <div className="text-center">
-                    <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-30" />
-                    <p className="text-sm text-gray-600">Pipeline will appear here</p>
+                    {isThinking ? (
+                      <>
+                        <Loader2 className="w-8 h-8 mx-auto mb-2 opacity-40 animate-spin text-blue-400" />
+                        <p className="text-sm text-gray-500">Building pipeline...</p>
+                        <p className="text-xs text-gray-600 mt-1">Watch the AI thinking log on the left</p>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-8 h-8 mx-auto mb-2 opacity-30" />
+                        <p className="text-sm text-gray-600">Pipeline will appear here</p>
+                      </>
+                    )}
                   </div>
                 </div>
               )}

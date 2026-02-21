@@ -1,5 +1,7 @@
 """LLM service — native OpenAI/Anthropic SDKs wrapped with Paid.ai for cost tracing."""
 
+from __future__ import annotations
+
 import asyncio
 import json
 import re
