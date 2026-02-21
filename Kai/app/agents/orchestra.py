@@ -79,6 +79,18 @@ You MUST respond with ONLY valid JSON (no markdown, no code fences) matching thi
 - `filter_threshold` needs numeric `value` and `threshold` — pass the actual number output from a previous block, e.g. `{{{{get_price.price}}}}`.
 - `claude_summarize` `content` input is a string — if passing structured data, the system will auto-stringify it.
 
+## Clarification
+
+If the user's request is too vague to build a correct pipeline (e.g. missing target URL, threshold, time, topic), you MAY ask for clarification instead of guessing. Return:
+
+{{
+  "type": "clarification",
+  "message": "I need a few more details to build this automation:",
+  "questions": ["What specific product or URL should I monitor?", "What price threshold should trigger the alert?"]
+}}
+
+Only ask when genuinely ambiguous. If you can make a reasonable default, build the pipeline directly.
+
 ## Rules
 
 1. ALWAYS start with a trigger node as the first node.
@@ -141,10 +153,18 @@ class OrchestraAgent:
     def __init__(self, registry: BlockRegistry):
         self.registry = registry
 
-    async def decompose(self, user_request: str) -> dict[str, Any]:
+    async def decompose(
+        self,
+        user_request: str,
+        conversation_history: list[dict[str, str]] | None = None,
+    ) -> dict[str, Any]:
         """Decompose a natural language request into a pipeline definition.
 
-        Returns a dict with keys: trigger, nodes, edges, memory_keys, missing_blocks.
+        Supports multi-turn conversation via conversation_history.
+        May return a clarification response instead of a pipeline.
+
+        Returns a dict with keys: trigger, nodes, edges, memory_keys, missing_blocks
+        OR: type="clarification", message, questions.
         """
         block_registry_text = _format_registry(self.registry)
         system = SYSTEM_PROMPT.format(block_registry=block_registry_text)
@@ -153,13 +173,19 @@ class OrchestraAgent:
             logger.warning("No ANTHROPIC_API_KEY — returning mock pipeline")
             return self._mock_decompose(user_request)
 
+        # Build message array: previous conversation + new user request
+        messages: list[dict[str, str]] = []
+        if conversation_history:
+            messages.extend(conversation_history)
+        messages.append({"role": "user", "content": f"<user_request>{user_request}</user_request>"})
+
         client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
         try:
             message = await client.messages.create(
                 model="claude-sonnet-4-20250514",
                 max_tokens=4096,
                 system=system,
-                messages=[{"role": "user", "content": f"<user_request>{user_request}</user_request>"}],
+                messages=messages,
             )
         except anthropic.APIError as e:
             logger.warning("Anthropic API error: %s — falling back to mock", e)
@@ -173,11 +199,17 @@ class OrchestraAgent:
             response_text = md_match.group(1).strip()
 
         try:
-            return json.loads(response_text)
+            parsed = json.loads(response_text)
         except json.JSONDecodeError:
             logger.error("Orchestra returned invalid JSON: %s", response_text[:500])
             logger.warning("Falling back to mock decomposition")
             return self._mock_decompose(user_request)
+
+        # Handle clarification responses gracefully
+        if parsed.get("type") == "clarification":
+            return parsed
+
+        return parsed
 
     def build_pipeline(self, user_request: str, decomposition: dict[str, Any]) -> Pipeline:
         """Convert the decomposition dict into a validated Pipeline model."""
