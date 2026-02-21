@@ -3,6 +3,8 @@
 Plain TypedDicts — no framework-specific reducers needed.
 """
 
+from __future__ import annotations
+
 from typing import Any, TypedDict
 
 

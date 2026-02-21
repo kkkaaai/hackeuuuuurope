@@ -116,9 +116,9 @@ class BlockDefinition(BaseModel):
         default=None,
         description="For LLM blocks: the prompt template with {placeholder} syntax",
     )
-    execution: dict[str, str] | None = Field(
+    source_code: str | None = Field(
         default=None,
-        description="For Python blocks: {'runtime': 'python', 'entrypoint': 'blocks/x/main.py'}",
+        description="For Python blocks: inline source code with async execute() function",
     )
     metadata: dict[str, Any] = Field(
         default_factory=lambda: {"created_by": "thinker", "tier": 2},
