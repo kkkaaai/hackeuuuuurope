@@ -12,9 +12,10 @@ from pydantic import BaseModel
 from app.api.dependencies import get_registry
 from app.database import get_db
 from app.engine.runner import PipelineRunner
+from app.engine.scheduler import list_scheduled, remove_schedule, schedule_pipeline
 from app.memory.store import memory_store
 from app.models.execution import ExecutionResult
-from app.models.pipeline import Pipeline
+from app.models.pipeline import Pipeline, TriggerType
 
 logger = logging.getLogger("agentflow.api.pipelines")
 router = APIRouter(prefix="/api", tags=["pipelines"])
@@ -110,12 +111,22 @@ async def run_pipeline(pipeline_id: str) -> ExecutionResult:
         )
         conn.commit()
 
+    # Schedule recurring execution for cron/interval triggers
+    if pipeline.trigger.type in {TriggerType.CRON, TriggerType.INTERVAL}:
+        schedule_pipeline(
+            pipeline_id,
+            schedule=pipeline.trigger.schedule,
+            interval_seconds=pipeline.trigger.interval_seconds,
+        )
+
     return result
 
 
 @router.delete("/pipelines/{pipeline_id}")
 async def delete_pipeline(pipeline_id: str) -> dict[str, str]:
     """Delete a pipeline."""
+    remove_schedule(pipeline_id)
+
     with get_db() as conn:
         cursor = conn.execute("DELETE FROM pipelines WHERE id = ?", (pipeline_id,))
         conn.commit()
@@ -123,3 +134,9 @@ async def delete_pipeline(pipeline_id: str) -> dict[str, str]:
             raise HTTPException(status_code=404, detail="Pipeline not found")
 
     return {"id": pipeline_id, "status": "deleted"}
+
+
+@router.get("/schedules")
+async def get_schedules() -> list[dict]:
+    """List all actively scheduled pipeline jobs."""
+    return list_scheduled()

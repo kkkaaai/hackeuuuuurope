@@ -11,6 +11,7 @@ from app.api.pipelines import router as pipelines_router
 from app.api.webhooks import router as webhooks_router
 from app.config import settings
 from app.database import init_db
+from app.engine.scheduler import shutdown_scheduler, start_scheduler
 
 logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
@@ -23,9 +24,11 @@ logger = logging.getLogger("agentflow")
 async def lifespan(app: FastAPI):
     logger.info("Initializing database...")
     init_db()
+    start_scheduler()
     logger.info("AgentFlow started.")
     yield
     logger.info("AgentFlow shutting down.")
+    shutdown_scheduler()
 
 
 app = FastAPI(title=settings.app_name, version="0.1.0", lifespan=lifespan)

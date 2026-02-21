@@ -27,7 +27,7 @@ class TriggerType(str, Enum):
 class TriggerConfig(BaseModel):
     type: TriggerType
     schedule: str | None = Field(default=None, max_length=128)
-    interval_seconds: int | None = None
+    interval_seconds: int | None = Field(default=None, ge=10, description="Minimum 10 seconds")
     webhook_path: str | None = Field(default=None, max_length=256)
 
 

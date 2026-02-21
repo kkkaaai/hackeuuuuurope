@@ -16,7 +16,20 @@ logger = logging.getLogger("agentflow.blocks.web_scrape_structured")
 async def web_scrape_structured(inputs: dict[str, Any]) -> dict[str, Any]:
     """Extract specific structured fields from a webpage using CSS selectors."""
     url = validate_url(inputs["url"])
-    fields: dict[str, str] = inputs["fields"]
+    fields = inputs["fields"]
+
+    if not isinstance(fields, dict):
+        raise TypeError(
+            f"'fields' must be a dict mapping field names to CSS selectors, "
+            f"got {type(fields).__name__}: {str(fields)[:120]}"
+        )
+
+    for field_name, selector in fields.items():
+        if not isinstance(selector, str):
+            raise TypeError(
+                f"CSS selector for field '{field_name}' must be a string, "
+                f"got {type(selector).__name__}: {str(selector)[:80]}"
+            )
 
     async with httpx.AsyncClient(follow_redirects=True) as client:
         response = await client.get(url, timeout=15.0)

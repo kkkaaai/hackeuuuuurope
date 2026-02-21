@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import importlib
+import json as _json
 import logging
 import re
 import time
@@ -103,8 +103,10 @@ def coerce_inputs(
             continue
         try:
             coerced[field] = _coerce_value(value, expected)
-        except (ValueError, TypeError):
+        except ValueError:
             pass  # Keep original value; let the block handle or raise
+        except TypeError as e:
+            logger.warning("Type coercion failed for field '%s': %s", field, e)
     return coerced
 
 
@@ -131,16 +133,12 @@ def _coerce_value(value: Any, expected_type: str) -> Any:
         if isinstance(value, str):
             return value
         if isinstance(value, (list, dict)):
-            import json as _json
-
             return _json.dumps(value)
         return str(value)
     elif expected_type == "array":
         if isinstance(value, list):
             return value
         if isinstance(value, str):
-            import json as _json
-
             try:
                 parsed = _json.loads(value)
                 if isinstance(parsed, list):
@@ -152,14 +150,15 @@ def _coerce_value(value: Any, expected_type: str) -> Any:
         if isinstance(value, dict):
             return value
         if isinstance(value, str):
-            import json as _json
-
             try:
                 parsed = _json.loads(value)
                 if isinstance(parsed, dict):
                     return parsed
             except (ValueError, TypeError):
                 pass
+            raise TypeError(
+                f"Expected a JSON object but got a plain string: {repr(value)[:120]}"
+            )
     return value
 
 
