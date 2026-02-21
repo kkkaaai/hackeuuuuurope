@@ -1,0 +1,132 @@
+{
+  "$defs": {
+    "ExistingBlockRef": {
+      "description": "Reference to a block that already exists in the registry.",
+      "properties": {
+        "block_id": {
+          "description": "ID of an existing block in the registry",
+          "title": "Block Id",
+          "type": "string"
+        },
+        "reason": {
+          "description": "Why this block is needed for the user's intent",
+          "title": "Reason",
+          "type": "string"
+        }
+      },
+      "required": [
+        "block_id",
+        "reason"
+      ],
+      "title": "ExistingBlockRef",
+      "type": "object"
+    },
+    "NewBlockSpec": {
+      "description": "Description of a block that needs to be created.",
+      "properties": {
+        "suggested_id": {
+          "description": "Proposed ID for the new block, e.g. 'scrape_hn'",
+          "title": "Suggested Id",
+          "type": "string"
+        },
+        "description": {
+          "description": "What this block should do",
+          "title": "Description",
+          "type": "string"
+        },
+        "category": {
+          "default": "process",
+          "description": "Block category: 'input', 'process', 'action', or 'memory'",
+          "title": "Category",
+          "type": "string"
+        },
+        "execution_type": {
+          "default": "llm",
+          "description": "How the block runs: 'llm' or 'python'",
+          "title": "Execution Type",
+          "type": "string"
+        },
+        "input_schema": {
+          "additionalProperties": true,
+          "description": "JSON Schema for the block's inputs",
+          "examples": [
+            {
+              "properties": {
+                "url": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "url"
+              ],
+              "type": "object"
+            }
+          ],
+          "title": "Input Schema",
+          "type": "object"
+        },
+        "output_schema": {
+          "additionalProperties": true,
+          "description": "JSON Schema for the block's outputs",
+          "examples": [
+            {
+              "properties": {
+                "data": {
+                  "type": "string"
+                }
+              },
+              "type": "object"
+            }
+          ],
+          "title": "Output Schema",
+          "type": "object"
+        },
+        "prompt_template": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "For LLM blocks: prompt with {input_name} placeholders",
+          "title": "Prompt Template"
+        }
+      },
+      "required": [
+        "suggested_id",
+        "description",
+        "input_schema",
+        "output_schema"
+      ],
+      "title": "NewBlockSpec",
+      "type": "object"
+    }
+  },
+  "description": "Output of the decompose stage \u2014 a list of required blocks.",
+  "properties": {
+    "required_blocks": {
+      "description": "Ordered list of blocks needed to fulfill the user's intent",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "#/$defs/ExistingBlockRef"
+          },
+          {
+            "$ref": "#/$defs/NewBlockSpec"
+          }
+        ]
+      },
+      "minItems": 1,
+      "title": "Required Blocks",
+      "type": "array"
+    }
+  },
+  "required": [
+    "required_blocks"
+  ],
+  "title": "DecomposeOutput",
+  "type": "object"
+}
