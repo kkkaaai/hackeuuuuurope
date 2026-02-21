@@ -51,36 +51,66 @@ async def run_pipeline(pipeline: dict, user_id: str) -> dict[str, Any]:
     # Execute in topological order with parallel batching
     sorter = TopologicalSorter(graph)
     sorter.prepare()
+    failed_nodes: set[str] = set()
 
     while sorter.is_active():
         ready = sorter.get_ready()
         if not ready:
             break
 
-        # Run all ready nodes concurrently
-        tasks = [
-            _execute_node(node_id, nodes_by_id[node_id], state)
-            for node_id in ready
-        ]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-
-        # Collect results
-        for node_id, result in zip(ready, results):
-            if isinstance(result, Exception):
-                state["results"][node_id] = {"error": str(result)}
-                state["log"].append({
-                    "node": node_id,
-                    "block": nodes_by_id[node_id].get("block_id"),
-                    "error": str(result),
-                })
+        # Run all ready nodes concurrently, skipping those with failed upstream
+        tasks = []
+        skipped = []
+        for node_id in ready:
+            upstream_failures = graph[node_id] & failed_nodes
+            if upstream_failures:
+                failed_upstream = ", ".join(sorted(upstream_failures))
+                skipped.append((node_id, failed_upstream))
             else:
-                state["results"][node_id] = result
-                state["log"].append({
-                    "node": node_id,
-                    "block": nodes_by_id[node_id].get("block_id"),
-                    "output": result,
-                })
+                tasks.append((node_id, _execute_node(node_id, nodes_by_id[node_id], state)))
+
+        # Mark skipped nodes
+        for node_id, failed_upstream in skipped:
+            state["results"][node_id] = {"error": f"Skipped: upstream node(s) {failed_upstream} failed"}
+            state["log"].append({
+                "node": node_id,
+                "block": nodes_by_id[node_id].get("block_id"),
+                "error": f"Skipped: upstream node(s) {failed_upstream} failed",
+            })
+            failed_nodes.add(node_id)
             sorter.done(node_id)
+
+        # Execute non-skipped nodes
+        if tasks:
+            results = await asyncio.gather(
+                *[coro for _, coro in tasks], return_exceptions=True
+            )
+
+            for (node_id, _), result in zip(tasks, results):
+                if isinstance(result, Exception):
+                    state["results"][node_id] = {"error": str(result)}
+                    state["log"].append({
+                        "node": node_id,
+                        "block": nodes_by_id[node_id].get("block_id"),
+                        "error": str(result),
+                    })
+                    failed_nodes.add(node_id)
+                elif isinstance(result, dict) and "error" in result:
+                    state["results"][node_id] = result
+                    state["log"].append({
+                        "node": node_id,
+                        "block": nodes_by_id[node_id].get("block_id"),
+                        "error": result["error"],
+                    })
+                    failed_nodes.add(node_id)
+                else:
+                    state["results"][node_id] = result
+                    state["log"].append({
+                        "node": node_id,
+                        "block": nodes_by_id[node_id].get("block_id"),
+                        "output": result,
+                    })
+                sorter.done(node_id)
 
     # Save memory
     await save_memory(user_id, state["memory"], pipeline_id, state["results"])

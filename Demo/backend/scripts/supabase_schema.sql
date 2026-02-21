@@ -180,7 +180,7 @@ begin
         b.examples,
         b.metadata,
         (
-            coalesce(full_text_weight * ts_rank(b.search_vector, websearch_to_tsquery('english', query_text)), 0) +
+            coalesce(full_text_weight * ts_rank(b.search_vector, plainto_tsquery('english', query_text)), 0) +
             case
                 when query_embedding is not null and b.embedding is not null
                 then semantic_weight * (1 - (b.embedding <=> query_embedding))
@@ -189,8 +189,8 @@ begin
         )::float as score
     from blocks b
     where
-        b.search_vector @@ websearch_to_tsquery('english', query_text)
-        or (query_embedding is not null and b.embedding is not null and (b.embedding <=> query_embedding) < 0.5)
+        b.search_vector @@ plainto_tsquery('english', query_text)
+        or (query_embedding is not null and b.embedding is not null and (b.embedding <=> query_embedding) < 0.7)
     order by score desc
     limit match_limit;
 end;

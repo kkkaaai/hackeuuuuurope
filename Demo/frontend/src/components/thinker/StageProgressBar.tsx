@@ -6,7 +6,7 @@ import type { ThinkerStage } from "@/lib/types";
 
 const STAGES: { key: ThinkerStage; label: string; icon: typeof Puzzle }[] = [
   { key: "decompose", label: "1. Decompose", icon: Puzzle },
-  { key: "match", label: "2. Match", icon: Search },
+  { key: "search", label: "2. Search", icon: Search },
   { key: "create", label: "3. Create", icon: Hammer },
   { key: "wire", label: "4. Wire", icon: GitBranch },
 ];

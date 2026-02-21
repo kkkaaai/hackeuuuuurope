@@ -16,8 +16,7 @@ from pydantic import BaseModel
 
 from engine.clarifier import clarify
 from engine.doer import run_pipeline
-from engine.thinker import run_thinker
-from engine.thinker_stream import run_thinker_stream
+from engine.thinker_stream import run_thinker, run_thinker_stream
 from registry.registry import registry
 from storage.memory import memory_store
 
