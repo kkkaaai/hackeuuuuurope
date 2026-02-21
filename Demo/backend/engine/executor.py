@@ -57,6 +57,11 @@ async def execute_block(node_def: dict, state: dict) -> dict[str, Any]:
         The block's output dict (e.g. {"results": [...]} or {"summary": "..."}).
     """
     block = registry.get(node_def["block_id"])
+
+    # Trigger blocks are scheduling metadata — skip during execution
+    if block.get("category") == "trigger":
+        return {"status": "triggered", "trigger_type": block["id"]}
+
     resolved_inputs = resolve_templates(node_def.get("inputs", {}), state)
     context = {"user": state.get("user", {}), "memory": state.get("memory", {})}
 

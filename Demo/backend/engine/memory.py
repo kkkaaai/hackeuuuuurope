@@ -12,10 +12,9 @@ async def load_memory(user_id: str) -> tuple[dict, dict]:
 
 
 async def save_memory(user_id: str, memory: dict, pipeline_id: str = "", results: dict | None = None):
-    """Persist memory and optionally save pipeline results."""
+    """Persist memory and optionally save last-run results (without overwriting pipeline definition)."""
     memory_store.save_memory(user_id, memory)
-    if pipeline_id:
-        memory_store.save_pipeline(pipeline_id, {
-            "pipeline_id": pipeline_id,
-            "results": results or {},
-        })
+    if pipeline_id and results:
+        existing = memory_store.get_pipeline(pipeline_id) or {}
+        existing["last_results"] = results
+        memory_store.save_pipeline(pipeline_id, existing)

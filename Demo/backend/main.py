@@ -276,6 +276,9 @@ async def run_saved_pipeline_endpoint(pipeline_id: str):
         result = await run_pipeline(pipeline_data, "default_user")
         status = "completed"
     except Exception as e:
+        import traceback
+        print(f"[PIPELINE RUN ERROR] {pipeline_id}: {e}")
+        traceback.print_exc()
         result = {"results": {}, "log": [{"error": str(e)}]}
         status = "failed"
 
@@ -288,14 +291,22 @@ async def run_saved_pipeline_endpoint(pipeline_id: str):
     for node in pipeline_data.get("nodes", []):
         node_id = node["id"]
         node_output = shared_context.get(node_id)
+        has_error = node_output is None or (isinstance(node_output, dict) and "error" in node_output)
+        node_error = node_output.get("error") if isinstance(node_output, dict) and "error" in node_output else None
+        if has_error:
+            print(f"[NODE ERROR] {node_id} ({node.get('block_id')}): {node_error or 'no output'}")
         node_results.append({
             "id": len(node_results) + 1,
             "node_id": node_id,
-            "status": "completed" if node_output is not None else "failed",
+            "status": "failed" if has_error else "completed",
             "output_data": node_output,
-            "error": None,
+            "error": node_error,
             "finished_at": datetime.now(timezone.utc).isoformat(),
         })
+
+    # If pipeline didn't throw but nodes had errors, mark as failed
+    if status == "completed" and any(n["error"] is not None for n in node_results):
+        status = "failed"
 
     execution = {
         "run_id": run_id,

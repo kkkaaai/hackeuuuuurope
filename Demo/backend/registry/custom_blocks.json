@@ -488,5 +488,95 @@
       "runtime": "python",
       "entrypoint": "blocks/custom/score_stories_by_views/main.py"
     }
+  },
+  {
+    "id": "fetch_bitcoin_price",
+    "name": "Fetch Bitcoin Price",
+    "description": "Fetches the current Bitcoin price from a specified cryptocurrency API.",
+    "category": "process",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "api_url": {
+          "type": "string",
+          "description": "The URL of the cryptocurrency API endpoint to fetch Bitcoin price."
+        }
+      },
+      "required": [
+        "api_url"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": "number",
+          "description": "The current price of Bitcoin."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency in which the price is denominated."
+        }
+      },
+      "required": [
+        "price",
+        "currency"
+      ]
+    },
+    "prompt_template": "Fetch the current Bitcoin price from the API at {api_url} and return the price and currency.",
+    "use_when": "Use this block when you need to retrieve the current price of Bitcoin from a specified API endpoint.",
+    "tags": [
+      "cryptocurrency",
+      "Bitcoin",
+      "price",
+      "API"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "api_url": "https://api.example.com/bitcoin/price"
+        },
+        "outputs": {
+          "price": 45000.75,
+          "currency": "USD"
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "thinker",
+      "tier": 2
+    }
+  },
+  {
+    "id": "test_new_block",
+    "name": "Test New Block",
+    "description": "A test block",
+    "category": "process",
+    "execution_type": "llm",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "string"
+        }
+      }
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "y": {
+          "type": "string"
+        }
+      }
+    },
+    "prompt_template": "Process {x}",
+    "metadata": {
+      "created_by": "thinker",
+      "tier": 2
+    },
+    "use_when": null,
+    "tags": [],
+    "examples": []
   }
 ]

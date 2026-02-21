@@ -154,12 +154,16 @@ class OrchestraAgent:
             return self._mock_decompose(user_request)
 
         client = anthropic.AsyncAnthropic(api_key=settings.anthropic_api_key)
-        message = await client.messages.create(
-            model="claude-sonnet-4-20250514",
-            max_tokens=4096,
-            system=system,
-            messages=[{"role": "user", "content": f"<user_request>{user_request}</user_request>"}],
-        )
+        try:
+            message = await client.messages.create(
+                model="claude-sonnet-4-20250514",
+                max_tokens=4096,
+                system=system,
+                messages=[{"role": "user", "content": f"<user_request>{user_request}</user_request>"}],
+            )
+        except anthropic.APIError as e:
+            logger.warning("Anthropic API error: %s — falling back to mock", e)
+            return self._mock_decompose(user_request)
 
         response_text = message.content[0].text.strip()
 
@@ -172,7 +176,6 @@ class OrchestraAgent:
             return json.loads(response_text)
         except json.JSONDecodeError:
             logger.error("Orchestra returned invalid JSON: %s", response_text[:500])
-            # Fall back to mock if Claude output is unparseable
             logger.warning("Falling back to mock decomposition")
             return self._mock_decompose(user_request)
 
