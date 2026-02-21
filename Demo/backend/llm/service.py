@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     default_provider: str = "openai"
     default_model: str = "gpt-4o"
     llm_temperature: float = 0.0
-    model_config = {"env_file": ".env"}
+    model_config = {"env_file": ".env", "extra": "ignore"}
 
 
 def get_client(provider: str | None = None):
