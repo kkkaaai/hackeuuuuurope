@@ -13,9 +13,9 @@ class SupabaseSettings(BaseSettings):
 
 
 @lru_cache(maxsize=1)
-def get_supabase() -> Client:
-    """Return a cached Supabase client (created once, reused forever)."""
+def get_supabase() -> Client | None:
+    """Return a cached Supabase client, or None if credentials are not configured."""
     settings = SupabaseSettings()
     if not settings.supabase_url or not settings.supabase_key:
-        raise RuntimeError("SUPABASE_URL and SUPABASE_KEY must be set in .env")
+        return None
     return create_client(settings.supabase_url, settings.supabase_key)

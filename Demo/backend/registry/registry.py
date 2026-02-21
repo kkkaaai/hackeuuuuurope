@@ -1,13 +1,16 @@
-"""Block registry — Supabase-backed with hybrid search and TTL cache.
+"""Block registry — Supabase-backed with local file fallback.
 
-Single source of truth: every block lives in the Supabase `blocks` table.
-No JSON files, no in-memory dicts except a short-lived cache.
+When SUPABASE_URL / SUPABASE_KEY are not set the registry operates in
+local mode: reads/writes `registry/local_blocks.json` and uses
+case-insensitive text search instead of vector search.
 """
 
 from __future__ import annotations
 
+import json
 import logging
 import time
+from pathlib import Path
 from typing import Optional
 
 from storage.supabase_client import get_supabase
@@ -21,6 +24,19 @@ _cache_ts: dict[str, float] = {}
 _cache_all: list[dict] | None = None
 _cache_all_ts: float = 0.0
 CACHE_TTL = 300  # 5 minutes
+
+# Local fallback file (used when Supabase is not configured)
+_LOCAL_BLOCKS_PATH = Path(__file__).parent / "local_blocks.json"
+
+
+def _load_local() -> list[dict]:
+    if _LOCAL_BLOCKS_PATH.exists():
+        return json.loads(_LOCAL_BLOCKS_PATH.read_text())
+    return []
+
+
+def _save_local(blocks: list[dict]) -> None:
+    _LOCAL_BLOCKS_PATH.write_text(json.dumps(blocks, indent=2))
 
 
 def _row_to_block(row: dict) -> dict:
@@ -53,6 +69,15 @@ class BlockRegistry:
             return _cache[block_id]
 
         sb = get_supabase()
+        if sb is None:
+            blocks = _load_local()
+            found = next((b for b in blocks if b["id"] == block_id), None)
+            if not found:
+                raise KeyError(f"Block not found: {block_id}")
+            _cache[block_id] = found
+            _cache_ts[block_id] = now
+            return found
+
         result = sb.table("blocks").select("*").eq("id", block_id).execute()
         if not result.data:
             raise KeyError(f"Block not found: {block_id}")
@@ -63,8 +88,19 @@ class BlockRegistry:
         return block
 
     async def save(self, block: dict):
-        """Save a block to Supabase (upsert). Generates embedding automatically."""
+        """Save a block. Uses Supabase when configured, otherwise local JSON."""
         sb = get_supabase()
+
+        if sb is None:
+            blocks = _load_local()
+            blocks = [b for b in blocks if b["id"] != block["id"]]
+            blocks.append(block)
+            _save_local(blocks)
+            _cache[block["id"]] = block
+            _cache_ts[block["id"]] = time.time()
+            _invalidate_list_cache()
+            logger.info("Block %s saved to local file", block["id"])
+            return
 
         # Generate embedding
         search_text = block_to_search_text(block)
@@ -89,7 +125,6 @@ class BlockRegistry:
 
         sb.table("blocks").upsert(row).execute()
 
-        # Update cache
         converted = _row_to_block(row)
         _cache[block["id"]] = converted
         _cache_ts[block["id"]] = time.time()
@@ -98,20 +133,28 @@ class BlockRegistry:
         logger.info("Block %s saved to Supabase", block["id"])
 
     def list_all(self) -> list[dict]:
-        """Return all blocks from Supabase."""
+        """Return all blocks. Uses Supabase when configured, otherwise local JSON."""
         global _cache_all, _cache_all_ts
         now = time.time()
         if _cache_all is not None and (now - _cache_all_ts) < CACHE_TTL:
             return _cache_all
 
         sb = get_supabase()
+        if sb is None:
+            blocks = _load_local()
+            _cache_all = blocks
+            _cache_all_ts = now
+            for b in blocks:
+                _cache[b["id"]] = b
+                _cache_ts[b["id"]] = now
+            return blocks
+
         result = sb.table("blocks").select("*").order("created_at").execute()
         blocks = [_row_to_block(r) for r in result.data]
 
         _cache_all = blocks
         _cache_all_ts = now
 
-        # Warm individual cache too
         for b in blocks:
             _cache[b["id"]] = b
             _cache_ts[b["id"]] = now
@@ -119,11 +162,13 @@ class BlockRegistry:
         return blocks
 
     async def search(self, query: str, limit: int = 10) -> list[dict]:
-        """Hybrid search: full-text + semantic via Supabase RPC."""
+        """Search blocks. Uses Supabase hybrid search when configured, otherwise text search."""
         sb = get_supabase()
 
+        if sb is None:
+            return self._text_search(query)[:limit]
+
         try:
-            # Generate query embedding for semantic search
             embedding = await generate_embedding(query)
 
             result = sb.rpc("search_blocks", {
@@ -137,7 +182,6 @@ class BlockRegistry:
         except Exception as e:
             logger.warning("Hybrid search failed, falling back to text search: %s", e)
 
-        # Fallback: simple text search
         return self._text_search(query)
 
     def _text_search(self, query: str) -> list[dict]:

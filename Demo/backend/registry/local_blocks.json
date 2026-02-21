@@ -1,0 +1,436 @@
+[
+  {
+    "id": "web_scrape",
+    "name": "Web Scrape",
+    "description": "Fetch and extract text content from a URL.",
+    "category": "input",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "URL to scrape"
+        },
+        "max_length": {
+          "type": "integer",
+          "description": "Max characters to return",
+          "default": 5000
+        }
+      },
+      "required": [
+        "url"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "Extracted text content"
+        },
+        "url": {
+          "type": "string",
+          "description": "The URL that was scraped"
+        },
+        "status_code": {
+          "type": "integer",
+          "description": "HTTP status code"
+        }
+      },
+      "required": [
+        "content",
+        "url"
+      ]
+    },
+    "source_code": "\"\"\"Web scrape \u2014 fetch text content from a URL.\"\"\"\nimport re\nimport httpx\n\nasync def execute(inputs: dict, context: dict) -> dict:\n    url = inputs[\"url\"]\n    max_length = inputs.get(\"max_length\", 5000)\n    async with httpx.AsyncClient(follow_redirects=True) as client:\n        resp = await client.get(url, timeout=15.0, headers={\"User-Agent\": \"AgentFlow/1.0\"})\n        resp.raise_for_status()\n        html = resp.text\n    # Strip HTML tags for plain text\n    text = re.sub(r\"<script[^>]*>[\\s\\S]*?</script>\", \"\", html)\n    text = re.sub(r\"<style[^>]*>[\\s\\S]*?</style>\", \"\", text)\n    text = re.sub(r\"<[^>]+>\", \" \", text)\n    text = re.sub(r\"\\s+\", \" \", text).strip()\n    return {\"content\": text[:max_length], \"url\": url, \"status_code\": resp.status_code}\n",
+    "use_when": "When you need to fetch and read the content of a specific web page or URL.",
+    "tags": [
+      "scrape",
+      "web",
+      "fetch",
+      "url",
+      "html",
+      "content"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "url": "https://example.com"
+        },
+        "outputs": {
+          "content": "Example Domain...",
+          "url": "https://example.com",
+          "status_code": 200
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 0
+    }
+  },
+  {
+    "id": "memory_read",
+    "name": "Memory Read",
+    "description": "Read a value from the user's persistent memory stored in Supabase.",
+    "category": "memory",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Memory key to read"
+        }
+      },
+      "required": [
+        "key"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "The stored value, or null if not found"
+        }
+      },
+      "required": [
+        "value"
+      ]
+    },
+    "source_code": "\"\"\"Memory read \u2014 read from Supabase user_memory table.\"\"\"\n\nasync def execute(inputs: dict, context: dict) -> dict:\n    key = inputs[\"key\"]\n    supabase = context.get(\"supabase\")\n    user_id = context.get(\"user_id\", \"default_user\")\n    if supabase:\n        result = supabase.table(\"user_memory\").select(\"value\").eq(\"user_id\", user_id).eq(\"key\", key).execute()\n        if result.data:\n            return {\"value\": result.data[0][\"value\"]}\n    # Fallback to in-context memory\n    memory = context.get(\"memory\", {})\n    return {\"value\": memory.get(key)}\n",
+    "use_when": "When you need to recall previously stored information for a user.",
+    "tags": [
+      "memory",
+      "read",
+      "recall",
+      "storage",
+      "persistence"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "key": "budget"
+        },
+        "outputs": {
+          "value": 500
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 0
+    }
+  },
+  {
+    "id": "memory_write",
+    "name": "Memory Write",
+    "description": "Write a value to the user's persistent memory in Supabase.",
+    "category": "memory",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "description": "Memory key to write"
+        },
+        "value": {
+          "description": "Value to store"
+        }
+      },
+      "required": [
+        "key",
+        "value"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean",
+          "description": "Whether the write succeeded"
+        }
+      },
+      "required": [
+        "success"
+      ]
+    },
+    "source_code": "\"\"\"Memory write \u2014 upsert into Supabase user_memory table.\"\"\"\nimport json\n\nasync def execute(inputs: dict, context: dict) -> dict:\n    key = inputs[\"key\"]\n    value = inputs[\"value\"]\n    supabase = context.get(\"supabase\")\n    user_id = context.get(\"user_id\", \"default_user\")\n    if supabase:\n        supabase.table(\"user_memory\").upsert({\n            \"user_id\": user_id,\n            \"key\": key,\n            \"value\": json.dumps(value) if not isinstance(value, str) else json.dumps(value),\n        }).execute()\n    # Also update in-context memory so later blocks see it\n    memory = context.get(\"memory\", {})\n    memory[key] = value\n    return {\"success\": True}\n",
+    "use_when": "When you need to store information for later recall, such as user preferences, computed results, or state.",
+    "tags": [
+      "memory",
+      "write",
+      "store",
+      "save",
+      "persistence"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "key": "budget",
+          "value": 500
+        },
+        "outputs": {
+          "success": true
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 0
+    }
+  },
+  {
+    "id": "notify_push",
+    "name": "Push Notification",
+    "description": "Send a push notification to the user via Supabase notifications table.",
+    "category": "action",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Notification title"
+        },
+        "body": {
+          "type": "string",
+          "description": "Notification body text"
+        }
+      },
+      "required": [
+        "title",
+        "body"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "delivered": {
+          "type": "boolean",
+          "description": "Whether the notification was delivered"
+        }
+      },
+      "required": [
+        "delivered"
+      ]
+    },
+    "source_code": "\"\"\"Push notification \u2014 insert into Supabase notifications table.\"\"\"\n\nasync def execute(inputs: dict, context: dict) -> dict:\n    title = inputs[\"title\"]\n    body = inputs[\"body\"]\n    supabase = context.get(\"supabase\")\n    user_id = context.get(\"user_id\", \"default_user\")\n    if supabase:\n        supabase.table(\"notifications\").insert({\n            \"user_id\": user_id,\n            \"title\": title,\n            \"body\": body,\n        }).execute()\n    return {\"delivered\": True}\n",
+    "use_when": "When you need to alert or notify the user about results, events, or important information.",
+    "tags": [
+      "notify",
+      "push",
+      "alert",
+      "notification",
+      "message"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "title": "Price Alert",
+          "body": "PS5 is now $399!"
+        },
+        "outputs": {
+          "delivered": true
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "system",
+      "tier": 0
+    }
+  },
+  {
+    "id": "web_search",
+    "name": "Web Search for AI News",
+    "description": "Search the web for the latest AI news based on a query.",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query to find AI news."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "A list of search results containing AI news articles."
+        }
+      },
+      "required": [
+        "results"
+      ]
+    },
+    "source_code": "async def execute(inputs: dict, context: dict) -> dict:\n    query = inputs.get('query', '')\n    if not query:\n        return {'results': []}\n\n    search_url = f'https://api.example.com/search?q={query}&category=ai-news'\n    results = []\n\n    try:\n        async with httpx.AsyncClient(timeout=15.0, follow_redirects=True) as client:\n            response = await client.get(search_url)\n            response.raise_for_status()\n            data = response.json()\n            results = data.get('articles', [])\n    except httpx.HTTPStatusError as e:\n        print(f'HTTP error occurred: {e}')\n    except Exception as e:\n        print(f'An error occurred: {e}')\n\n    return {'results': results}\n",
+    "use_when": "Use this block when you need to search for the latest AI news articles based on a specific query.",
+    "tags": [
+      "web search",
+      "AI news",
+      "information retrieval"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "query": "latest AI advancements"
+        },
+        "outputs": {
+          "results": [
+            {
+              "title": "AI Breakthroughs in 2023",
+              "url": "https://example.com/ai-breakthroughs-2023"
+            },
+            {
+              "title": "New AI Technologies",
+              "url": "https://example.com/new-ai-technologies"
+            }
+          ]
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "thinker",
+      "tier": 2
+    }
+  },
+  {
+    "id": "filter_news",
+    "name": "AI News Filter",
+    "description": "Filters search results to find relevant AI news articles based on specified keywords.",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "results": {
+          "type": "array",
+          "description": "List of news articles to filter."
+        },
+        "keywords": {
+          "type": "array",
+          "description": "List of keywords to filter articles by."
+        }
+      },
+      "required": [
+        "results",
+        "keywords"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "filtered_articles": {
+          "type": "array",
+          "description": "List of articles that match the given keywords."
+        }
+      },
+      "required": [
+        "filtered_articles"
+      ]
+    },
+    "source_code": "async def execute(inputs: dict, context: dict) -> dict:\n    results = inputs.get('results', [])\n    keywords = inputs.get('keywords', [])\n    filtered_articles = []\n\n    if not results or not keywords:\n        return {'filtered_articles': []}\n\n    for article in results:\n        if any(keyword.lower() in article.lower() for keyword in keywords):\n            filtered_articles.append(article)\n\n    return {'filtered_articles': filtered_articles}\n",
+    "use_when": "Use this block when you need to filter a list of news articles to find those relevant to specific AI-related topics.",
+    "tags": [
+      "news",
+      "filter",
+      "AI",
+      "articles"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "results": [
+            "AI breakthrough in natural language processing",
+            "New advancements in quantum computing",
+            "AI and machine learning trends in 2023",
+            "The impact of AI on healthcare"
+          ],
+          "keywords": [
+            "AI",
+            "machine learning"
+          ]
+        },
+        "outputs": {
+          "filtered_articles": [
+            "AI breakthrough in natural language processing",
+            "AI and machine learning trends in 2023",
+            "The impact of AI on healthcare"
+          ]
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "thinker",
+      "tier": 2
+    }
+  },
+  {
+    "id": "summarize_news",
+    "name": "AI News Summarizer",
+    "description": "Summarizes a list of AI news articles into concise summaries.",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "articles": {
+          "type": "array",
+          "description": "A list of AI news articles to be summarized."
+        }
+      },
+      "required": [
+        "articles"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "summaries": {
+          "type": "array",
+          "description": "A list of summaries corresponding to the input articles."
+        }
+      },
+      "required": [
+        "summaries"
+      ]
+    },
+    "source_code": "async def execute(inputs: dict, context: dict) -> dict:\n    articles = inputs.get('articles', [])\n    summaries = []\n    \n    if not articles:\n        return {'summaries': []}\n    \n    for article in articles:\n        try:\n            system_prompt = \"You are an expert in summarizing news articles. Provide a concise summary of the following article.\"\n            user_prompt = f\"Article: {article}\"\n            response = await call_llm(system=system_prompt, user=user_prompt)\n            summary = response.strip()\n            summaries.append(summary)\n        except Exception as e:\n            summaries.append(f\"Error summarizing article: {str(e)}\")\n    \n    return {'summaries': summaries}\n",
+    "use_when": "Use this block when you need to generate concise summaries of multiple AI news articles.",
+    "tags": [
+      "summarization",
+      "AI",
+      "news",
+      "text processing"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "articles": [
+            "AI technology is rapidly evolving, with new advancements in machine learning and neural networks.",
+            "Recent studies show that AI can significantly improve healthcare outcomes by providing accurate diagnostics."
+          ]
+        },
+        "outputs": {
+          "summaries": [
+            "AI technology is advancing quickly, particularly in machine learning and neural networks.",
+            "AI has the potential to enhance healthcare by offering precise diagnostics, according to recent studies."
+          ]
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "thinker",
+      "tier": 2
+    }
+  }
+]
