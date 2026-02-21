@@ -453,7 +453,23 @@ The registry ships with 10 pre-registered blocks in `blocks.json`:
 
 ## Storage (`storage/memory.py`)
 
-In-memory key-value store for users, memory, and pipelines. Designed to be swapped for a real database later.
+Local JSON-backed store for users, memory, pipelines, executions, and notifications. If `SUPABASE_URL` and
+`SUPABASE_KEY` are set, the app uses Supabase instead. You can force the backend with `STORAGE_BACKEND`
+(`auto`, `local`, `supabase`) and customize the file path via `LOCAL_STORAGE_PATH`.
+
+### File URIs (`storage/uris.py`)
+
+For file pathing that can switch between local and remote storage with minimal changes, use URI strings.
+If a reference has no scheme, it is resolved relative to `STORAGE_BASE_URI` (which can be a local path,
+`file://`, `https://`, or `s3://`). This lets you keep `artifact_ref` values the same and switch environments
+by updating one env var.
+
+Examples:
+- `report.pdf` + `STORAGE_BASE_URI=storage/artifacts` → `file:///.../storage/artifacts/report.pdf`
+- `images/logo.png` + `STORAGE_BASE_URI=https://cdn.example.com/assets` → `https://cdn.example.com/assets/images/logo.png`
+
+HTTP writes are disabled by default; enable with `STORAGE_HTTP_WRITE_ENABLED=true` (uses `STORAGE_HTTP_WRITE_METHOD`,
+default `PUT`).
 
 | Method | Description |
 |---|---|
