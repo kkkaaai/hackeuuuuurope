@@ -1,0 +1,7 @@
+{
+  "task_id": "f0466ac1ccbc",
+  "input": "Design a workflow that triages customer issues, resolves simple ones automatically, escalates complex cases, and tracks performance metrics.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

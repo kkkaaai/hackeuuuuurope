@@ -1,0 +1,7 @@
+{
+  "task_id": "d27ac236acee",
+  "input": "Design a managed hosting support workflow that triages tickets, auto-fixes simple issues, escalates complex cases, and tracks performance.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

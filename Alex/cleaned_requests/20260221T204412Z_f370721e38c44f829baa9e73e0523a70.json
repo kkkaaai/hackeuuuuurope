@@ -1,0 +1,7 @@
+{
+  "task_id": "033dde95e8e6",
+  "input": "When a machine fault delays a priority order, coordinate tools to reroute production, update inventory and maintenance logs, and ensure the order ships on time.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

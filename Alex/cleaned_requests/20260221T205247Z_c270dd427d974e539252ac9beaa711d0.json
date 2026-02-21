@@ -1,0 +1,7 @@
+{
+  "task_id": "9ee7be842385",
+  "input": "Build an image classification system by defining data and model requirements, coding and testing components, fixing errors, and deploying to a staging environment.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

@@ -1,0 +1,7 @@
+{
+  "task_id": "d159243d9365",
+  "input": "From receiving an order to final delivery, coordinate inventory checks, payment processing, and carrier dispatch while resolving a stock shortfall by sourcing from a secondary warehouse.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

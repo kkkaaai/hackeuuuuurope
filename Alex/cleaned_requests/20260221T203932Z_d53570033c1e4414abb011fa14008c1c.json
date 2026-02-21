@@ -1,0 +1,7 @@
+{
+  "task_id": "968425ce8ad3",
+  "input": "Design a workflow to triage incoming tickets, automatically resolve common issues, route complex ones to agents, and track performance metrics.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}
