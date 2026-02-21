@@ -1,0 +1,106 @@
+{
+  "task_id": "e8b8546d4fdc",
+  "input": "Integrate credit bureau and income verification APIs to process a loan application under regulatory constraints, update the loan ledger, and disburse funds.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "L",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Applicant submission",
+        "input_data": "Applicant personal details (name, SSN), employment history, requested loan amount, disbursement account details",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "C",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Third-party credit bureau service (e.g., Experian, TransUnion)",
+        "input_data": "API endpoint URL, authentication token, query parameters",
+        "bound_reference": "Credit Bureau API Integration Guide"
+      },
+      {
+        "name": "I",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Third-party income verification service (e.g., Plaid, Argyle)",
+        "input_data": "API endpoint URL, authentication token, query parameters",
+        "bound_reference": "Income Verification API Documentation"
+      },
+      {
+        "name": "R",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Lending institution compliance team",
+        "input_data": "Maximum allowable debt-to-income ratio (numeric), minimum credit score threshold",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "L",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal loan management system",
+        "input_data": "Database connection string, write-access credentials",
+        "bound_reference": "Internal Loan Management System (v2.1)"
+      },
+      {
+        "name": "A",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Applicant submission",
+        "input_data": "Bank account number, routing number, account holder name",
+        "bound_reference": "Loan Application Data (Input 1)"
+      },
+      {
+        "name": "C",
+        "source_type": "DERIVABLE",
+        "source_origin": "Credit Bureau API (Input 2)",
+        "input_data": "Applicant’s credit score, total monthly debt obligations",
+        "bound_reference": "Credit Bureau API Credentials (Input 2)"
+      },
+      {
+        "name": "I",
+        "source_type": "DERIVABLE",
+        "source_origin": "Income Verification API (Input 3)",
+        "input_data": "Gross monthly income, employment status confirmation",
+        "bound_reference": "Income Verification API Credentials (Input 3)"
+      },
+      {
+        "name": "D",
+        "source_type": "DERIVABLE",
+        "source_origin": "Credit Bureau Data Response (Input 7) + Income Verification Data Response (Input 8)",
+        "input_data": "(Total Monthly Debt / Gross Monthly Income) * 100",
+        "bound_reference": "Credit Bureau Data Response (Input 7), Income Verification Data Response (Input 8)"
+      }
+    ],
+    "outputs": [
+      "Credit Bureau API Response Log",
+      "Income Verification API Response Log",
+      "Loan Approval Status Report",
+      "Updated Loan Ledger Entry",
+      "Fund Disbursement Confirmation"
+    ],
+    "steps": [
+      "Uses: Loan Application Data  \nAction: Validate completeness and format of applicant-submitted data  \nProduces: Structured Loan Application Packet  \nStores/Sends To: Internal processing queue",
+      "Uses: Credit Bureau API Credentials, Loan Application Data  \nAction: Query credit bureau API with applicant’s SSN/name  \nProduces: Credit Bureau Data Response  \nStores/Sends To: Temporary processing buffer",
+      "Uses: Income Verification API Credentials, Loan Application Data  \nAction: Query income verification API with employment details  \nProduces: Income Verification Data Response  \nStores/Sends To: Temporary processing buffer",
+      "Uses: Credit Bureau Data Response, Income Verification Data Response  \nAction: Calculate debt-to-income ratio using formula: (Total Debt / Gross Income) * 100  \nProduces: Debt-to-Income Ratio  \nStores/Sends To: Compliance evaluation module",
+      "Uses: Debt-to-Income Ratio, Regulatory Constraints  \nAction: Compare DTI against user-defined threshold (e.g., 43%)  \nProduces: Loan Approval Status Report  \nStores/Sends To: Compliance audit log",
+      "Uses: Loan Approval Status Report, Loan Ledger Access Permissions  \nAction: Write approved loan details to loan ledger database  \nProduces: Updated Loan Ledger Entry  \nStores/Sends To: Internal loan management system",
+      "Uses: Loan Approval Status Report, Applicant Disbursement Account Details  \nAction: Initiate fund disbursement via banking API using provided account details  \nProduces: Fund Disbursement Confirmation  \nStores/Sends To: Banking system audit log"
+    ],
+    "raw_response": "Inputs:  \n1. Loan Application Data  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Applicant submission  \n   Input Data: Applicant personal details (name, SSN), employment history, requested loan amount, disbursement account details  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n2. Credit Bureau API Credentials  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Third-party credit bureau service (e.g., Experian, TransUnion)  \n   Input Data: API endpoint URL, authentication token, query parameters  \n   Bound Reference: Credit Bureau API Integration Guide  \n\n3. Income Verification API Credentials  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Third-party income verification service (e.g., Plaid, Argyle)  \n   Input Data: API endpoint URL, authentication token, query parameters  \n   Bound Reference: Income Verification API Documentation  \n\n4. Regulatory Constraints (e.g., debt-to-income threshold)  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Lending institution compliance team  \n   Input Data: Maximum allowable debt-to-income ratio (numeric), minimum credit score threshold  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n5. Loan Ledger Access Permissions  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal loan management system  \n   Input Data: Database connection string, write-access credentials  \n   Bound Reference: Internal Loan Management System (v2.1)  \n\n6. Applicant Disbursement Account Details  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Applicant submission  \n   Input Data: Bank account number, routing number, account holder name  \n   Bound Reference: Loan Application Data (Input 1)  \n   Note: Requires explicit user provision or linkage.  \n\n7. Credit Bureau Data Response  \n   Source Type: DERIVABLE  \n   Source Origin: Credit Bureau API (Input 2)  \n   Input Data: Applicant’s credit score, total monthly debt obligations  \n   Bound Reference: Credit Bureau API Credentials (Input 2)  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n8. Income Verification Data Response  \n   Source Type: DERIVABLE  \n   Source Origin: Income Verification API (Input 3)  \n   Input Data: Gross monthly income, employment status confirmation  \n   Bound Reference: Income Verification API Credentials (Input 3)  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n9. Debt-to-Income Ratio  \n   Source Type: DERIVABLE  \n   Source Origin: Credit Bureau Data Response (Input 7) + Income Verification Data Response (Input 8)  \n   Input Data: (Total Monthly Debt / Gross Monthly Income) * 100  \n   Bound Reference: Credit Bureau Data Response (Input 7), Income Verification Data Response (Input 8)  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\nOutputs:  \n1. Credit Bureau API Response Log  \n   Type: Observable artifact  \n   Description: Raw data retrieved from credit bureau (credit score, debts)  \n\n2. Income Verification API Response Log  \n   Type: Observable artifact  \n   Description: Raw data retrieved from income verification service  \n\n3. Loan Approval Status Report  \n   Type: Measurable report  \n   Description: Pass/fail result of regulatory checks (e.g., \"DTI 35% ≤ 43% threshold\")  \n\n4. Updated Loan Ledger Entry  \n   Type: Persisted state change  \n   Description: New record in loan ledger with applicant ID, loan amount, status, disbursement timestamp  \n\n5. Fund Disbursement Confirmation  \n   Type: Triggered action  \n   Description: Automated ACH/wire transfer confirmation from banking system  \n\nSteps:  \nStep 1:  \nUses: Loan Application Data  \nAction: Validate completeness and format of applicant-submitted data  \nProduces: Structured Loan Application Packet  \nStores/Sends To: Internal processing queue  \n\nStep 2:  \nUses: Credit Bureau API Credentials, Loan Application Data  \nAction: Query credit bureau API with applicant’s SSN/name  \nProduces: Credit Bureau Data Response  \nStores/Sends To: Temporary processing buffer  \n\nStep 3:  \nUses: Income Verification API Credentials, Loan Application Data  \nAction: Query income verification API with employment details  \nProduces: Income Verification Data Response  \nStores/Sends To: Temporary processing buffer  \n\nStep 4:  \nUses: Credit Bureau Data Response, Income Verification Data Response  \nAction: Calculate debt-to-income ratio using formula: (Total Debt / Gross Income) * 100  \nProduces: Debt-to-Income Ratio  \nStores/Sends To: Compliance evaluation module  \n\nStep 5:  \nUses: Debt-to-Income Ratio, Regulatory Constraints  \nAction: Compare DTI against user-defined threshold (e.g., 43%)  \nProduces: Loan Approval Status Report  \nStores/Sends To: Compliance audit log  \n\nStep 6:  \nUses: Loan Approval Status Report, Loan Ledger Access Permissions  \nAction: Write approved loan details to loan ledger database  \nProduces: Updated Loan Ledger Entry  \nStores/Sends To: Internal loan management system  \n\nStep 7:  \nUses: Loan Approval Status Report, Applicant Disbursement Account Details  \nAction: Initiate fund disbursement via banking API using provided account details  \nProduces: Fund Disbursement Confirmation  \nStores/Sends To: Banking system audit log  \n\nDependency Consistency Check:  \n- All inputs used in steps are explicitly declared  \n- All derivable inputs fully decomposed to SYSTEM/USER sources  \n- No implicit data sources present  \n- USER-CONTROLLED inputs clearly marked with provision requirements  \n- SYSTEM-RETRIEVABLE inputs include API/database references  \n- [DEPTH STOP] applied only to terminal inputs (7, 8, 9)"
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": null,
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

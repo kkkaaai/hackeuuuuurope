@@ -1,0 +1,93 @@
+{
+  "task_id": "2c087569ef1d",
+  "input": " Research patient concerns to develop consistent blogs, videos, and social posts across channels while setting measurable KPIs to track healthcare campaign engagement and outcomes.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "Patient Concerns Data",
+        "source_type": "DERIVABLE",
+        "source_origin": "Derived from multiple sources including social media analytics, medical records, and patient surveys.",
+        "input_data": "Structured dataset of patient concerns (e.g., text comments, survey responses, frequently asked questions).",
+        "bound_reference": "Inputs 2, 3, 4."
+      },
+      {
+        "name": "Social Media Analytics API",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "External social media platforms (e.g., Twitter, Facebook, Instagram) via API access.",
+        "input_data": "Raw social media posts, comments, and engagement metrics related to healthcare topics.",
+        "bound_reference": null
+      },
+      {
+        "name": "Electronic Health Records (EHR) Database",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal hospital/clinic EHR system with patient consent.",
+        "input_data": "Anonymized patient records, including diagnoses, treatment feedback, and reported concerns.",
+        "bound_reference": null
+      },
+      {
+        "name": "Patient Survey Results",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-uploaded CSV/Excel file or link to survey platform (e.g., Google Forms, SurveyMonkey).",
+        "input_data": "Structured survey responses (e.g., Likert scales, open-text feedback).",
+        "bound_reference": null
+      },
+      {
+        "name": "Content Guidelines",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-provided brand guidelines, tone-of-voice documents, or content templates.",
+        "input_data": "Specifications for blog/video/social media formats, target audience demographics, and compliance requirements.",
+        "bound_reference": null
+      },
+      {
+        "name": "Campaign Objectives",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-defined goals (e.g., increase website traffic by 20%, boost vaccination rates).",
+        "input_data": "Numeric targets, priority health topics, and timeframes.",
+        "bound_reference": null
+      },
+      {
+        "name": "KPI Framework",
+        "source_type": "DERIVABLE",
+        "source_origin": "Derived from campaign objectives and industry standards (e.g., CDC guidelines, WHO benchmarks).",
+        "input_data": "Metrics such as engagement rates, conversion rates, and health outcome improvements.",
+        "bound_reference": "Inputs 6, 8."
+      },
+      {
+        "name": "Industry Benchmark Data",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Public health databases (e.g., CDC, WHO) or third-party analytics tools.",
+        "input_data": "Historical engagement rates, average patient satisfaction scores, and campaign success benchmarks.",
+        "bound_reference": null
+      }
+    ],
+    "outputs": [
+      "**Patient Concern Themes Report**",
+      "Structured analysis of recurring patient concerns (e.g., PDF report, dashboard).",
+      "**Content Calendar**",
+      "Scheduled blogs, videos, and social posts across platforms (e.g., Google Sheets, Trello board).",
+      "**KPI Tracking Dashboard**",
+      "Real-time metrics for engagement (e.g., Google Analytics), conversions (e.g., form fills), and health outcomes.",
+      "**Published Content Assets**",
+      "Blogs (HTML/text), videos (MP4), and social posts (platform-specific formats)."
+    ],
+    "steps": [],
+    "raw_response": "Inputs:  \n1. **Patient Concerns Data**  \n   Source Type: DERIVABLE  \n   Source Origin: Derived from multiple sources including social media analytics, medical records, and patient surveys.  \n   Input Data: Structured dataset of patient concerns (e.g., text comments, survey responses, frequently asked questions).  \n   Bound Reference: Inputs 2, 3, 4.  \n\n2. **Social Media Analytics API**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: External social media platforms (e.g., Twitter, Facebook, Instagram) via API access.  \n   Input Data: Raw social media posts, comments, and engagement metrics related to healthcare topics.  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n3. **Electronic Health Records (EHR) Database**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal hospital/clinic EHR system with patient consent.  \n   Input Data: Anonymized patient records, including diagnoses, treatment feedback, and reported concerns.  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n4. **Patient Survey Results**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-uploaded CSV/Excel file or link to survey platform (e.g., Google Forms, SurveyMonkey).  \n   Input Data: Structured survey responses (e.g., Likert scales, open-text feedback).  \n   Note: Requires explicit user provision or linkage.  \n\n5. **Content Guidelines**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-provided brand guidelines, tone-of-voice documents, or content templates.  \n   Input Data: Specifications for blog/video/social media formats, target audience demographics, and compliance requirements.  \n   Note: Requires explicit user provision or linkage.  \n\n6. **Campaign Objectives**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-defined goals (e.g., increase website traffic by 20%, boost vaccination rates).  \n   Input Data: Numeric targets, priority health topics, and timeframes.  \n   Note: Requires explicit user provision or linkage.  \n\n7. **KPI Framework**  \n   Source Type: DERIVABLE  \n   Source Origin: Derived from campaign objectives and industry standards (e.g., CDC guidelines, WHO benchmarks).  \n   Input Data: Metrics such as engagement rates, conversion rates, and health outcome improvements.  \n   Bound Reference: Inputs 6, 8.  \n\n8. **Industry Benchmark Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Public health databases (e.g., CDC, WHO) or third-party analytics tools.  \n   Input Data: Historical engagement rates, average patient satisfaction scores, and campaign success benchmarks.  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n---\n\nOutputs:  \n1. **Patient Concern Themes Report**  \n   - Structured analysis of recurring patient concerns (e.g., PDF report, dashboard).  \n2. **Content Calendar**  \n   - Scheduled blogs, videos, and social posts across platforms (e.g., Google Sheets, Trello board).  \n3. **KPI Tracking Dashboard**  \n   - Real-time metrics for engagement (e.g., Google Analytics), conversions (e.g., form fills), and health outcomes.  \n4. **Published Content Assets**  \n   - Blogs (HTML/text), videos (MP4), and social posts (platform-specific formats).  \n\n---\n\nSteps:  \n**Step 1**:  \nUses: Inputs 2, 3, 4  \nAction: Aggregate and preprocess patient concern data (clean text, remove duplicates, anonymize records).  \nProduces: Unified patient concerns dataset.  \nStores/Sends To: Internal database (e.g., SQL, CSV file).  \n\n**Step 2**:  \nUses: Input 1 (Unified dataset)  \nAction: Perform NLP sentiment analysis and topic modeling to identify recurring themes.  \nProduces: Patient concern themes report (e.g., \"Top 5 concerns: cost, side effects, accessibility\").  \nStores/Sends To: PDF/reporting tool.  \n\n**Step 3**:  \nUses: Input 5 (Content guidelines), Input 1 (Themes)  \nAction: Draft content outlines aligned with themes and brand guidelines.  \nProduces: Content outline drafts for blogs/videos/social posts.  \nStores/Sends To: Google Docs/Trello.  \n\n**Step 4**:  \nUses: Input 6 (Campaign objectives), Input 8 (Benchmarks)  \nAction: Define KPIs by mapping objectives to benchmarks (e.g., \"20% increase in vaccine-related queries aligns with WHO targets\").  \nProduces: Finalized KPI framework.  \nStores/Sends To: KPI tracking dashboard (e.g., Tableau, Google Sheets).  \n\n**Step 5**:  \nUses: Input 5 (Guidelines), Input 1 (Themes), Input 6 (Objectives)  \nAction: Create and publish content assets (blogs, videos, social posts) with embedded tracking links.  \nProduces: Published content with metadata (e.g., UTM parameters).  \nStores/Sends To: Website, YouTube, social media platforms.  \n\n**Step 6**:  \nUses: Input 7 (KPI framework), Input 2 (Social media data), Input 3 (EHR data)  \nAction: Monitor engagement metrics and health outcomes against KPIs.  \nProduces: Weekly performance report.  \nStores/Sends To: Dashboard/email alerts.  \n\n---\n\n**Dependency Consistency Check**:  \n- All inputs used in steps are declared.  \n- USER-CONTROLLED inputs (4, 5, 6) require explicit user action.  \n- SYSTEM-RETRIEVABLE inputs (2, 3, 8) are terminal.  \n- DERIVABLE inputs (1, 7) are fully decomposed.  \n- [DEPTH STOP] applied only to terminal inputs."
+  },
+  "aeb_analysis": {
+    "steps_count": 0,
+    "aeb_analysis": []
+  },
+  "io_decomposed": true
+}

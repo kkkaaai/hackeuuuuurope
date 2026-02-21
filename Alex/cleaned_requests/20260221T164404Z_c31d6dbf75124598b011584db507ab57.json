@@ -1,0 +1,7 @@
+{
+  "task_id": "e8b8546d4fdc",
+  "input": "Integrate credit bureau and income verification APIs to process a loan application under regulatory constraints, update the loan ledger, and disburse funds.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

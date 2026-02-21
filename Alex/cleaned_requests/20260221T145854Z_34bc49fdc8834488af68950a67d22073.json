@@ -1,0 +1,50 @@
+{
+  "task_id": "14b0cdd23fca",
+  "input": " Research customer insights to produce cohesive blogs, videos, and social posts across all channels while tracking engagement and conversion metrics to hit sales targets.",
+  "complexity_score": 90,
+  "eval_gen": 1,
+  "subtasks": [
+    {
+      "task_id": "14b0cdd23fca.0",
+      "input": "Gather and analyze data on customer demographics, preferences, pain points, and behavior across all relevant channels (e.g., surveys, social listening, analytics platforms). Synthesize findings into actionable audience personas and content themes.",
+      "complexity_score": 30,
+      "eval_gen": 2,
+      "subtasks": []
+    },
+    {
+      "task_id": "14b0cdd23fca.1",
+      "input": "Define the core messaging and content pillars based on research insights. Create a cohesive multi-channel content calendar that strategically schedules blogs, videos, and social posts to align with audience journeys and campaign goals.",
+      "complexity_score": 25,
+      "eval_gen": 2,
+      "subtasks": []
+    },
+    {
+      "task_id": "14b0cdd23fca.2",
+      "input": "Execute the creation of the planned content assets, including writing blog articles, scripting and producing videos, and designing/writing social media posts, ensuring brand voice and message cohesion across all formats.",
+      "complexity_score": 20,
+      "eval_gen": 2,
+      "subtasks": []
+    },
+    {
+      "task_id": "14b0cdd23fca.3",
+      "input": "Publish and promote the created content across all designated channels (website, YouTube, Instagram, LinkedIn, etc.). Manage community interaction and ensure consistent content delivery according to the calendar.",
+      "complexity_score": 15,
+      "eval_gen": 2,
+      "subtasks": []
+    },
+    {
+      "task_id": "14b0cdd23fca.4",
+      "input": "Track key performance indicators for engagement (likes, shares, comments, watch time) and conversion (lead gen, sales, ROI) for all content. Analyze data against sales targets, compile reports, and identify optimization opportunities.",
+      "complexity_score": 20,
+      "eval_gen": 2,
+      "subtasks": []
+    },
+    {
+      "task_id": "14b0cdd23fca.5",
+      "input": "Review performance reports and analytics to refine the content strategy, calendar, and production processes. Adjust targeting, messaging, and channel mix to improve engagement and conversion rates towards achieving sales targets.",
+      "complexity_score": 15,
+      "eval_gen": 2,
+      "subtasks": []
+    }
+  ]
+}

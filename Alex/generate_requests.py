@@ -8,10 +8,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 from openai import OpenAI
 
+from task_id_manager import generate_base_id
+
 
 BASE_DIR = os.path.dirname(__file__)
 PROMPTS_PATH = os.path.join(BASE_DIR, "meta_prompts.json")
 SAMPLE_DIR = os.path.join(BASE_DIR, "sample_requests")
+CLEANED_DIR = os.path.join(BASE_DIR, "cleaned_requests")
 
 
 def load_prompts(path):
@@ -90,6 +93,49 @@ def save_request(request_obj, folder=SAMPLE_DIR):
     return path
 
 
+def save_cleaned_request(request_obj, filename, output_dir=CLEANED_DIR):
+    """
+    Save a cleaned version of the request to cleaned_requests folder.
+    Matches the format created by complexity_evaluator.py.
+    
+    Args:
+        request_obj: The original request object from sample_requests
+        filename: The filename to use (same as in sample_requests)
+        output_dir: Directory to save cleaned request to
+    
+    Returns:
+        str: Path to the saved cleaned request file
+    """
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Generate unique task ID
+    task_id = generate_base_id()
+    
+    # Extract response content (the actual output)
+    response_content = ""
+    response_obj = request_obj.get("response", {})
+    if "choices" in response_obj and isinstance(response_obj["choices"], list):
+        if len(response_obj["choices"]) > 0:
+            choice = response_obj["choices"][0]
+            if "message" in choice and isinstance(choice["message"], dict):
+                response_content = choice["message"].get("content", "")
+    
+    # Create cleaned request in the same format as complexity_evaluator
+    cleaned_request = {
+        "task_id": task_id,
+        "input": response_content,
+        "complexity_score": None,  # Will be filled in when complexity_evaluator.py runs
+        "eval_gen": 1,
+        "subtasks": []
+    }
+    
+    path = os.path.join(output_dir, filename)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(cleaned_request, f, ensure_ascii=False, indent=2)
+    
+    return path
+
+
 def main(num_iterations=1):
     if not os.path.exists(PROMPTS_PATH):
         print(f"Prompts file not found at {PROMPTS_PATH}")
@@ -139,8 +185,13 @@ def main(num_iterations=1):
             }
 
             saved_path = save_request(request_record)
+            filename = os.path.basename(saved_path)
+            
+            # Also save cleaned version
+            save_cleaned_request(request_record, filename)
+            
             saved_count += 1
-            print(f"Saved: {os.path.basename(saved_path)}")
+            print(f"Saved: {filename}")
 
         except Exception as e:
             failed_count += 1

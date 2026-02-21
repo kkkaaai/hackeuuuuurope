@@ -1,0 +1,86 @@
+{
+  "task_id": "34126ab76e21",
+  "input": "Design a system that routes tickets, automatically resolves simple issues, escalates complex cases to engineers, and tracks resolution rates and performance metrics.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "T",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Customer Support Team",
+        "input_data": "Priority thresholds, category definitions, routing logic specifications",
+        "bound_reference": "None"
+      },
+      {
+        "name": "K",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Technical Documentation Team",
+        "input_data": "Predefined solutions, common issue patterns, resolution workflows",
+        "bound_reference": "None"
+      },
+      {
+        "name": "E",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "HR Management System API",
+        "input_data": "Team member skills matrix, current workload status, on-call schedules",
+        "bound_reference": "Ticketing System API (for workload correlation)"
+      },
+      {
+        "name": "L",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Ticketing System API (e.g., Zendesk/Salesforce)",
+        "input_data": "New ticket notifications, ticket metadata (priority, category, submitter)",
+        "bound_reference": "None"
+      },
+      {
+        "name": "H",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Ticketing System Database",
+        "input_data": "Past resolution times, success rates, engineer performance records",
+        "bound_reference": "None"
+      },
+      {
+        "name": "P",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Operations Management",
+        "input_data": "SLA targets, resolution time benchmarks, escalation latency limits",
+        "bound_reference": "None"
+      }
+    ],
+    "outputs": [
+      "Routed Ticket Assignments",
+      "Auto-Resolution Attempts Log",
+      "Escalated Tickets Queue",
+      "Engineer Workload Updates",
+      "Daily Performance Dashboard",
+      "SLA Compliance Report"
+    ],
+    "steps": [
+      "Uses: Live Ticket Stream\nAction: Capture incoming ticket metadata and content\nProduces: Raw ticket record\nStores/Sends To: Internal processing queue",
+      "Uses: Ticket Routing Rules, Raw ticket record\nAction: Classify ticket complexity using rule-based pattern matching\nProduces: Ticket complexity assessment\nStores/Sends To: Processing decision tree",
+      "Uses: Ticket complexity assessment, Knowledge Base for Auto-Resolution\nAction: Execute auto-resolution workflow for low-complexity tickets\nProduces: Resolution attempt record\nStores/Sends To: Ticketing system API (for closure/update)",
+      "Uses: Engineer Availability & Expertise Data, Ticket complexity assessment\nAction: Select optimal engineer based on skill-match and workload\nProduces: Engineer assignment record\nStores/Sends To: Ticketing system API (assignment field)",
+      "Uses: Engineer Availability & Expertise Data, Engineer assignment record\nAction: Update engineer workload status in tracking systems\nProduces: Workload adjustment event\nStores/Sends To: HR Management System API",
+      "Uses: Historical Resolution Data, Resolution attempt record, Engineer assignment record\nAction: Calculate resolution efficiency metrics and SLA adherence\nProduces: Performance metrics dataset\nStores/Sends To: Analytics dashboard database",
+      "Uses: Performance metrics dataset, Performance Thresholds\nAction: Generate compliance report with deviation alerts\nProduces: SLA compliance report\nStores/Sends To: Management reporting portal"
+    ],
+    "raw_response": "Inputs:\n1. Ticket Routing Rules\n   Source Type: USER-CONTROLLED\n   Source Origin: Customer Support Team\n   Input Data: Priority thresholds, category definitions, routing logic specifications\n   Bound Reference: None\n   Note: Requires explicit user provision or linkage.\n\n2. Knowledge Base for Auto-Resolution\n   Source Type: USER-CONTROLLED\n   Source Origin: Technical Documentation Team\n   Input Data: Predefined solutions, common issue patterns, resolution workflows\n   Bound Reference: None\n   Note: Requires explicit user provision or linkage.\n\n3. Engineer Availability & Expertise Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: HR Management System API\n   Input Data: Team member skills matrix, current workload status, on-call schedules\n   Bound Reference: Ticketing System API (for workload correlation)\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\n4. Live Ticket Stream\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Ticketing System API (e.g., Zendesk/Salesforce)\n   Input Data: New ticket notifications, ticket metadata (priority, category, submitter)\n   Bound Reference: None\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\n5. Historical Resolution Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Ticketing System Database\n   Input Data: Past resolution times, success rates, engineer performance records\n   Bound Reference: None\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\n6. Performance Thresholds\n   Source Type: USER-CONTROLLED\n   Source Origin: Operations Management\n   Input Data: SLA targets, resolution time benchmarks, escalation latency limits\n   Bound Reference: None\n   Note: Requires explicit user provision or linkage.\n\nOutputs:\n1. Routed Ticket Assignments\n2. Auto-Resolution Attempts Log\n3. Escalated Tickets Queue\n4. Engineer Workload Updates\n5. Daily Performance Dashboard\n6. SLA Compliance Report\n\nSteps:\nStep 1:\nUses: Live Ticket Stream\nAction: Capture incoming ticket metadata and content\nProduces: Raw ticket record\nStores/Sends To: Internal processing queue\n\nStep 2:\nUses: Ticket Routing Rules, Raw ticket record\nAction: Classify ticket complexity using rule-based pattern matching\nProduces: Ticket complexity assessment\nStores/Sends To: Processing decision tree\n\nStep 3:\nUses: Ticket complexity assessment, Knowledge Base for Auto-Resolution\nAction: Execute auto-resolution workflow for low-complexity tickets\nProduces: Resolution attempt record\nStores/Sends To: Ticketing system API (for closure/update)\n\nStep 4:\nUses: Engineer Availability & Expertise Data, Ticket complexity assessment\nAction: Select optimal engineer based on skill-match and workload\nProduces: Engineer assignment record\nStores/Sends To: Ticketing system API (assignment field)\n\nStep 5:\nUses: Engineer Availability & Expertise Data, Engineer assignment record\nAction: Update engineer workload status in tracking systems\nProduces: Workload adjustment event\nStores/Sends To: HR Management System API\n\nStep 6:\nUses: Historical Resolution Data, Resolution attempt record, Engineer assignment record\nAction: Calculate resolution efficiency metrics and SLA adherence\nProduces: Performance metrics dataset\nStores/Sends To: Analytics dashboard database\n\nStep 7:\nUses: Performance metrics dataset, Performance Thresholds\nAction: Generate compliance report with deviation alerts\nProduces: SLA compliance report\nStores/Sends To: Management reporting portal\n\nDependency Consistency Check:\n- All inputs used in at least one step\n- No undeclared inputs present\n- USER/SYSTEM origins explicitly marked\n- All DERIVABLE outputs fully decomposed\n- Terminal inputs properly marked with [DEPTH STOP]"
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": "### AEB Analysis Results\n\n---\n\n#### **Step 1**  \n- **Step**: Capture incoming ticket metadata and content  \n- **Is AEB**: Yes  \n- **Reason**: Single intent (capture data), interacts with one system boundary (Live Ticket Stream → internal queue), no branching/sequencing.  \n- **If No**: N/A  \n\n---\n\n#### **Step 2**  \n- **Step**: Classify ticket complexity using rule-based pattern matching  \n- **Is AEB**: Yes  \n- **Reason**: Single intent (classification), uses one system boundary (Ticket Routing Rules + Raw Ticket Record → Processing Decision Tree), no branching/sequencing implied.  \n- **If No**: N/A  \n\n---\n\n#### **Step 3**  \n- **Step**: Execute auto-resolution workflow for low-complexity tickets  \n- **Is AEB**: No  \n- **Reason**: Contains sequencing (workflow implies multiple steps: e.g., retrieve solution → apply solution → update ticket status).  \n- **Suggest**: Break into:  \n  1. Query Knowledge Base for resolution solution.  \n  2. Apply solution to ticket (e.g., auto-reply).  \n  3. Update ticket status via Ticketing System API.  \n\n---\n\n#### **Step 4**  \n- **Step**: Select optimal engineer based on skill-match and workload  \n- **Is AEB**: Yes  \n- **Reason**: Single intent (selection), interacts with one system boundary (internal logic → Ticketing System API), no branching/sequencing.  \n- **If No**: N/A  \n\n---\n\n#### **Step 5**  \n- **Step**: Update engineer workload status in tracking systems  \n- **Is AEB**: Yes  \n- **Reason**: Single intent (update workload), interacts with one system boundary (HR Management System API).  \n- **If No**: N/A  \n\n---\n\n#### **Step 6**  \n- **Step**: Calculate resolution efficiency metrics and SLA adherence  \n- **Is AEB**: No  \n- **Reason**: May involve multiple calculations (sequencing) or branching logic (e.g., SLA pass/fail checks).  \n- **Suggest**: Split into:  \n  1. Calculate resolution efficiency metrics.  \n  2. Check SLA adherence against thresholds.  \n\n---\n\n#### **Step 7**  \n- **Step**: Generate compliance report with deviation alerts  \n- **Is AEB**: No  \n- **Reason**: Contains branching (alerts require conditional logic based on thresholds).  \n- **Suggest**: Split into:  \n  1. Generate compliance report (static data).  \n  2. Trigger deviation alerts if metrics breach thresholds.  \n\n---\n\n### Summary of Non-AEB Steps  \n| Step | Reason for Non-AEB | Suggested Breakdown |  \n|------|---------------------|---------------------|  \n| 3    | Workflow sequencing | 3a: Query Knowledge Base, 3b: Apply solution, 3c: Update ticket |  \n| 6    | Sequencing/branching | 6a: Calculate metrics, 6b: Check SLA adherence |  \n| 7    | Branching logic | 7a: Generate report, 7b: Trigger alerts |  \n\nAll other steps meet AEB criteria.",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

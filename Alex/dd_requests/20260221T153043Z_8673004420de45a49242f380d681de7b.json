@@ -1,0 +1,141 @@
+{
+  "task_id": "d694a9e573a0",
+  "input": "Research and produce a multi-format educational campaign maintaining brand voice across channels to achieve specific engagement and conversion targets.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "B",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Marketing Team",
+        "input_data": "Brand voice specifications, tone rules, visual identity standards",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "E",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Campaign Manager",
+        "input_data": "Numeric thresholds (e.g., 8% CTR, 3% conversion rate)",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "C",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Business Leadership",
+        "input_data": "Numeric goals (e.g., 500 new signups, $20k revenue)",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "C",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Marketing Team",
+        "input_data": "List of channels (e.g., Instagram, LinkedIn, Email)",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "M",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal Market Research Database",
+        "input_data": "Industry trends, audience pain points, competitor benchmarks",
+        "bound_reference": "Competitor Campaign Data (Input 6)"
+      },
+      {
+        "name": "C",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Socialbakers API + Web Scraping Tool",
+        "input_data": "Competitor content formats, posting schedules, engagement metrics",
+        "bound_reference": "Market Research Data (Input 5)"
+      },
+      {
+        "name": "A",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Salesforce CRM + Google Analytics",
+        "input_data": "Age, location, behavior patterns of target audience",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "C",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Project Manager",
+        "input_data": "Start/end dates, content release timeline",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "D",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Advertising Team",
+        "input_data": "Budget allocation, ad frequency caps, geographic targeting",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "C",
+        "source_type": "DERIVABLE",
+        "source_origin": "Campaign Channels Selected (Input 4)",
+        "input_data": "Mapping of channels to formats (e.g., Instagram → Video, Email → Newsletter)",
+        "bound_reference": "Campaign Channels Selected (Input 4)"
+      },
+      {
+        "name": "C",
+        "source_type": "DERIVABLE",
+        "source_origin": "Content Formats Required (Input 10)",
+        "input_data": "Channel-specific content adaptations (e.g., shortened copy for Twitter)",
+        "bound_reference": "Content Formats Required (Input 10)"
+      },
+      {
+        "name": "P",
+        "source_type": "DERIVABLE",
+        "source_origin": "Engagement Metrics (Input 13) + Conversion Metrics (Input 14)",
+        "input_data": "Aggregated analytics dashboards",
+        "bound_reference": "Engagement Metrics (Input 13), Conversion Metrics (Input 14)"
+      },
+      {
+        "name": "E",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Google Analytics + Social Media APIs",
+        "input_data": "Click-through rates, shares, comments, bounce rates",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "C",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Salesforce CRM + Stripe API",
+        "input_data": "Signups, purchases, form completions",
+        "bound_reference": "N/A"
+      }
+    ],
+    "outputs": [
+      "Research Synthesis Report",
+      "Channel-Specific Content Assets",
+      "Campaign Deployment Confirmation",
+      "Engagement & Conversion Performance Dashboards",
+      "Optimization Recommendations Document"
+    ],
+    "steps": [
+      "Uses: Market Research Data (5), Competitor Campaign Data (6), Audience Demographics (7)  \nAction: Analyze trends, competitor gaps, and audience preferences  \nProduces: Research Synthesis Report  \nStores/Sends To: Internal Shared Drive",
+      "Uses: Brand Guidelines Document (1), Campaign Channels Selected (4), Content Formats Required (10)  \nAction: Map brand voice to channel-specific formats  \nProduces: Content Strategy Blueprint  \nStores/Sends To: Project Management Tool (e.g., Asana)",
+      "Uses: Content Strategy Blueprint (Output of Step 2), Content Variations (11)  \nAction: Develop and review content drafts for all channels  \nProduces: Finalized Content Assets  \nStores/Sends To: Digital Asset Management System",
+      "Uses: Campaign Schedule (8), Distribution Parameters (9), Finalized Content Assets (Output of Step 3)  \nAction: Schedule posts, configure ad parameters, and launch campaign  \nProduces: Campaign Deployment Confirmation  \nStores/Sends To: Ad Platforms (e.g., Meta Ads Manager, Mailchimp)",
+      "Uses: Engagement Metrics (13), Conversion Metrics (14)  \nAction: Aggregate metrics into dashboards  \nProduces: Performance Reports (12)  \nStores/Sends To: Google Data Studio Dashboard",
+      "Uses: Performance Reports (12), Engagement Targets (2), Conversion Targets (3)  \nAction: Compare results to targets and identify gaps  \nProduces: Optimization Recommendations Document  \nStores/Sends To: Stakeholder Email",
+      "Uses: Optimization Recommendations Document (Output of Step 6)  \nAction: Refine content, retarget ads, or adjust schedule  \nProduces: Updated Content Assets & Distribution Parameters  \nStores/Sends To: Digital Asset Management System + Ad Platforms  \n\n------------------------------------------------------------------  \n[DEPTH STOP] All derivable inputs (10, 11, 12) decomposed to USER/SYSTEM sources.  \n[CONSISTENCY CHECK] All inputs used in steps; outputs externally verifiable."
+    ],
+    "raw_response": "Inputs:  \n1. Brand Guidelines Document  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Marketing Team  \n   Input Data: Brand voice specifications, tone rules, visual identity standards  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n2. Engagement Targets  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Campaign Manager  \n   Input Data: Numeric thresholds (e.g., 8% CTR, 3% conversion rate)  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n3. Conversion Targets  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Business Leadership  \n   Input Data: Numeric goals (e.g., 500 new signups, $20k revenue)  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n4. Campaign Channels Selected  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Marketing Team  \n   Input Data: List of channels (e.g., Instagram, LinkedIn, Email)  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n5. Market Research Data  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal Market Research Database  \n   Input Data: Industry trends, audience pain points, competitor benchmarks  \n   Bound Reference: Competitor Campaign Data (Input 6)  \n\n6. Competitor Campaign Data  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Socialbakers API + Web Scraping Tool  \n   Input Data: Competitor content formats, posting schedules, engagement metrics  \n   Bound Reference: Market Research Data (Input 5)  \n\n7. Audience Demographics  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Salesforce CRM + Google Analytics  \n   Input Data: Age, location, behavior patterns of target audience  \n   Bound Reference: N/A  \n\n8. Campaign Schedule  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Project Manager  \n   Input Data: Start/end dates, content release timeline  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n9. Distribution Parameters  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Advertising Team  \n   Input Data: Budget allocation, ad frequency caps, geographic targeting  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n10. Content Formats Required  \n    Source Type: DERIVABLE  \n    Source Origin: Campaign Channels Selected (Input 4)  \n    Input Data: Mapping of channels to formats (e.g., Instagram → Video, Email → Newsletter)  \n    Bound Reference: Campaign Channels Selected (Input 4)  \n    Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n11. Content Variations  \n    Source Type: DERIVABLE  \n    Source Origin: Content Formats Required (Input 10)  \n    Input Data: Channel-specific content adaptations (e.g., shortened copy for Twitter)  \n    Bound Reference: Content Formats Required (Input 10)  \n    Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n12. Performance Reports  \n    Source Type: DERIVABLE  \n    Source Origin: Engagement Metrics (Input 13) + Conversion Metrics (Input 14)  \n    Input Data: Aggregated analytics dashboards  \n    Bound Reference: Engagement Metrics (Input 13), Conversion Metrics (Input 14)  \n    Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n13. Engagement Metrics  \n    Source Type: SYSTEM-RETRIEVABLE  \n    Source Origin: Google Analytics + Social Media APIs  \n    Input Data: Click-through rates, shares, comments, bounce rates  \n    Bound Reference: N/A  \n\n14. Conversion Metrics  \n    Source Type: SYSTEM-RETRIEVABLE  \n    Source Origin: Salesforce CRM + Stripe API  \n    Input Data: Signups, purchases, form completions  \n    Bound Reference: N/A  \n\nOutputs:  \n1. Research Synthesis Report  \n2. Channel-Specific Content Assets (e.g., videos, infographics, emails)  \n3. Campaign Deployment Confirmation  \n4. Engagement & Conversion Performance Dashboards  \n5. Optimization Recommendations Document  \n\nSteps:  \nStep 1: Research & Analysis  \nUses: Market Research Data (5), Competitor Campaign Data (6), Audience Demographics (7)  \nAction: Analyze trends, competitor gaps, and audience preferences  \nProduces: Research Synthesis Report  \nStores/Sends To: Internal Shared Drive  \n\nStep 2: Content Strategy Definition  \nUses: Brand Guidelines Document (1), Campaign Channels Selected (4), Content Formats Required (10)  \nAction: Map brand voice to channel-specific formats  \nProduces: Content Strategy Blueprint  \nStores/Sends To: Project Management Tool (e.g., Asana)  \n\nStep 3: Content Creation  \nUses: Content Strategy Blueprint (Output of Step 2), Content Variations (11)  \nAction: Develop and review content drafts for all channels  \nProduces: Finalized Content Assets  \nStores/Sends To: Digital Asset Management System  \n\nStep 4: Campaign Scheduling & Deployment  \nUses: Campaign Schedule (8), Distribution Parameters (9), Finalized Content Assets (Output of Step 3)  \nAction: Schedule posts, configure ad parameters, and launch campaign  \nProduces: Campaign Deployment Confirmation  \nStores/Sends To: Ad Platforms (e.g., Meta Ads Manager, Mailchimp)  \n\nStep 5: Performance Monitoring  \nUses: Engagement Metrics (13), Conversion Metrics (14)  \nAction: Aggregate metrics into dashboards  \nProduces: Performance Reports (12)  \nStores/Sends To: Google Data Studio Dashboard  \n\nStep 6: Optimization  \nUses: Performance Reports (12), Engagement Targets (2), Conversion Targets (3)  \nAction: Compare results to targets and identify gaps  \nProduces: Optimization Recommendations Document  \nStores/Sends To: Stakeholder Email  \n\nStep 7: Iterative Adjustments  \nUses: Optimization Recommendations Document (Output of Step 6)  \nAction: Refine content, retarget ads, or adjust schedule  \nProduces: Updated Content Assets & Distribution Parameters  \nStores/Sends To: Digital Asset Management System + Ad Platforms  \n\n------------------------------------------------------------------  \n[DEPTH STOP] All derivable inputs (10, 11, 12) decomposed to USER/SYSTEM sources.  \n[CONSISTENCY CHECK] All inputs used in steps; outputs externally verifiable."
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": "### AEB Analysis Results\n\n---\n\n#### **Step 1**  \n**Step:** Uses Market Research Data (5), Competitor Campaign Data (6), Audience Demographics (7); Action: Analyze trends, competitor gaps, and audience preferences; Produces: Research Synthesis Report  \n**Is AEB:** No  \n**Reason:** The action \"analyze\" combines multiple sub-tasks (trend analysis, competitor gap identification, audience preference extraction) and involves three distinct data sources (system boundaries). This introduces sequencing, branching, and multi-system interaction.  \n**Suggestion:** Break into separate AEBs:  \n1. Analyze market research trends (single intent, one system boundary).  \n2. Identify competitor gaps (single intent, one system boundary).  \n3. Extract audience preferences (single intent, one system boundary).  \n\n---\n\n#### **Step 2**  \n**Step:** Uses Brand Guidelines Document (1), Campaign Channels Selected (4), Content Formats Required (10); Action: Map brand voice to channel-specific formats; Produces: Content Strategy Blueprint  \n**Is AEB:** No  \n**Reason:** Mapping brand voice to multiple channels implies branching logic (e.g., \"if channel X, apply format Y\"). Each channel-format mapping is a distinct intent and system boundary.  \n**Suggestion:** Split into per-channel mappings:  \n1. Map brand voice to Channel A format.  \n2. Map brand voice to Channel B format.  \n\n---\n\n#### **Step 3**  \n**Step:** Uses Content Strategy Blueprint (Output of Step 2), Content Variations (11); Action: Develop and review content drafts for all channels; Produces: Finalized Content Assets  \n**Is AEB:** No  \n**Reason:** Combines \"develop\" and \"review\" actions (sequencing) and spans multiple channels (system boundaries).  \n**Suggestion:** Split into:  \n1. Develop content drafts for Channel A.  \n2. Review content drafts for Channel A.  \n\n---\n\n#### **Step 4**  \n**Step:** Uses Campaign Schedule (8), Distribution Parameters (9), Finalized Content Assets (Output of Step 3); Action: Schedule posts, configure ad parameters, and launch campaign; Produces: Campaign Deployment Confirmation  \n**Is AEB:** No  \n**Reason:** Combines three distinct actions (scheduling, configuring, launching) with different system boundaries (e.g., ad platforms, campaign tools).  \n**Suggestion:** Split into:  \n1. Schedule posts via Campaign Management API.  \n2. Configure ad parameters in Ad Platform API.  \n3. Launch campaign via Campaign Execution API.  \n\n---\n\n#### **Step 5**  \n**Step:** Uses Engagement Metrics (13), Conversion Metrics (14); Action: Aggregate metrics into dashboards; Produces: Performance Reports (12)  \n**Is AEB:** **Yes**  \n**Reason:** Single intent (aggregation), single system boundary (e.g., Google Data Studio API), no branching/sequencing. Implementable as a single API call (e.g., `POST /dashboard.aggregate`).  \n\n---\n\n#### **Step 6**  \n**Step:** Uses Performance Reports (12), Engagement Targets (2), Conversion Targets (3); Action: Compare results to targets and identify gaps; Produces: Optimization Recommendations Document  \n**Is AEB:** No  \n**Reason:** Involves branching logic (e.g., \"if metric < target, flag gap\") and dual comparisons (engagement + conversion).  \n**Suggestion:** Split into:  \n1. Compare engagement metrics to targets.  \n2. Compare conversion metrics to targets.  \n\n---\n\n#### **Step 7**  \n**Step:** Uses Optimization Recommendations Document (Output of Step 6); Action: Refine content, retarget ads, or adjust schedule; Produces: Updated Content Assets & Distribution Parameters  \n**Is AEB:** No  \n**Reason:** Combines three distinct actions (refine, retarget, adjust) with different system boundaries (DAM, ad platforms, scheduling tools).  \n**Suggestion:** Split into:  \n1. Refine content via DAM API.  \n2. Retarget ads via Ad Platform API.  \n3. Adjust schedule via Campaign Management API.  \n\n---\n\n### Summary  \n- **AEBs:** Step 5  \n- **Non-AEBs:** Steps 1–4, 6–7 (require decomposition into single-intent, single",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

@@ -1,0 +1,81 @@
+{
+  "task_id": "9c1dd8728738",
+  "input": "Execute a structured analysis of our high-stakes health data privacy protocols to identify compliance risks, propose revisions, and deliver both technical and executive summaries.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "E",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal organizational repository",
+        "input_data": "Documented health data handling procedures, access controls, encryption standards",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "C",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Regulatory authority databases/APIs (e.g., U.S. HHS, EU GDPR Portal)",
+        "input_data": "Legal requirements for data anonymization, consent management, breach reporting",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "D",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal security incident logs (SIEM systems)",
+        "input_data": "Historical breach timelines, root causes, remediation actions",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "S",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Compliance officers, IT staff, healthcare providers",
+        "input_data": "Qualitative/quantitative survey responses, interview transcripts",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "T",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal architecture repositories (e.g., Confluence, Jira)",
+        "input_data": "Data flow diagrams, system integrations, audit trail mechanisms",
+        "bound_reference": "N/A"
+      }
+    ],
+    "outputs": [
+      "Compliance Risk Assessment Report",
+      "Revised Privacy Protocol Draft",
+      "Technical Summary Document",
+      "Executive Summary Presentation"
+    ],
+    "steps": [
+      "Uses: Input 1 (Existing Privacy Protocols)  \nAction: Retrieve and parse current privacy protocols from internal repository  \nProduces: Parsed protocol artifacts  \nStores/Sends To: Local analysis environment",
+      "Uses: Input 2 (Compliance Standards)  \nAction: Query regulatory databases for applicable health data requirements  \nProduces: Structured compliance checklist  \nStores/Sends To: Compliance analysis database",
+      "Uses: Input 3 (Data Breach Records)  \nAction: Extract historical breach patterns from security logs  \nProduces: Breach pattern dataset  \nStores/Sends To: Risk assessment database",
+      "Uses: Input 4 (Stakeholder Feedback)  \nAction: Import user-provided feedback datasets  \nProduces: Structured stakeholder input  \nStores/Sends To: Feedback analysis database",
+      "Uses: Input 5 (Technical Documentation)  \nAction: Retrieve system architecture diagrams and audit specifications  \nProduces: Technical system model  \nStores/Sends To: Architecture visualization tool",
+      "Uses: Input 1, Input 2  \nAction: Map existing protocols to compliance requirements  \nProduces: Compliance gap matrix  \nStores/Sends To: Compliance risk assessment report (Section 1)",
+      "Uses: Input 3  \nAction: Analyze breach recurrence patterns using statistical methods  \nProduces: Risk severity scores  \nStores/Sends To: Compliance risk assessment report (Section 2)",
+      "Uses: Input 5, Input 6 (Compliance gap matrix), Input 7 (Risk severity scores)  \nAction: Derive technical revision requirements  \nProduces: Protocol revision framework  \nStores/Sends To: Draft revision document",
+      "Uses: Input 4, Input 8  \nAction: Synthesize stakeholder feedback with technical revisions  \nProduces: Prioritized revision recommendations  \nStores/Sends To: Revised privacy protocol draft",
+      "Uses: Input 8, Input 9  \nAction: Generate technical summary with implementation roadmap  \nProduces: Technical summary document  \nStores/Sends To: Internal knowledge base",
+      "Uses: Input 9, Input 4  \nAction: Create executive summary with risk metrics and ROI analysis  \nProduces: Executive presentation deck  \nStores/Sends To: Leadership portal  \n\n[DEPTH STOP] All leaf inputs (1,2,3,4,5) are SYSTEM-RETRIEVABLE or USER-CONTROLLED.  \nDEPENDENCY CONSISTENCY CHECK: All declared inputs used; no implicit sources; outputs verifiable."
+    ],
+    "raw_response": "Inputs:  \n1. Existing Privacy Protocols  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal organizational repository  \n   Input Data: Documented health data handling procedures, access controls, encryption standards  \n   Bound Reference: N/A  \n\n2. Compliance Standards (HIPAA, GDPR, etc.)  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Regulatory authority databases/APIs (e.g., U.S. HHS, EU GDPR Portal)  \n   Input Data: Legal requirements for data anonymization, consent management, breach reporting  \n   Bound Reference: N/A  \n\n3. Data Breach Records  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal security incident logs (SIEM systems)  \n   Input Data: Historical breach timelines, root causes, remediation actions  \n   Bound Reference: N/A  \n\n4. Stakeholder Feedback  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Compliance officers, IT staff, healthcare providers  \n   Input Data: Qualitative/quantitative survey responses, interview transcripts  \n   Bound Reference: Requires explicit user provision or linkage.  \n\n5. Technical Documentation  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal architecture repositories (e.g., Confluence, Jira)  \n   Input Data: Data flow diagrams, system integrations, audit trail mechanisms  \n   Bound Reference: N/A  \n\nOutputs:  \n1. Compliance Risk Assessment Report  \n2. Revised Privacy Protocol Draft  \n3. Technical Summary Document  \n4. Executive Summary Presentation  \n\nSteps:  \nStep 1:  \nUses: Input 1 (Existing Privacy Protocols)  \nAction: Retrieve and parse current privacy protocols from internal repository  \nProduces: Parsed protocol artifacts  \nStores/Sends To: Local analysis environment  \n\nStep 2:  \nUses: Input 2 (Compliance Standards)  \nAction: Query regulatory databases for applicable health data requirements  \nProduces: Structured compliance checklist  \nStores/Sends To: Compliance analysis database  \n\nStep 3:  \nUses: Input 3 (Data Breach Records)  \nAction: Extract historical breach patterns from security logs  \nProduces: Breach pattern dataset  \nStores/Sends To: Risk assessment database  \n\nStep 4:  \nUses: Input 4 (Stakeholder Feedback)  \nAction: Import user-provided feedback datasets  \nProduces: Structured stakeholder input  \nStores/Sends To: Feedback analysis database  \n\nStep 5:  \nUses: Input 5 (Technical Documentation)  \nAction: Retrieve system architecture diagrams and audit specifications  \nProduces: Technical system model  \nStores/Sends To: Architecture visualization tool  \n\nStep 6:  \nUses: Input 1, Input 2  \nAction: Map existing protocols to compliance requirements  \nProduces: Compliance gap matrix  \nStores/Sends To: Compliance risk assessment report (Section 1)  \n\nStep 7:  \nUses: Input 3  \nAction: Analyze breach recurrence patterns using statistical methods  \nProduces: Risk severity scores  \nStores/Sends To: Compliance risk assessment report (Section 2)  \n\nStep 8:  \nUses: Input 5, Input 6 (Compliance gap matrix), Input 7 (Risk severity scores)  \nAction: Derive technical revision requirements  \nProduces: Protocol revision framework  \nStores/Sends To: Draft revision document  \n\nStep 9:  \nUses: Input 4, Input 8  \nAction: Synthesize stakeholder feedback with technical revisions  \nProduces: Prioritized revision recommendations  \nStores/Sends To: Revised privacy protocol draft  \n\nStep 10:  \nUses: Input 8, Input 9  \nAction: Generate technical summary with implementation roadmap  \nProduces: Technical summary document  \nStores/Sends To: Internal knowledge base  \n\nStep 11:  \nUses: Input 9, Input 4  \nAction: Create executive summary with risk metrics and ROI analysis  \nProduces: Executive presentation deck  \nStores/Sends To: Leadership portal  \n\n[DEPTH STOP] All leaf inputs (1,2,3,4,5) are SYSTEM-RETRIEVABLE or USER-CONTROLLED.  \nDEPENDENCY CONSISTENCY CHECK: All declared inputs used; no implicit sources; outputs verifiable."
+  },
+  "aeb_analysis": {
+    "steps_count": 11,
+    "aeb_analysis_raw": "### Step-by-Step Analysis\n\n---\n\n**Step 1**  \n- **Step**: Retrieve and parse current privacy protocols from internal repository  \n- **Is AEB**: No  \n- **Reason**: Combines two distinct actions: retrieving (system interaction) and parsing (data processing). AEB must have a single intent and interact with one system boundary. Parsing is not a system boundary interaction and introduces processing logic.  \n- **Suggestion**: Split into two AEBs:  \n  1. Retrieve privacy protocols from internal repository  \n  2. Parse retrieved privacy protocols  \n\n---\n\n**Step 2**  \n- **Step**: Query regulatory databases for applicable health data requirements  \n- **Is AEB**: Yes  \n- **Reason**: Single intent (querying), interacts with one system boundary (regulatory databases), no branching or sequencing.  \n\n---\n\n**Step 3**  \n- **Step**: Extract historical",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

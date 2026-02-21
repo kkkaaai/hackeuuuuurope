@@ -1,0 +1,7 @@
+{
+  "task_id": "5fb5d56a276a",
+  "input": "Design and implement a model monitoring system that alerts on data drift, requiring you to write the detection logic, validate it with unit tests, debug false positives, and deploy it to the staging environment.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

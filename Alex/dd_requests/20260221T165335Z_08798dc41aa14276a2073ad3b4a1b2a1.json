@@ -1,0 +1,47 @@
+{
+  "task_id": "9aeef081bd5c",
+  "input": "Build a system that sorts customer issues, solves simple ones automatically, escalates complex cases, and tracks performance metrics.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "aeb_analysis": {
+    "steps_count": 6,
+    "aeb_analysis_raw": null,
+    "analysis_complete": true
+  },
+  "io_decomposed": true,
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      "Customer",
+      "Issue",
+      "Predefined",
+      "Escalation",
+      "Performance",
+      "Historical"
+    ],
+    "outputs": [
+      "Classified Issue Records",
+      "Automated Response Executions",
+      "Escalated Case Packages",
+      "Performance Dashboard"
+    ],
+    "steps": [
+      "Uses: Customer Issue Data\nAction: Pull latest open tickets from ticketing system API\nProduces: Raw issue dataset\nStores/Sends To: Processing queue",
+      "Uses: Customer Issue Data, Issue Classification Criteria\nAction: Execute rule engine to categorize issues using NLP pattern matching\nProduces: Labeled issue records with complexity scores\nStores/Sends To: Classification database",
+      "Uses: Predefined Response Templates, Classified Issue Records\nAction: Match simple issues to response templates and dispatch automated replies\nProduces: Response execution logs\nStores/Sends To: Communication system API",
+      "Uses: Escalation Routing Rules, Classified Issue Records\nAction: Create prioritized case bundles with context documentation\nProduces: Escalation packages with routing metadata\nStores/Sends To: Specialist team collaboration platform",
+      "Uses: Historical Performance Data, Performance Metrics Definitions\nAction: Calculate KPIs using time-series analysis and comparative benchmarking\nProduces: Metric calculation results\nStores/Sends To: BI platform database",
+      "Uses: Performance Metric Results\nAction: Refresh visualization components with latest metric values\nProduces: Updated dashboard views\nStores/Sends To: BI platform frontend"
+    ],
+    "raw_response": "Inputs:\n1. Customer Issue Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Customer support ticketing system API (e.g., Zendesk/ServiceNow)\n   Input Data: Structured records containing issue text, metadata (priority, timestamp), customer ID\n   Bound Reference: [DEPTH STOP - Terminal input, do not further decompose]\n\n2. Issue Classification Criteria\n   Source Type: USER-CONTROLLED\n   Source Origin: Customer service manager\n   Input Data: Rule set defining simple/complex thresholds (e.g., keyword patterns, resolution time estimates)\n   Note: Requires explicit user provision or linkage.\n\n3. Predefined Response Templates\n   Source Type: USER-CONTROLLED\n   Source Origin: Customer service knowledge base team\n   Input Data: Structured response templates mapped to common issue types\n   Note: Requires explicit user provision or linkage.\n\n4. Escalation Routing Rules\n   Source Type: USER-CONTROLLED\n   Source Origin: Customer service operations team\n   Input Data: Hierarchical routing matrix mapping complex issue types to specialist teams/individuals\n   Note: Requires explicit user provision or linkage.\n\n5. Performance Metrics Definitions\n   Source Type: USER-CONTROLLED\n   Source Origin: Business intelligence team\n   Input Data: Metric specifications (e.g., SLA thresholds, resolution time KPIs, escalation rate targets)\n   Note: Requires explicit user provision or linkage.\n\n6. Historical Performance Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Internal analytics database\n   Input Data: Time-series records of past resolution times, escalation rates, customer satisfaction scores\n   Bound Reference: [DEPTH STOP - Terminal input, do not further decompose]\n\nOutputs:\n1. Classified Issue Records\n   Type: Structured dataset\n   Destination: Internal issue tracking database\n\n2. Automated Response Executions\n   Type: Communication logs\n   Destination: Customer communication channels (email/SMS/chat)\n\n3. Escalated Case Packages\n   Type: Bundled case files\n   Destination: Specialist team work queues\n\n4. Performance Dashboard\n   Type: Interactive visualization dashboard\n   Destination: BI platform (e.g., Tableau/Power BI)\n\nSteps:\nStep 1: Retrieve Customer Issues\nUses: Customer Issue Data\nAction: Pull latest open tickets from ticketing system API\nProduces: Raw issue dataset\nStores/Sends To: Processing queue\n\nStep 2: Apply Classification Rules\nUses: Customer Issue Data, Issue Classification Criteria\nAction: Execute rule engine to categorize issues using NLP pattern matching\nProduces: Labeled issue records with complexity scores\nStores/Sends To: Classification database\n\nStep 3: Execute Automated Responses\nUses: Predefined Response Templates, Classified Issue Records\nAction: Match simple issues to response templates and dispatch automated replies\nProduces: Response execution logs\nStores/Sends To: Communication system API\n\nStep 4: Package Escalated Cases\nUses: Escalation Routing Rules, Classified Issue Records\nAction: Create prioritized case bundles with context documentation\nProduces: Escalation packages with routing metadata\nStores/Sends To: Specialist team collaboration platform\n\nStep 5: Generate Performance Metrics\nUses: Historical Performance Data, Performance Metrics Definitions\nAction: Calculate KPIs using time-series analysis and comparative benchmarking\nProduces: Metric calculation results\nStores/Sends To: BI platform database\n\nStep 6: Update Dashboard\nUses: Performance Metric Results\nAction: Refresh visualization components with latest metric values\nProduces: Updated dashboard views\nStores/Sends To: BI platform frontend\n\nDependency Consistency Check:\n- All inputs accounted for in steps\n- No implicit data sources present\n- USER-CONTROLLED inputs clearly identified with explicit provision requirements\n- SYSTEM-RETRIEVABLE inputs mapped to specific endpoints\n- DERIVABLE inputs fully decomposed into terminal sources\n- [DEPTH STOP] markers correctly placed on terminal inputs\n- Output verification paths explicitly defined"
+  }
+}

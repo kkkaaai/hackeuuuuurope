@@ -1,0 +1,77 @@
+{
+  "task_id": "efe3a47317ed",
+  "input": "Analyze an FAA audit finding on turbine engine inspection procedures, propose a revised compliance plan, and deliver both detailed technical and high-level executive summaries.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "F",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User provides directly",
+        "input_data": "Complete audit findings document with identified discrepancies in turbine engine inspection procedures",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "E",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal document management system (e.g., SharePoint, Confluence)",
+        "input_data": "Current procedural documentation, checklists, and compliance workflows",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "F",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "FAA API or electronic Code of Federal Regulations (e-CFR) database",
+        "input_data": "Regulatory text defining inspection frequency, methodology, and documentation requirements",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "I",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Subscription-based technical standards database",
+        "input_data": "Recommended practices for turbine engine maintenance and quality assurance",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "H",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal ERP system (e.g., SAP, Oracle)",
+        "input_data": "Cost records for past inspections, labor hours, and component replacements",
+        "bound_reference": "N/A"
+      }
+    ],
+    "outputs": [
+      "Audit Analysis Report",
+      "Revised Compliance Plan",
+      "Technical Summary",
+      "Executive Summary"
+    ],
+    "steps": [
+      "Uses: FAA Audit Report, Existing Turbine Engine Inspection Procedures  \nAction: Perform discrepancy analysis to map audit findings to specific procedural gaps  \nProduces: Initial gap mapping matrix  \nStores/Sends To: Compliance management system",
+      "Uses: Existing Turbine Engine Inspection Procedures, FAA Compliance Standards, Industry Best Practices  \nAction: Benchmark current procedures against regulatory requirements and recommended practices  \nProduces: Regulatory alignment assessment report  \nStores/Sends To: Document management system",
+      "Uses: Gap mapping matrix, Regulatory alignment assessment report, Historical Maintenance Cost Data  \nAction: Develop prioritized revision proposals incorporating cost-benefit analysis  \nProduces: Draft compliance plan with phased implementation options  \nStores/Sends To: Project management tool (e.g., Jira, Asana)",
+      "Uses: Historical Maintenance Cost Data  \nAction: Generate cost estimates for proposed procedural changes using regression analysis  \nProduces: Cost projection spreadsheet with confidence intervals  \nStores/Sends To: Financial planning system",
+      "Uses: Draft compliance plan, Cost projection spreadsheet  \nAction: Finalize compliance plan with executive decision points and risk assessments  \nProduces: Revised Compliance Plan  \nStores/Sends To: Document management system",
+      "Uses: Audit Analysis Report, Revised Compliance Plan  \nAction: Compile technical summary with engineering details and implementation specifications  \nProduces: Technical Summary  \nStores/Sends To: Shared internal repository",
+      "Uses: Regulatory alignment assessment report, Revised Compliance Plan, Cost projection spreadsheet  \nAction: Create executive summary emphasizing strategic priorities and ROI metrics  \nProduces: Executive Summary  \nStores/Sends To: Secure email distribution list for leadership  \n\n[DEPTH STOP] All leaf inputs are SYSTEM-RETRIEVABLE or USER-CONTROLLED. No unresolved DERIVABLE chains."
+    ],
+    "raw_response": "Inputs:  \n1. FAA Audit Report  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User provides directly  \n   Input Data: Complete audit findings document with identified discrepancies in turbine engine inspection procedures  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n2. Existing Turbine Engine Inspection Procedures  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal document management system (e.g., SharePoint, Confluence)  \n   Input Data: Current procedural documentation, checklists, and compliance workflows  \n   Bound Reference: N/A  \n\n3. FAA Compliance Standards (14 CFR Part 33, 14 CFR Part 43)  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: FAA API or electronic Code of Federal Regulations (e-CFR) database  \n   Input Data: Regulatory text defining inspection frequency, methodology, and documentation requirements  \n   Bound Reference: N/A  \n\n4. Industry Best Practices (e.g., SAE International ARP4761)  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Subscription-based technical standards database  \n   Input Data: Recommended practices for turbine engine maintenance and quality assurance  \n   Bound Reference: N/A  \n\n5. Historical Maintenance Cost Data  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal ERP system (e.g., SAP, Oracle)  \n   Input Data: Cost records for past inspections, labor hours, and component replacements  \n   Bound Reference: N/A  \n\nOutputs:  \n1. Audit Analysis Report  \n   Description: Technical assessment of discrepancies between existing procedures and FAA requirements  \n   Verification: Stored in compliance management system with version control  \n\n2. Revised Compliance Plan  \n   Description: Updated inspection procedures with gap-closure actions, timelines, and resource allocations  \n   Verification: Document management system with stakeholder approval tracking  \n\n3. Technical Summary  \n   Description: Detailed engineering rationale for procedural changes, including risk mitigation strategies  \n   Verification: Shared internal repository for maintenance teams  \n\n4. Executive Summary  \n   Description: High-level overview of audit findings, financial implications, and compliance roadmap  \n   Verification: PDF distributed to executive leadership and board members  \n\nSteps:  \nStep 1:  \nUses: FAA Audit Report, Existing Turbine Engine Inspection Procedures  \nAction: Perform discrepancy analysis to map audit findings to specific procedural gaps  \nProduces: Initial gap mapping matrix  \nStores/Sends To: Compliance management system  \n\nStep 2:  \nUses: Existing Turbine Engine Inspection Procedures, FAA Compliance Standards, Industry Best Practices  \nAction: Benchmark current procedures against regulatory requirements and recommended practices  \nProduces: Regulatory alignment assessment report  \nStores/Sends To: Document management system  \n\nStep 3:  \nUses: Gap mapping matrix, Regulatory alignment assessment report, Historical Maintenance Cost Data  \nAction: Develop prioritized revision proposals incorporating cost-benefit analysis  \nProduces: Draft compliance plan with phased implementation options  \nStores/Sends To: Project management tool (e.g., Jira, Asana)  \n\nStep 4:  \nUses: Historical Maintenance Cost Data  \nAction: Generate cost estimates for proposed procedural changes using regression analysis  \nProduces: Cost projection spreadsheet with confidence intervals  \nStores/Sends To: Financial planning system  \n\nStep 5:  \nUses: Draft compliance plan, Cost projection spreadsheet  \nAction: Finalize compliance plan with executive decision points and risk assessments  \nProduces: Revised Compliance Plan  \nStores/Sends To: Document management system  \n\nStep 6:  \nUses: Audit Analysis Report, Revised Compliance Plan  \nAction: Compile technical summary with engineering details and implementation specifications  \nProduces: Technical Summary  \nStores/Sends To: Shared internal repository  \n\nStep 7:  \nUses: Regulatory alignment assessment report, Revised Compliance Plan, Cost projection spreadsheet  \nAction: Create executive summary emphasizing strategic priorities and ROI metrics  \nProduces: Executive Summary  \nStores/Sends To: Secure email distribution list for leadership  \n\n[DEPTH STOP] All leaf inputs are SYSTEM-RETRIEVABLE or USER-CONTROLLED. No unresolved DERIVABLE chains."
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": "### Step-by-Step Analysis\n\n---\n\n#### **Step 1**  \n**Step:** Perform discrepancy analysis to map audit findings to specific procedural gaps  \n**Is AEB:** No  \n**Reason:**  \n- **Branching/Logic Required**: Mapping audit findings to procedural gaps inherently involves conditional logic (e.g., \"if finding X exists, then gap Y is identified\").  \n- **Multiple Substeps**: Requires parsing audit data, identifying gaps, and generating a matrix.  \n- **System Boundary Interaction**: Involves reading from and writing to systems (FAA Audit Report, Compliance Management System).  \n**Suggestion:** Break into:  \n1. Retrieve audit findings (AEB).  \n2. Compare findings to procedures (AEB).  \n3. Generate gap mapping matrix (AEB).  \n\n---\n\n#### **Step 2**  \n**Step:** Benchmark current procedures against regulatory requirements and recommended practices  \n**Is AEB:** No  \n**Reason:**  \n- **Analysis Complexity**: Benchmarking requires comparing procedures to multiple standards (FAA, Industry Best Practices), which involves branching logic (e.g., \"if procedure A meets standard B, then mark as compliant\").  \n- **Multiple Inputs**: Combines three data sources (Existing Procedures, FAA Standards, Best Practices).  \n**Suggestion:** Break into:  \n1. Retrieve FAA Compliance Standards (AEB).  \n2. Retrieve Industry Best Practices (AEB).  \n3. Compare procedures to standards (AEB).  \n\n---\n\n#### **Step 3**  \n**Step:** Develop prioritized revision proposals incorporating cost-benefit analysis  \n**Is AEB:** No  \n**Reason:**  \n- **Sequencing/Logic**: Prioritization and cost-benefit analysis require ranking proposals (sequencing) and decision logic (e.g., \"if cost < benefit, prioritize\").  \n- **Multiple Inputs**: Combines gap matrix, cost data, and regulatory reports.  \n**Suggestion:** Break into:  \n1. Retrieve gap mapping matrix (AEB).  \n2. Calculate cost-benefit ratios (AEB).  \n3. Rank proposals by priority (AEB).  \n\n---\n\n#### **Step 4**  \n**Step:** Generate cost estimates for proposed procedural changes using regression analysis  \n**Is AEB:** Yes  \n**Reason:**  \n- **Single Intent**: Regression analysis on historical data is a single mathematical operation.  \n- **System Boundary**: Reads from Historical Maintenance Cost Data and writes to a spreadsheet.  \n- **No Branching/Sequencing**: Regression is a deterministic calculation.  \n**Note:** Assumes regression analysis is implemented as a single API/function.  \n\n---\n\n#### **Step 5**  \n**Step:** Finalize compliance plan with executive decision points and risk assessments  \n**Is AEB:** No  \n**Reason:**  \n- **Branching/Validation**: Incorporating decision points and risk assessments requires conditional logic (e.g., \"if risk > threshold, add mitigation\").  \n- **Multiple Inputs**: Combines draft plan, cost data, and executive feedback.  \n**Suggestion:** Break into:  \n1. Retrieve Draft Compliance Plan (AEB).  \n2. Add executive decision points (AEB).  \n3. Append risk assessments (AEB).  \n\n---\n\n#### **Step 6**  \n**Step:** Compile technical summary with engineering details and implementation specifications  \n**Is AEB:** Yes  \n**Reason:**  \n- **Single Intent**: Compiling a summary is a document-generation task.  \n- **System Boundary**: Reads from Audit Analysis Report and Revised Compliance Plan, writes to a repository.  \n- **No Logic**: Assumes the summary is a structured aggregation of inputs.  \n**Note:** Valid only if no analysis or synthesis is required (e.g., copy-paste of existing data).  \n\n---\n\n#### **Step 7**  \n**Step:** Create executive summary emphasizing strategic priorities and ROI metrics  \n**Is AEB:** No  \n**Reason:**  \n- **Analysis Complexity**: Requires selecting strategic priorities and calculating ROI metrics, which involves branching logic (e.g., \"if ROI > 10%, highlight\").  \n- **Multiple Inputs**: Combines compliance plan, cost data, and regulatory reports.  \n**Suggestion:** Break into:  \n1. Extract ROI metrics (AEB).  \n2. Align with strategic priorities (AEB).  \n3. Generate executive summary (AEB).  \n\n---\n\n### Summary Table\n\n| Step | Is AEB | Key Reason for Non-AEB |\n|------|------|-------------------------|\n| 1    | No   | Branching logic, multiple substeps |\n| 2    | No   | Benchmarking logic, multiple inputs |\n| 3    | No   | Prioritization sequencing, cost-benefit logic |\n| 4    | Yes  | Single regression function |\n| 5    | No   | Decision points, risk logic |\n| 6    | Yes  | Document generation |\n| 7    | No   | ROI prioritization logic, multiple inputs |",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

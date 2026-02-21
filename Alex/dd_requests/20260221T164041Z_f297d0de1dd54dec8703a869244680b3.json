@@ -1,0 +1,105 @@
+{
+  "task_id": "15165d4ab265",
+  "input": "Design a multi-case customer support workflow that automatically resolves simple issues, flags complex ones for agents, and tracks resolution performance.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "C",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "CRM/Support Ticket System API (e.g., Zendesk/Salesforce)",
+        "input_data": "Structured case records containing text logs, timestamps, customer IDs, issue descriptions",
+        "bound_reference": "None"
+      },
+      {
+        "name": "I",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Support Team Configuration Portal",
+        "input_data": "Predefined rule set or ML model weights for complexity classification",
+        "bound_reference": "None"
+      },
+      {
+        "name": "P",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Knowledge Base Management System",
+        "input_data": "Template responses mapped to common issue categories",
+        "bound_reference": "None"
+      },
+      {
+        "name": "E",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Workflow Configuration Interface",
+        "input_data": "Numeric complexity score threshold (0.0-1.0) for agent escalation",
+        "bound_reference": "None"
+      },
+      {
+        "name": "A",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Workforce Management System API (e.g., NICE inContact)",
+        "input_data": "Real-time agent status (available/busy), skill mappings, queue assignments",
+        "bound_reference": "None"
+      },
+      {
+        "name": "P",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Analytics Configuration Tool",
+        "input_data": "Metric definitions (e.g., SLA adherence, first-contact resolution rate)",
+        "bound_reference": "None"
+      },
+      {
+        "name": "C",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Post-Interaction Survey System API",
+        "input_data": "Customer satisfaction scores (CSAT), Net Promoter Scores (NPS)",
+        "bound_reference": "None"
+      },
+      {
+        "name": "C",
+        "source_type": "DERIVABLE",
+        "source_origin": "Derived from Input 1 & 2",
+        "input_data": "Calculated complexity score (0.0-1.0) using classification model on interaction data",
+        "bound_reference": "Input 1, Input 2"
+      },
+      {
+        "name": "E",
+        "source_type": "DERIVABLE",
+        "source_origin": "Derived from Input 8 & 4",
+        "input_data": "Boolean flag indicating if case requires agent escalation",
+        "bound_reference": "Input 8, Input 4"
+      }
+    ],
+    "outputs": [
+      "Automated Response Execution",
+      "Agent Escalation Alert",
+      "Resolution Performance Dashboard",
+      "Case Status Update"
+    ],
+    "steps": [
+      "Uses: Customer Interaction Data\nAction: Pull new case records from CRM API with webhook trigger\nProduces: Raw case data buffer\nStores/Sends To: In-memory processing queue (Apache Kafka topic)",
+      "Uses: Customer Interaction Data, Issue Classification Rules/Model\nAction: Apply NLP model to calculate complexity score (0.0-1.0)\nProduces: Case Complexity Score\nStores/Sends To: Redis cache with 24hr TTL",
+      "Uses: Case Complexity Score, Escalation Threshold Parameter\nAction: Compare score against threshold using binary classifier\nProduces: Escalation Requirement Flag\nStores/Sends To: Decision matrix database table",
+      "Uses: Escalation Requirement Flag, Predefined Automated Responses\nAction: When flag=false, select response template by issue category and send via CRM API\nProduces: Automated Response Execution\nStores/Sends To: CRM interaction history, response tracking database",
+      "Uses: Escalation Requirement Flag, Agent Availability Status\nAction: When flag=true, assign case to appropriate agent queue based on skill mapping\nProduces: Agent Escalation Alert\nStores/Sends To: Workforce Management System queue endpoint",
+      "Uses: Case Status Update, Customer Feedback Data\nAction: Aggregate resolution time, CSAT, and NPS data into metrics store\nProduces: Resolution Performance Dashboard\nStores/Sends To: Analytics data warehouse (Snowflake/BigQuery)",
+      "Uses: Automated Response Execution, Agent Escalation Alert\nAction: Write final status to CRM based on resolution pathway\nProduces: Case Status Update\nStores/Sends To: CRM database, audit log system"
+    ],
+    "raw_response": "Inputs:\n1. Customer Interaction Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: CRM/Support Ticket System API (e.g., Zendesk/Salesforce)\n   Input Data: Structured case records containing text logs, timestamps, customer IDs, issue descriptions\n   Bound Reference: None\n   Note: [DEPTH STOP - Terminal input]\n\n2. Issue Classification Rules/Model\n   Source Type: USER-CONTROLLED\n   Source Origin: Support Team Configuration Portal\n   Input Data: Predefined rule set or ML model weights for complexity classification\n   Bound Reference: None\n   Note: Requires explicit user provision or linkage.\n\n3. Predefined Automated Responses\n   Source Type: USER-CONTROLLED\n   Source Origin: Knowledge Base Management System\n   Input Data: Template responses mapped to common issue categories\n   Bound Reference: None\n   Note: Requires explicit user provision or linkage.\n\n4. Escalation Threshold Parameter\n   Source Type: USER-CONTROLLED\n   Source Origin: Workflow Configuration Interface\n   Input Data: Numeric complexity score threshold (0.0-1.0) for agent escalation\n   Bound Reference: None\n   Note: Requires explicit user provision or linkage.\n\n5. Agent Availability Status\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Workforce Management System API (e.g., NICE inContact)\n   Input Data: Real-time agent status (available/busy), skill mappings, queue assignments\n   Bound Reference: None\n   Note: [DEPTH STOP - Terminal input]\n\n6. Performance Metrics Definitions\n   Source Type: USER-CONTROLLED\n   Source Origin: Analytics Configuration Tool\n   Input Data: Metric definitions (e.g., SLA adherence, first-contact resolution rate)\n   Bound Reference: None\n   Note: Requires explicit user provision or linkage.\n\n7. Customer Feedback Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Post-Interaction Survey System API\n   Input Data: Customer satisfaction scores (CSAT), Net Promoter Scores (NPS)\n   Bound Reference: None\n   Note: [DEPTH STOP - Terminal input]\n\n8. Case Complexity Score\n   Source Type: DERIVABLE\n   Source Origin: Derived from Input 1 & 2\n   Input Data: Calculated complexity score (0.0-1.0) using classification model on interaction data\n   Bound Reference: Input 1, Input 2\n   Note: [DEPTH STOP - Terminal input]\n\n9. Escalation Requirement Flag\n   Source Type: DERIVABLE\n   Source Origin: Derived from Input 8 & 4\n   Input Data: Boolean flag indicating if case requires agent escalation\n   Bound Reference: Input 8, Input 4\n   Note: [DEPTH STOP - Terminal input]\n\nOutputs:\n1. Automated Response Execution\n   Type: Triggered Action\n   Description: Immediate response sent to customer via support channel\n   Verification: Message delivery receipt, channel API response code\n\n2. Agent Escalation Alert\n   Type: System Update\n   Description: Case assignment notification in agent workbench\n   Verification: Queue update in WFM system, alert timestamp\n\n3. Resolution Performance Dashboard\n   Type: Measurable Report\n   Description: Interactive dashboard showing SLA metrics, resolution times\n   Verification: Dashboard API endpoint returns 200 OK with data payload\n\n4. Case Status Update\n   Type: Persisted State Change\n   Description: Case record status transition (e.g., \"Pending → Resolved\")\n   Verification: CRM database record update timestamp\n\nSteps:\nStep 1: Ingest Customer Interaction\nUses: Customer Interaction Data\nAction: Pull new case records from CRM API with webhook trigger\nProduces: Raw case data buffer\nStores/Sends To: In-memory processing queue (Apache Kafka topic)\n\nStep 2: Classify Issue Complexity\nUses: Customer Interaction Data, Issue Classification Rules/Model\nAction: Apply NLP model to calculate complexity score (0.0-1.0)\nProduces: Case Complexity Score\nStores/Sends To: Redis cache with 24hr TTL\n\nStep 3: Evaluate Escalation Requirements\nUses: Case Complexity Score, Escalation Threshold Parameter\nAction: Compare score against threshold using binary classifier\nProduces: Escalation Requirement Flag\nStores/Sends To: Decision matrix database table\n\nStep 4: Execute Automated Resolution\nUses: Escalation Requirement Flag, Predefined Automated Responses\nAction: When flag=false, select response template by issue category and send via CRM API\nProduces: Automated Response Execution\nStores/Sends To: CRM interaction history, response tracking database\n\nStep 5: Route to Agent Queue\nUses: Escalation Requirement Flag, Agent Availability Status\nAction: When flag=true, assign case to appropriate agent queue based on skill mapping\nProduces: Agent Escalation Alert\nStores/Sends To: Workforce Management System queue endpoint\n\nStep 6: Capture Resolution Metrics\nUses: Case Status Update, Customer Feedback Data\nAction: Aggregate resolution time, CSAT, and NPS data into metrics store\nProduces: Resolution Performance Dashboard\nStores/Sends To: Analytics data warehouse (Snowflake/BigQuery)\n\nStep 7: Update Case Status\nUses: Automated Response Execution, Agent Escalation Alert\nAction: Write final status to CRM based on resolution pathway\nProduces: Case Status Update\nStores/Sends To: CRM database, audit log system"
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": null,
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

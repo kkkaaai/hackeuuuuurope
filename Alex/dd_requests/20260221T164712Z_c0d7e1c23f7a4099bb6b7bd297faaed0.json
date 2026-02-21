@@ -1,0 +1,95 @@
+{
+  "task_id": "b478d4e9dbe2",
+  "input": "Conduct a structured analysis of a critical aircraft maintenance procedure to identify risks and compliance issues, propose revisions, and deliver both technical and executive summaries.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "Aircraft Maintenance Procedure Document",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User organization",
+        "input_data": "Specific maintenance procedure (e.g., engine overhaul protocol)",
+        "bound_reference": "None"
+      },
+      {
+        "name": "Regulatory Compliance Standards (e.g., FAA/EASA Part 145)",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "FAA/EASA regulatory databases/APIs",
+        "input_data": "Current aviation maintenance regulations, airworthiness directives",
+        "bound_reference": "[DEPTH STOP - Terminal input]"
+      },
+      {
+        "name": "Historical Maintenance Records",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Organization’s Computerized Maintenance Management System (CMMS)",
+        "input_data": "Past maintenance logs, defect reports, repair histories",
+        "bound_reference": "[DEPTH STOP - Terminal input]"
+      },
+      {
+        "name": "Aircraft Technical Specifications",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Manufacturer’s engineering database/API (e.g., Boeing/Airbus)",
+        "input_data": "Component tolerances, service life limits, maintenance intervals",
+        "bound_reference": "[DEPTH STOP - Terminal input]"
+      },
+      {
+        "name": "Subject Matter Expert (SME) Input",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-designated aviation maintenance expert",
+        "input_data": "Qualitative insights on procedure risks, compliance blind spots",
+        "bound_reference": "None"
+      },
+      {
+        "name": "Risk Assessment Criteria",
+        "source_type": "DERIVABLE",
+        "source_origin": "Regulatory Compliance Standards (Input 2)",
+        "input_data": "Risk scoring matrices, failure mode thresholds",
+        "bound_reference": "Derived from Input 2"
+      },
+      {
+        "name": "Compliance Checklist Templates",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Regulatory authority portals or internal audit systems",
+        "input_data": "Standardized compliance verification forms",
+        "bound_reference": "[DEPTH STOP - Terminal input]"
+      }
+    ],
+    "outputs": [
+      "**Technical Summary Report**",
+      "**Executive Summary Report**",
+      "**Risk Register**",
+      "**Compliance Gap Analysis Matrix**",
+      "**Proposed Procedure Revisions**"
+    ],
+    "steps": [
+      "Uses: Aircraft Maintenance Procedure Document (Input 1)  \nAction: Parse and digitize procedure steps into structured workflow  \nProduces: Structured workflow diagram  \nStores/Sends To: Project management tool",
+      "Uses: Regulatory Compliance Standards (Input 2)  \nAction: Retrieve and extract relevant regulatory clauses using keyword filters  \nProduces: Regulatory clause database  \nStores/Sends To: Compliance analysis module",
+      "Uses: Historical Maintenance Records (Input 3)  \nAction: Query defect recurrence rates and repair times for procedure components  \nProduces: Defect frequency report  \nStores/Sends To: Risk assessment module",
+      "Uses: Aircraft Technical Specifications (Input 4)  \nAction: Validate procedure tolerances against manufacturer-specified limits  \nProduces: Tolerance compliance report  \nStores/Sends To: Technical analysis module",
+      "Uses: Subject Matter Expert (SME) Input (Input 5)  \nAction: Conduct structured interview to identify undocumented risks  \nProduces: SME risk inventory  \nStores/Sends To: Risk register",
+      "Uses: Regulatory Compliance Standards (Input 2), Compliance Checklist Templates (Input 7)  \nAction: Map procedure steps to checklist requirements using NLP matching  \nProduces: Compliance mapping matrix  \nStores/Sends To: Compliance gap analysis module",
+      "Uses: Risk Register (Output 3), Historical Maintenance Records (Input 3), Aircraft Maintenance Procedure Document (Input 1)  \nAction: Perform root-cause analysis of high-frequency defects  \nProduces: Root-cause analysis report  \nStores/Sends To: Technical summary",
+      "Uses: Risk Assessment Criteria (Input 6), SME Risk Inventory (Step 5 output)  \nAction: Score risks using regulatory thresholds and SME input  \nProduces: Prioritized risk register  \nStores/Sends To: Risk management database",
+      "Uses: Compliance Gap Analysis Matrix (Step 6 output), Prioritized Risk Register (Step 8 output)  \nAction: Draft technical revisions to address gaps and risks  \nProduces: Proposed procedure revisions  \nStores/Sends To: CMMS update queue",
+      "Uses: Proposed Procedure Revisions (Output 5), Executive Summary Report (Output 2)  \nAction: Generate executive summary with cost-benefit analysis of revisions  \nProduces: Final executive summary  \nStores/Sends To: Executive dashboard  \n\n---"
+    ],
+    "raw_response": "Inputs:  \n1. **Aircraft Maintenance Procedure Document**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User organization  \n   Input Data: Specific maintenance procedure (e.g., engine overhaul protocol)  \n   Bound Reference: None  \n   Note: Requires explicit user provision or linkage.  \n\n2. **Regulatory Compliance Standards (e.g., FAA/EASA Part 145)**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: FAA/EASA regulatory databases/APIs  \n   Input Data: Current aviation maintenance regulations, airworthiness directives  \n   Bound Reference: [DEPTH STOP - Terminal input]  \n\n3. **Historical Maintenance Records**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Organization’s Computerized Maintenance Management System (CMMS)  \n   Input Data: Past maintenance logs, defect reports, repair histories  \n   Bound Reference: [DEPTH STOP - Terminal input]  \n\n4. **Aircraft Technical Specifications**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Manufacturer’s engineering database/API (e.g., Boeing/Airbus)  \n   Input Data: Component tolerances, service life limits, maintenance intervals  \n   Bound Reference: [DEPTH STOP - Terminal input]  \n\n5. **Subject Matter Expert (SME) Input**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-designated aviation maintenance expert  \n   Input Data: Qualitative insights on procedure risks, compliance blind spots  \n   Bound Reference: None  \n   Note: Requires explicit user provision or linkage.  \n\n6. **Risk Assessment Criteria**  \n   Source Type: DERIVABLE  \n   Source Origin: Regulatory Compliance Standards (Input 2)  \n   Input Data: Risk scoring matrices, failure mode thresholds  \n   Bound Reference: Derived from Input 2  \n   Note: [DEPTH STOP - Terminal input]  \n\n7. **Compliance Checklist Templates**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Regulatory authority portals or internal audit systems  \n   Input Data: Standardized compliance verification forms  \n   Bound Reference: [DEPTH STOP - Terminal input]  \n\n---\n\nOutputs:  \n1. **Technical Summary Report**  \n   Type: Observable artifact  \n   Description: Detailed analysis of risks, compliance gaps, and technical revisions  \n   Storage: Secure document repository  \n\n2. **Executive Summary Report**  \n   Type: Observable artifact  \n   Description: High-level risks, compliance impacts, and cost-benefit recommendations  \n   Storage: Executive dashboard  \n\n3. **Risk Register**  \n   Type: Persisted state change  \n   Description: Catalog of identified risks with severity scores and mitigation plans  \n   Storage: Risk management database  \n\n4. **Compliance Gap Analysis Matrix**  \n   Type: Measurable report  \n   Description: Mapping of procedure steps to regulatory requirements  \n   Storage: Audit system  \n\n5. **Proposed Procedure Revisions**  \n   Type: Triggered action  \n   Description: Version-controlled updates to the maintenance procedure  \n   Storage: CMMS update queue  \n\n---\n\nSteps:  \nStep 1:  \nUses: Aircraft Maintenance Procedure Document (Input 1)  \nAction: Parse and digitize procedure steps into structured workflow  \nProduces: Structured workflow diagram  \nStores/Sends To: Project management tool  \n\nStep 2:  \nUses: Regulatory Compliance Standards (Input 2)  \nAction: Retrieve and extract relevant regulatory clauses using keyword filters  \nProduces: Regulatory clause database  \nStores/Sends To: Compliance analysis module  \n\nStep 3:  \nUses: Historical Maintenance Records (Input 3)  \nAction: Query defect recurrence rates and repair times for procedure components  \nProduces: Defect frequency report  \nStores/Sends To: Risk assessment module  \n\nStep 4:  \nUses: Aircraft Technical Specifications (Input 4)  \nAction: Validate procedure tolerances against manufacturer-specified limits  \nProduces: Tolerance compliance report  \nStores/Sends To: Technical analysis module  \n\nStep 5:  \nUses: Subject Matter Expert (SME) Input (Input 5)  \nAction: Conduct structured interview to identify undocumented risks  \nProduces: SME risk inventory  \nStores/Sends To: Risk register  \n\nStep 6:  \nUses: Regulatory Compliance Standards (Input 2), Compliance Checklist Templates (Input 7)  \nAction: Map procedure steps to checklist requirements using NLP matching  \nProduces: Compliance mapping matrix  \nStores/Sends To: Compliance gap analysis module  \n\nStep 7:  \nUses: Risk Register (Output 3), Historical Maintenance Records (Input 3), Aircraft Maintenance Procedure Document (Input 1)  \nAction: Perform root-cause analysis of high-frequency defects  \nProduces: Root-cause analysis report  \nStores/Sends To: Technical summary  \n\nStep 8:  \nUses: Risk Assessment Criteria (Input 6), SME Risk Inventory (Step 5 output)  \nAction: Score risks using regulatory thresholds and SME input  \nProduces: Prioritized risk register  \nStores/Sends To: Risk management database  \n\nStep 9:  \nUses: Compliance Gap Analysis Matrix (Step 6 output), Prioritized Risk Register (Step 8 output)  \nAction: Draft technical revisions to address gaps and risks  \nProduces: Proposed procedure revisions  \nStores/Sends To: CMMS update queue  \n\nStep 10:  \nUses: Proposed Procedure Revisions (Output 5), Executive Summary Report (Output 2)  \nAction: Generate executive summary with cost-benefit analysis of revisions  \nProduces: Final executive summary  \nStores/Sends To: Executive dashboard  \n\n--- \n\nDependency Consistency Check:  \n- All inputs used in steps  \n- No implicit data sources  \n- USER/SYSTEM inputs explicitly marked  \n- DERIVABLE inputs fully decomposed  \n- All leaf inputs marked [DEPTH STOP]"
+  },
+  "aeb_analysis": {
+    "steps_count": 10,
+    "aeb_analysis_raw": "### Step-by-Step Analysis\n\n---\n\n**Step 1**  \n- **Step**: Parse and digitize procedure steps into structured workflow  \n- **Is AEB**: No  \n- **Reason**: Involves multiple actions (parsing, digitizing, diagram creation) and interacts with two system boundaries (document input and project management tool output). Contains implicit sequencing.  \n- **Suggestion**: Break into:  \n  1. Parse document → Extract raw text  \n  2. Convert text → Structured workflow format  \n  3. Generate diagram from structured workflow  \n  4. Send diagram to project management tool  \n\n---\n\n**Step 2**  \n- **Step**: Retrieve and extract relevant regulatory clauses using keyword filters  \n- **Is AEB**: No  \n- **Reason**: Combines retrieval (system boundary interaction) and extraction (filtering logic). May involve implicit branching (keyword matching).  \n- **Suggestion**: Split into:  \n  1. Retrieve regulatory clauses from standards  \n  2. Extract clauses using keyword filters  \n\n---\n\n**Step 3**  \n- **Step**: Query defect recurrence rates and repair times for procedure components  \n- **Is AEB**: Yes  \n- **Reason**: Single intent (query historical data), interacts with one system boundary (database), no branching or validation. Can be implemented as a single API call.  \n\n---\n\n**Step 4**  \n- **Step**: Validate procedure tolerances against manufacturer-specified limits  \n- **Is AEB**: No  \n- **Reason**: \"Validate\" implies comparison logic (branching) and error handling (e.g., pass/fail thresholds).  \n- **Suggestion**: Split into:  \n  1. Retrieve manufacturer tolerance limits  \n  2. Compare procedure tolerances with limits  \n  3. Generate compliance report  \n\n---\n\n**Step 5**  \n- **Step**: Conduct structured interview to identify undocumented risks  \n- **Is AEB**: No  \n- **Reason**: Requires human interaction (interview) and involves multiple substeps (scheduling, data collection, analysis). Cannot be implemented as a single function.  \n- **Suggestion**: Split into:  \n  1. Initiate interview with SME  \n  2. Record SME responses  \n  3. Extract risks from interview data  \n\n---\n\n**Step 6**  \n- **Step**: Map procedure steps to checklist requirements using NLP matching  \n- **Is AEB**: No  \n- **Reason**: Combines NLP processing (text analysis) and mapping logic. May involve sequencing (tokenization → matching → matrix generation).  \n- **Suggestion**: Split into:  \n  1. Analyze procedure steps with NLP  \n  2. Match NLP results to checklist requirements  \n  3. Generate compliance mapping matrix  \n\n---\n\n**Step 7**  \n- **Step**: Perform root-cause analysis of high-frequency defects  \n- **Is AEB**: No  \n- **Reason**: Complex analytical process requiring data synthesis, statistical analysis, and hypothesis generation. Involves branching logic.  \n- **Suggestion**: Split into:  \n  1. Aggregate defect data from historical records  \n  2. Identify patterns in defect recurrence  \n  3. Generate root-cause analysis report  \n\n---\n\n**Step 8**  \n- **Step**: Score risks using regulatory thresholds and SME input  \n- **Is AEB**: No  \n- **Reason**: Requires weighted scoring logic and conditional thresholds (branching).  \n- **Suggestion**: Split into:  \n  1. Retrieve regulatory thresholds  \n  2. Apply scoring algorithm to SME risks  \n  3. Generate prioritized risk register  \n\n---\n\n**Step 9**  \n- **Step**: Draft technical revisions to address gaps and risks  \n- **Is AEB**: Yes  \n- **Reason**: Single intent (drafting revisions), interacts with one system boundary (CMMS), no branching or validation. Can be implemented as a single \"generate_revisions\" function.  \n\n---\n\n**Step 10**  \n- **Step**: Generate executive summary with cost-benefit analysis of revisions  \n- **Is AEB**: No  \n- **Reason**: Combines data compilation (sequencing) and cost-benefit analysis (branching logic).  \n- **Suggestion**: Split into:  \n  1. Compile cost-benefit data for revisions  \n  2. Generate executive summary report  \n\n---\n\n### Summary of AEBs  \n**Valid AEBs**: Steps 3, 9  \n**Invalid AEBs**: Steps 1, 2, 4, 5, 6, 7, 8, 10 (require decomposition).",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

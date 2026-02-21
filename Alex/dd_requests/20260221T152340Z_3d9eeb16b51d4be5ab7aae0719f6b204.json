@@ -1,0 +1,27 @@
+{
+  "task_id": "a5e614bb4a99",
+  "input": " Process a flagged high-value international wire transfer by verifying sanctions lists via API, resolving a compliance hold due to missing beneficiary details, updating the core banking ledger, and confirming settlement to the client.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [],
+    "outputs": [],
+    "steps": [],
+    "raw_response": null
+  },
+  "aeb_analysis": {
+    "steps_count": 0,
+    "aeb_analysis": []
+  },
+  "io_decomposed": true
+}

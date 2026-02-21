@@ -1,0 +1,77 @@
+{
+  "task_id": "845b615e1233",
+  "input": " Analyze live turbine data, adjust parameters within safety constraints, monitor the results, and report performance improvements.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "L",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Turbine Sensor API endpoint (https://api.turbinesensors.com/v1/live-data)",
+        "input_data": "Real-time measurements (RPM, temperature, vibration, power output)",
+        "bound_reference": "None"
+      },
+      {
+        "name": "S",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Engineering team",
+        "input_data": "Numeric thresholds (max RPM: 1200, max temp: 800°C, vibration limit: 5mm/s)",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "T",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Operations management",
+        "input_data": "Desired output targets (min power: 2.5MW, efficiency: ≥92%)",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "C",
+        "source_type": "DERIVABLE",
+        "source_origin": "Computed from Live Turbine Sensor Data",
+        "input_data": "Calculated efficiency, average power output over 15-minute window",
+        "bound_reference": "Input 1 (Live Turbine Sensor Data)"
+      },
+      {
+        "name": "P",
+        "source_type": "DERIVABLE",
+        "source_origin": "Computed from Current Performance Metrics and Safety Constraint Parameters",
+        "input_data": "Proposed adjustments (blade angle ±5°, RPM target range: 1000-1150)",
+        "bound_reference": "Inputs 2,4"
+      }
+    ],
+    "outputs": [
+      "Adjusted Turbine Parameters",
+      "Continuous Monitoring Dashboard",
+      "Performance Improvement Report"
+    ],
+    "steps": [
+      "Uses: Live Turbine Sensor Data\nAction: Stream and validate sensor data quality\nProduces: Cleaned sensor dataset (15-minute window)\nStores/Sends To: Local buffer memory",
+      "Uses: Cleaned sensor dataset, Safety Constraint Parameters\nAction: Validate data against safety thresholds\nProduces: Safety compliance status (boolean)\nStores/Sends To: Monitoring dashboard",
+      "Uses: Cleaned sensor dataset\nAction: Calculate current performance metrics\nProduces: Efficiency percentage, power output average\nStores/Sends To: Local buffer memory",
+      "Uses: Current Performance Metrics, Target Performance Metrics\nAction: Compare actual vs target performance\nProduces: Performance gap analysis\nStores/Sends To: Adjustment algorithm input queue",
+      "Uses: Performance gap analysis, Safety Constraint Parameters\nAction: Generate constrained parameter adjustments\nProduces: Parameter adjustment plan\nStores/Sends To: Turbine control system API",
+      "Uses: Parameter adjustment plan\nAction: Apply validated parameter changes to turbine\nProduces: Updated turbine configuration\nStores/Sends To: Turbine control system (https://api.turbinecontrol.com/v2/parameters)",
+      "Uses: Updated turbine configuration, Live Turbine Sensor Data\nAction: Monitor post-adjustment performance\nProduces: Time-series comparison dataset\nStores/Sends To: Monitoring dashboard database",
+      "Uses: Time-series comparison dataset, Target Performance Metrics\nAction: Generate performance improvement report\nProduces: PDF report with visualizations\nStores/Sends To: User email (via SendGrid API) and document storage (AWS S3://reports/turbine/)"
+    ],
+    "raw_response": "Inputs:\n1. Live Turbine Sensor Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Turbine Sensor API endpoint (https://api.turbinesensors.com/v1/live-data)\n   Input Data: Real-time measurements (RPM, temperature, vibration, power output)\n   Bound Reference: None\n\n2. Safety Constraint Parameters\n   Source Type: USER-CONTROLLED\n   Source Origin: Engineering team\n   Input Data: Numeric thresholds (max RPM: 1200, max temp: 800°C, vibration limit: 5mm/s)\n   Bound Reference: Requires explicit user provision or linkage.\n\n3. Target Performance Metrics\n   Source Type: USER-CONTROLLED\n   Source Origin: Operations management\n   Input Data: Desired output targets (min power: 2.5MW, efficiency: ≥92%)\n   Bound Reference: Requires explicit user provision or linkage.\n\n4. Current Performance Metrics\n   Source Type: DERIVABLE\n   Source Origin: Computed from Live Turbine Sensor Data\n   Input Data: Calculated efficiency, average power output over 15-minute window\n   Bound Reference: Input 1 (Live Turbine Sensor Data)\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\n5. Parameter Adjustment Plan\n   Source Type: DERIVABLE\n   Source Origin: Computed from Current Performance Metrics and Safety Constraint Parameters\n   Input Data: Proposed adjustments (blade angle ±5°, RPM target range: 1000-1150)\n   Bound Reference: Inputs 2,4\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\nOutputs:\n1. Adjusted Turbine Parameters\n2. Continuous Monitoring Dashboard\n3. Performance Improvement Report (PDF)\n\nSteps:\nStep 1:\nUses: Live Turbine Sensor Data\nAction: Stream and validate sensor data quality\nProduces: Cleaned sensor dataset (15-minute window)\nStores/Sends To: Local buffer memory\n\nStep 2:\nUses: Cleaned sensor dataset, Safety Constraint Parameters\nAction: Validate data against safety thresholds\nProduces: Safety compliance status (boolean)\nStores/Sends To: Monitoring dashboard\n\nStep 3:\nUses: Cleaned sensor dataset\nAction: Calculate current performance metrics\nProduces: Efficiency percentage, power output average\nStores/Sends To: Local buffer memory\n\nStep 4:\nUses: Current Performance Metrics, Target Performance Metrics\nAction: Compare actual vs target performance\nProduces: Performance gap analysis\nStores/Sends To: Adjustment algorithm input queue\n\nStep 5:\nUses: Performance gap analysis, Safety Constraint Parameters\nAction: Generate constrained parameter adjustments\nProduces: Parameter adjustment plan\nStores/Sends To: Turbine control system API\n\nStep 6:\nUses: Parameter adjustment plan\nAction: Apply validated parameter changes to turbine\nProduces: Updated turbine configuration\nStores/Sends To: Turbine control system (https://api.turbinecontrol.com/v2/parameters)\n\nStep 7:\nUses: Updated turbine configuration, Live Turbine Sensor Data\nAction: Monitor post-adjustment performance\nProduces: Time-series comparison dataset\nStores/Sends To: Monitoring dashboard database\n\nStep 8:\nUses: Time-series comparison dataset, Target Performance Metrics\nAction: Generate performance improvement report\nProduces: PDF report with visualizations\nStores/Sends To: User email (via SendGrid API) and document storage (AWS S3://reports/turbine/)"
+  },
+  "aeb_analysis": {
+    "steps_count": 8,
+    "aeb_analysis_raw": "### Step-by-Step Analysis\n\n---\n\n**Step 1**  \n**Step:** Stream and validate sensor data quality  \n**Is AEB:** No  \n**Reason:** Combines two distinct actions (streaming and validating), violating single intent. Validation logic is explicitly excluded from AEBs.  \n**Suggest:** Split into:  \n1. Stream sensor data → AEB (single intent, interacts with sensor API).  \n2. Validate sensor data quality → Not an AEB (contains validation logic).  \n\n---\n\n**Step 2**  \n**Step:** Validate data against safety thresholds  \n**Is AEB:** No  \n**Reason:** Explicitly involves validation logic, which is prohibited in AEBs.  \n**Suggest:** Replace with a direct safety check API call (e.g., `check_safety_thresholds(data)`), but validation logic must reside outside AEBs.  \n\n---\n\n**Step 3**  \n**Step:** Calculate current performance metrics  \n**Is AEB:** Yes  \n**Reason:** Single intent (calculation), no branching/sequencing, and can be implemented as a function (e.g., `calculate_metrics(data)`).  \n\n---\n\n**Step 4**  \n**Step:** Compare actual vs target performance  \n**Is AEB:** Yes  \n**Reason:** Single intent (comparison), no branching/sequencing, and can be implemented as a function (e.g., `compare_performance(actual, target)`).  \n\n---\n\n**Step 5**  \n**Step:** Generate constrained parameter adjustments  \n**Is AEB:** No  \n**Reason:** \"Constrained\" implies validation/branching logic (e.g., filtering adjustments that violate safety parameters).  \n**Suggest:** Split into:  \n1. Generate raw parameter adjustments → AEB (e.g., `generate_adjustments(gap)`).  \n2. Filter adjustments against safety constraints → Not an AEB (contains validation).  \n\n---\n\n**Step 6**  \n**Step:** Apply validated parameter changes to turbine  \n**Is AEB:** Yes  \n**Reason:** Single intent (API call to update turbine parameters), interacts with one system boundary (turbine control API).  \n\n---\n\n**Step 7**  \n**Step:** Monitor post-adjustment performance  \n**Is AEB:** No  \n**Reason:** \"Monitor\" implies ongoing sequencing (e.g., collecting data over time). Produces a time-series dataset, which requires aggregation logic.  \n**Suggest:** Split into:  \n1. Collect post-adjustment sensor data → AEB (interacts with sensor API).  \n2. Aggregate time-series data → Not an AEB (contains sequencing/aggregation logic).  \n\n---\n\n**Step 8**  \n**Step:** Generate performance improvement report  \n**Is AEB:** No  \n**Reason:** Interacts with two system boundaries (SendGrid API and AWS S3) and combines report generation with distribution.  \n**Suggest:** Split into:  \n1. Generate PDF report → AEB (e.g., `generate_report(data)`).  \n2. Send report via email → AEB (interacts with SendGrid API).  \n3. Store report in AWS S3 → AEB (interacts with S3 API).  \n\n--- \n\n### Summary of Non-AEB Steps and Breakdown  \n| Original Step | Split Into |  \n|---------------|------------|  \n| Step 1 | Stream sensor data → AEB<br>Validate sensor data quality → Not an AEB |  \n| Step 2 | Use safety check API → AEB (if validation logic is externalized) |  \n| Step 5 | Generate raw adjustments → AEB<br>Filter adjustments → Not an AEB |  \n| Step 7 | Collect post-adjustment data → AEB<br>Aggregate time-series → Not an AEB |  \n| Step 8 | Generate report → AEB<br>Email report → AEB<br>Store report in S3 → AEB |  \n\nAll AEBs must be pure functions/API calls with no internal logic for validation, branching, or sequencing.",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

@@ -1,0 +1,7 @@
+{
+  "task_id": "440e7e1b9974",
+  "input": "When a production line halts due to a missing component, update the inventory system, reschedule orders to prioritize urgent ones, and confirm the revised shipping timeline.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

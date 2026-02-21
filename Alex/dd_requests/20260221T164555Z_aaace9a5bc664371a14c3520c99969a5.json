@@ -1,0 +1,76 @@
+{
+  "task_id": "f33e55aa4872",
+  "input": "Design a system that automatically sorts, fixes, escalates, and tracks customer support issues for a hosting company.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "Customer Support Tickets",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Support ticketing system (e.g., Zendesk, Jira)",
+        "input_data": "Raw ticket data (issue description, customer ID, timestamp, priority)",
+        "bound_reference": "API endpoint: `/api/v1/tickets`"
+      },
+      {
+        "name": "Issue Categorization Rules",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Customer support team",
+        "input_data": "Mapping of keywords/phrases to issue categories (e.g., \"server down\" → \"Infrastructure\")",
+        "bound_reference": null
+      },
+      {
+        "name": "Historical Resolution Data",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal database of resolved tickets",
+        "input_data": "Past tickets with resolved solutions, categorized by issue type",
+        "bound_reference": "Database query: `SELECT * FROM resolved_tickets`"
+      },
+      {
+        "name": "Escalation Policies",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Customer support management",
+        "input_data": "Rules for escalation (e.g., \"unresolved >24h → escalate to Tier 2\")",
+        "bound_reference": null
+      },
+      {
+        "name": "Ticketing System Access Scope",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Ticketing system admin console",
+        "input_data": "API credentials with permissions to read/write tickets and update statuses",
+        "bound_reference": null
+      }
+    ],
+    "outputs": [
+      "**Categorized Tickets**",
+      "**Automatically Updated Ticket Statuses**",
+      "**Escalation Alerts**",
+      "**Daily Resolution Report**"
+    ],
+    "steps": [
+      "Uses: Customer Support Tickets  \nAction: Retrieve raw tickets from the ticketing system API  \nProduces: Raw ticket dataset  \nStores/Sends To: In-memory processing queue",
+      "Uses: Issue Categorization Rules, Raw ticket dataset  \nAction: Apply categorization rules to tag tickets  \nProduces: Categorized tickets  \nStores/Sends To: Categorized ticket database",
+      "Uses: Historical Resolution Data, Categorized tickets  \nAction: Match categorized tickets to historical resolutions using similarity analysis  \nProduces: Suggested fixes for tickets  \nStores/Sends To: Resolution suggestion cache",
+      "Uses: Suggested fixes, Ticketing System Access Scope  \nAction: Apply automated fixes (e.g., reset passwords, restart services) via API  \nProduces: Updated ticket statuses (Resolved/Unresolved)  \nStores/Sends To: Ticketing system (via `/api/v1/tickets/{id}/update`)",
+      "Uses: Escalation Policies, Unresolved Tickets  \nAction: Evaluate unresolved tickets against escalation policies  \nProduces: Escalation alerts  \nStores/Sends To: Slack/email integration",
+      "Uses: All processed ticket data  \nAction: Aggregate metrics (resolution time, escalation rate)  \nProduces: Daily resolution report  \nStores/Sends To: Internal dashboard and email distribution list  \n\n---"
+    ],
+    "raw_response": "Inputs:  \n1. **Customer Support Tickets**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Support ticketing system (e.g., Zendesk, Jira)  \n   Input Data: Raw ticket data (issue description, customer ID, timestamp, priority)  \n   Bound Reference: API endpoint: `/api/v1/tickets`  \n\n2. **Issue Categorization Rules**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Customer support team  \n   Input Data: Mapping of keywords/phrases to issue categories (e.g., \"server down\" → \"Infrastructure\")  \n   Note: Requires explicit user provision or linkage.  \n\n3. **Historical Resolution Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal database of resolved tickets  \n   Input Data: Past tickets with resolved solutions, categorized by issue type  \n   Bound Reference: Database query: `SELECT * FROM resolved_tickets`  \n\n4. **Escalation Policies**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Customer support management  \n   Input Data: Rules for escalation (e.g., \"unresolved >24h → escalate to Tier 2\")  \n   Note: Requires explicit user provision or linkage.  \n\n5. **Ticketing System Access Scope**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Ticketing system admin console  \n   Input Data: API credentials with permissions to read/write tickets and update statuses  \n\n---\n\nOutputs:  \n1. **Categorized Tickets**  \n   Type: Observable artifact  \n   Description: Tickets tagged with issue categories (e.g., \"Billing,\" \"Infrastructure\")  \n\n2. **Automatically Updated Ticket Statuses**  \n   Type: Persisted state change  \n   Description: Tickets marked as \"Resolved\" or \"Escalated\" in the ticketing system  \n\n3. **Escalation Alerts**  \n   Type: Triggered action  \n   Description: Notifications sent to Tier 2 support team via email/Slack  \n\n4. **Daily Resolution Report**  \n   Type: Measurable report  \n   Description: Summary of resolved, escalated, and pending tickets  \n\n---\n\nSteps:  \nStep 1:  \nUses: Customer Support Tickets  \nAction: Retrieve raw tickets from the ticketing system API  \nProduces: Raw ticket dataset  \nStores/Sends To: In-memory processing queue  \n\nStep 2:  \nUses: Issue Categorization Rules, Raw ticket dataset  \nAction: Apply categorization rules to tag tickets  \nProduces: Categorized tickets  \nStores/Sends To: Categorized ticket database  \n\nStep 3:  \nUses: Historical Resolution Data, Categorized tickets  \nAction: Match categorized tickets to historical resolutions using similarity analysis  \nProduces: Suggested fixes for tickets  \nStores/Sends To: Resolution suggestion cache  \n\nStep 4:  \nUses: Suggested fixes, Ticketing System Access Scope  \nAction: Apply automated fixes (e.g., reset passwords, restart services) via API  \nProduces: Updated ticket statuses (Resolved/Unresolved)  \nStores/Sends To: Ticketing system (via `/api/v1/tickets/{id}/update`)  \n\nStep 5:  \nUses: Escalation Policies, Unresolved Tickets  \nAction: Evaluate unresolved tickets against escalation policies  \nProduces: Escalation alerts  \nStores/Sends To: Slack/email integration  \n\nStep 6:  \nUses: All processed ticket data  \nAction: Aggregate metrics (resolution time, escalation rate)  \nProduces: Daily resolution report  \nStores/Sends To: Internal dashboard and email distribution list  \n\n---\n\nDepth Stop Conditions:  \n- **SYSTEM-RETRIEVABLE** inputs (tickets, historical data, access scope) are terminal.  \n- **USER-CONTROLLED** inputs (categorization rules, escalation policies) are terminal.  \n- All **DERIVABLE** inputs (e.g., suggested fixes) are decomposed into terminal sources."
+  },
+  "aeb_analysis": {
+    "steps_count": 6,
+    "aeb_analysis_raw": "### AEB Analysis Results\n\n---\n\n#### **Step 1**  \n- **Step:** Retrieve raw tickets from the ticketing system API  \n- **Is AEB:** Yes  \n- **Reason:** This step has a single intent (retrieve tickets), interacts with one system boundary (ticketing system API), and contains no sequencing, branching, or validation. It can be implemented as a single API call.  \n- **If No:** N/A  \n\n---\n\n#### **Step 2**  \n- **Step:** Apply categorization rules to tag tickets  \n- **Is AEB:** No  \n- **Reason:** Applying categorization rules likely involves internal branching (e.g., conditional logic to determine which rules apply) and sequencing (e.g., iterating over rules or tickets). This violates the \"no branching/sequencing\" requirement.  \n- **If No, suggest:** Break into smaller AEBs, such as:  \n  - **AEB 1:** Load categorization rules into memory.  \n  - **AEB 2:** Tag a single ticket with a specific rule (repeated for each ticket/rule).  \n\n---\n\n#### **Step 3**  \n- **Step:** Match categorized tickets to historical resolutions using similarity analysis  \n- **Is AEB:** Yes  \n- **Reason:** Similarity analysis can be implemented as a single function/API call (e.g., a machine learning model or vector comparison service). It has a single intent, interacts with one system boundary (historical resolution data), and contains no branching or sequencing.  \n- **If No:** N/A  \n\n---\n\n#### **Step 4**  \n- **Step:** Apply automated fixes (e.g., reset passwords, restart services) via API  \n- **Is AEB:** No  \n- **Reason:** The action includes multiple distinct operations (reset password, restart service), which implies branching logic to decide which fix to apply. Each fix type likely requires a separate API call, violating the \"single intent\" and \"one system boundary\" rules.  \n- **If No, suggest:** Split into individual AEBs for each fix type:  \n  - **AEB 1:** Reset password via `/api/v1/reset-password`.  \n  - **AEB 2:** Restart service via `/api/v1/restart-service`.  \n\n---\n\n#### **Step 5**  \n- **Step:** Evaluate unresolved tickets against escalation policies  \n- **Is AEB:** No  \n- **Reason:** This step involves branching logic (e.g., \"if ticket age > 24h, escalate to manager\") and policy evaluation, which violates the \"no branching\" rule.  \n- **If No, suggest:** Break into AEBs for each policy check:  \n  - **AEB 1:** Check ticket age against escalation threshold.  \n  - **AEB 2:** Check ticket priority against escalation rules.  \n\n---\n\n#### **Step 6**  \n- **Step:** Aggregate metrics (resolution time, escalation rate)  \n- **Is AEB:** No  \n- **Reason:** While aggregation itself could be an AEB, the step involves sending the report to **two** system boundaries (dashboard and email), violating the \"one system boundary\" rule.  \n- **If No, suggest:** Split into two AEBs:  \n  - **AEB 1:** Send daily resolution report to internal dashboard.  \n  - **AEB 2:** Send daily resolution report to email distribution list.  \n\n---\n\n### Summary Table\n\n| Step | Is AEB | Key Violation(s) |  \n|------|------|------------------|  \n| 1 | Yes | ✅ All AEB criteria met |  \n| 2 | No | Branching/sequencing in rule application |  \n| 3 | Yes | ✅ All AEB criteria met |  \n| 4 | No | Branching (multiple fix types) |  \n| 5 | No | Branching (policy evaluation logic) |  \n| 6 | No | Multiple system boundaries (dashboard + email) |  \n\n--- \n\n### Final Notes  \nSteps 2, 4, 5, and 6 require decomposition into smaller AEBs to comply with the atomicity constraints. Each AEB should focus on a single action with no internal logic complexity.",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

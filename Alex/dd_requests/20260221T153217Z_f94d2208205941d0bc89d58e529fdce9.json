@@ -1,0 +1,90 @@
+{
+  "task_id": "b2982ca98301",
+  "input": "Coordinate a patient's procedure by checking OR availability, resolving scheduling conflicts, updating the medical record and billing system, and confirming the final appointment.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "P",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User (scheduling staff)",
+        "input_data": "Unique identifier for the patient",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "P",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User (clinical team)",
+        "input_data": "Procedure type, duration, required resources",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "O",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Hospital OR Scheduling API",
+        "input_data": "Real-time operating room availability calendar",
+        "bound_reference": "[DEPTH STOP]"
+      },
+      {
+        "name": "P",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Medical Records System API",
+        "input_data": "Patient's historical and current appointment schedule",
+        "bound_reference": "[DEPTH STOP]"
+      },
+      {
+        "name": "P",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Insurance Verification System API",
+        "input_data": "Coverage details, pre-authorization status",
+        "bound_reference": "[DEPTH STOP]"
+      },
+      {
+        "name": "P",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Medical Records System API",
+        "input_data": "Phone number, email address for notifications",
+        "bound_reference": "[DEPTH STOP]"
+      },
+      {
+        "name": "F",
+        "source_type": "DERIVABLE",
+        "source_origin": "Computed from OR Scheduling Data and Existing Appointments",
+        "input_data": "Scheduled date/time for the procedure",
+        "bound_reference": "Depends on Inputs 3 and 4"
+      }
+    ],
+    "outputs": [
+      "Updated Medical Record",
+      "System update confirming procedure details and scheduled time",
+      "Billing System Update",
+      "Charge entry with procedure code and insurance pre-authorization",
+      "Appointment Confirmation Notification",
+      "SMS/email sent to patient with final details",
+      "Resolved OR Schedule",
+      "Updated operating room calendar with new booking"
+    ],
+    "steps": [
+      "Uses: OR Scheduling Data (Input 3)  \nAction: Query OR Scheduling API for available time slots matching procedure duration  \nProduces: Available OR Time Slots  \nStores/Sends To: Temporary processing memory",
+      "Uses: Patient's Existing Appointments (Input 4)  \nAction: Retrieve patient's current appointments from Medical Records System  \nProduces: Appointment Conflict Baseline"
+    ],
+    "raw_response": "Inputs:\n1. Patient ID  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User (scheduling staff)  \n   Input Data: Unique identifier for the patient  \n   Bound Reference: Requires explicit user provision or linkage.  \n\n2. Procedure Details  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User (clinical team)  \n   Input Data: Procedure type, duration, required resources  \n   Bound Reference: Requires explicit user provision or linkage.  \n\n3. OR Scheduling Data  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Hospital OR Scheduling API  \n   Input Data: Real-time operating room availability calendar  \n   Bound Reference: [DEPTH STOP]  \n\n4. Patient's Existing Appointments  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Medical Records System API  \n   Input Data: Patient's historical and current appointment schedule  \n   Bound Reference: [DEPTH STOP]  \n\n5. Patient Insurance Information  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Insurance Verification System API  \n   Input Data: Coverage details, pre-authorization status  \n   Bound Reference: [DEPTH STOP]  \n\n6. Patient Contact Information  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Medical Records System API  \n   Input Data: Phone number, email address for notifications  \n   Bound Reference: [DEPTH STOP]  \n\n7. Final Appointment Time  \n   Source Type: DERIVABLE  \n   Source Origin: Computed from OR Scheduling Data and Existing Appointments  \n   Input Data: Scheduled date/time for the procedure  \n   Bound Reference: Depends on Inputs 3 and 4  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\nOutputs:  \n1. Updated Medical Record  \n   - System update confirming procedure details and scheduled time  \n\n2. Billing System Update  \n   - Charge entry with procedure code and insurance pre-authorization  \n\n3. Appointment Confirmation Notification  \n   - SMS/email sent to patient with final details  \n\n4. Resolved OR Schedule  \n   - Updated operating room calendar with new booking  \n\nSteps:  \nStep 1:  \nUses: OR Scheduling Data (Input 3)  \nAction: Query OR Scheduling API for available time slots matching procedure duration  \nProduces: Available OR Time Slots  \nStores/Sends To: Temporary processing memory  \n\nStep 2:  \nUses: Patient's Existing Appointments (Input 4)  \nAction: Retrieve patient's current appointments from Medical Records System  \nProduces: Appointment Conflict Baseline"
+  },
+  "aeb_analysis": {
+    "steps_count": 2,
+    "aeb_analysis_raw": "Step: 1  \nIs AEB: Yes  \nReason: The step involves a single intent (querying for time slots), interacts with one system boundary (OR Scheduling API), and requires no branching, sequencing, or validation. It can be implemented as a single API call.  \n\nStep: 2  \nIs AEB: Yes  \nReason: The step has a single intent (retrieving appointments), interacts with one system boundary (Medical Records System), and contains no branching, sequencing, or validation. It can be implemented as a single API call.",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

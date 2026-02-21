@@ -1,0 +1,36 @@
+{
+  "task_id": "845b615e1233",
+  "input": " Analyze live turbine data, adjust parameters within safety constraints, monitor the results, and report performance improvements.",
+  "complexity_score": 65,
+  "eval_gen": 1,
+  "subtasks": [
+    {
+      "task_id": "845b615e1233.0",
+      "input": "Collect and analyze real-time operational data from turbine sensors to identify performance patterns",
+      "complexity_score": 20,
+      "eval_gen": 2,
+      "subtasks": []
+    },
+    {
+      "task_id": "845b615e1233.1",
+      "input": "Modify turbine operating parameters while maintaining compliance with safety protocols and operational limits",
+      "complexity_score": 20,
+      "eval_gen": 2,
+      "subtasks": []
+    },
+    {
+      "task_id": "845b615e1233.2",
+      "input": "Track turbine performance metrics after parameter adjustments to evaluate effectiveness",
+      "complexity_score": 15,
+      "eval_gen": 2,
+      "subtasks": []
+    },
+    {
+      "task_id": "845b615e1233.3",
+      "input": "Generate comprehensive report documenting performance gains and operational efficiency changes",
+      "complexity_score": 10,
+      "eval_gen": 2,
+      "subtasks": []
+    }
+  ]
+}

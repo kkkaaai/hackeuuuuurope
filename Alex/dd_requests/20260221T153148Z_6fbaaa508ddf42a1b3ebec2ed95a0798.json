@@ -1,0 +1,76 @@
+{
+  "task_id": "1e44c5c66d59",
+  "input": "Conduct a structured audit analysis to pinpoint financial risks and compliance issues, recommend revisions, and deliver both technical and executive summary reports.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "Financial Data",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal ERP system (e.g., SAP, Oracle) and accounting software (e.g., QuickBooks, Xero)",
+        "input_data": "Structured transaction records, balance sheets, income statements, cash flow statements",
+        "bound_reference": "Linked to compliance standards and audit scope parameters"
+      },
+      {
+        "name": "Compliance Standards",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "External regulatory databases/APIs (e.g., SEC filings, IRS guidelines, GDPR portal)",
+        "input_data": "Regulatory thresholds, reporting requirements, industry-specific compliance rules",
+        "bound_reference": "Linked to organizational policies and financial data"
+      },
+      {
+        "name": "Organizational Policies",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Internal governance documents provided by the user",
+        "input_data": "Internal audit protocols, risk tolerance thresholds, compliance frameworks",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "Audit Scope Parameters",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-defined constraints (e.g., time range, departments, geographic regions)",
+        "input_data": "Boundaries for analysis (e.g., Q3 2023, North America operations)",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "Report Templates",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-provided document templates for technical/executive reports",
+        "input_data": "Formatting guidelines, stakeholder-specific content structures",
+        "bound_reference": "Requires explicit user provision or linkage."
+      }
+    ],
+    "outputs": [
+      "**List of Financial Risks and Compliance Issues**",
+      "**Technical Audit Report**",
+      "**Executive Summary Report**",
+      "**Recommended Revisions**"
+    ],
+    "steps": [
+      "Uses: Financial Data  \nAction: Extract and validate transactional data from ERP/accounting systems  \nProduces: Cleaned financial dataset  \nStores/Sends To: Internal data warehouse (e.g., Snowflake)",
+      "Uses: Compliance Standards  \nAction: Retrieve and parse regulatory requirements from external APIs  \nProduces: Structured compliance framework  \nStores/Sends To: Compliance management system (e.g., ZenGRC)",
+      "Uses: Organizational Policies, Audit Scope Parameters  \nAction: Map user-defined policies and scope to compliance frameworks  \nProduces: Audit scope definition document  \nStores/Sends To: Shared organizational drive",
+      "Uses: Financial Data, Compliance Standards, Organizational Policies, Audit Scope Parameters  \nAction: Perform gap analysis to identify risks/issues using rule-based checks  \nProduces: List of financial risks and compliance issues  \nStores/Sends To: Risk management database",
+      "Uses: List of Financial Risks and Compliance Issues, Report Templates  \nAction: Generate technical and executive reports with prioritized recommendations  \nProduces: Technical Audit Report, Executive Summary Report  \nStores/Sends To: Cloud CMS and internal stakeholders via email",
+      "Uses: Recommended Revisions  \nAction: Trigger workflow for remediation planning in audit management tool  \nProduces: Revision task list  \nStores/Sends To: Audit workflow tool (e.g., Jira)  \n\n---\n\n[DEPTH STOP] All leaf inputs (USER-CONTROLLED and SYSTEM-RETRIEVABLE) are fully decomposed.  \nDEPENDENCY CHECK: All inputs used in steps; outputs externally verifiable."
+    ],
+    "raw_response": "Inputs:  \n1. **Financial Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal ERP system (e.g., SAP, Oracle) and accounting software (e.g., QuickBooks, Xero)  \n   Input Data: Structured transaction records, balance sheets, income statements, cash flow statements  \n   Bound Reference: Linked to compliance standards and audit scope parameters  \n\n2. **Compliance Standards**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: External regulatory databases/APIs (e.g., SEC filings, IRS guidelines, GDPR portal)  \n   Input Data: Regulatory thresholds, reporting requirements, industry-specific compliance rules  \n   Bound Reference: Linked to organizational policies and financial data  \n\n3. **Organizational Policies**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Internal governance documents provided by the user  \n   Input Data: Internal audit protocols, risk tolerance thresholds, compliance frameworks  \n   Bound Reference: Requires explicit user provision or linkage.  \n\n4. **Audit Scope Parameters**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-defined constraints (e.g., time range, departments, geographic regions)  \n   Input Data: Boundaries for analysis (e.g., Q3 2023, North America operations)  \n   Bound Reference: Requires explicit user provision or linkage.  \n\n5. **Report Templates**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-provided document templates for technical/executive reports  \n   Input Data: Formatting guidelines, stakeholder-specific content structures  \n   Bound Reference: Requires explicit user provision or linkage.  \n\n---\n\nOutputs:  \n1. **List of Financial Risks and Compliance Issues**  \n   Type: Observable artifact  \n   Storage: Internal risk management database  \n   Verification: Cross-checked against compliance standards and financial data.  \n\n2. **Technical Audit Report**  \n   Type: Persisted document  \n   Storage: Shared organizational drive (e.g., SharePoint)  \n   Verification: Validated by internal stakeholders.  \n\n3. **Executive Summary Report**  \n   Type: Measurable report  \n   Storage: Cloud content management system (e.g., Box, Google Drive)  \n   Verification: Approved by executive leadership.  \n\n4. **Recommended Revisions**  \n   Type: Triggered action  \n   Storage: Audit workflow tool (e.g., Jira, Asana)  \n   Verification: Prioritized by risk severity and compliance urgency.  \n\n---\n\nSteps:  \nStep 1:  \nUses: Financial Data  \nAction: Extract and validate transactional data from ERP/accounting systems  \nProduces: Cleaned financial dataset  \nStores/Sends To: Internal data warehouse (e.g., Snowflake)  \n\nStep 2:  \nUses: Compliance Standards  \nAction: Retrieve and parse regulatory requirements from external APIs  \nProduces: Structured compliance framework  \nStores/Sends To: Compliance management system (e.g., ZenGRC)  \n\nStep 3:  \nUses: Organizational Policies, Audit Scope Parameters  \nAction: Map user-defined policies and scope to compliance frameworks  \nProduces: Audit scope definition document  \nStores/Sends To: Shared organizational drive  \n\nStep 4:  \nUses: Financial Data, Compliance Standards, Organizational Policies, Audit Scope Parameters  \nAction: Perform gap analysis to identify risks/issues using rule-based checks  \nProduces: List of financial risks and compliance issues  \nStores/Sends To: Risk management database  \n\nStep 5:  \nUses: List of Financial Risks and Compliance Issues, Report Templates  \nAction: Generate technical and executive reports with prioritized recommendations  \nProduces: Technical Audit Report, Executive Summary Report  \nStores/Sends To: Cloud CMS and internal stakeholders via email  \n\nStep 6:  \nUses: Recommended Revisions  \nAction: Trigger workflow for remediation planning in audit management tool  \nProduces: Revision task list  \nStores/Sends To: Audit workflow tool (e.g., Jira)  \n\n---\n\n[DEPTH STOP] All leaf inputs (USER-CONTROLLED and SYSTEM-RETRIEVABLE) are fully decomposed.  \nDEPENDENCY CHECK: All inputs used in steps; outputs externally verifiable."
+  },
+  "aeb_analysis": {
+    "steps_count": 6,
+    "aeb_analysis_raw": "### Step-by-Step Analysis:\n\n---\n\n**Step 1**  \n- **Step**: Uses: Financial Data  \nAction: Extract and validate transactional data from ERP/accounting systems  \nProduces: Cleaned financial dataset  \nStores/Sends To: Internal data warehouse (e.g., Snowflake)  \n- **Is AEB**: No  \n- **Reason**: Combines **extraction** (system boundary interaction) and **validation** (disallowed error handling).  \n- **Suggested Breakdown**:  \n  1. Extract transactional data from ERP/accounting systems.  \n  2. Validate extracted transactional data.  \n  3. Load cleaned financial dataset to Snowflake.  \n\n---\n\n**Step 2**  \n- **Step**: Uses: Compliance Standards  \nAction: Retrieve and parse regulatory requirements from external APIs  \nProduces: Structured compliance framework  \nStores/Sends To: Compliance management system (e.g., ZenGRC)  \n- **Is AEB**: No  \n- **Reason**: Combines **retrieval** (system boundary interaction) and **parsing** (internal processing).  \n- **Suggested Breakdown**:  \n  1. Retrieve raw regulatory requirements from external APIs.  \n  2. Parse raw regulatory requirements into structured format.  \n  3. Store structured compliance framework in ZenGRC.  \n\n---\n\n**Step 3**  \n- **Step**: Uses: Organizational Policies, Audit Scope Parameters  \nAction: Map user-defined policies and scope to compliance frameworks  \nProduces: Audit scope definition document  \nStores/Sends To: Shared organizational drive  \n- **Is AEB**: No  \n- **Reason**: Combines **mapping logic** (internal processing) and **storage** (system boundary interaction).  \n- **Suggested Breakdown**:  \n  1. Map organizational policies and audit scope to compliance frameworks.  \n  2. Save audit scope definition document to shared organizational drive.  \n\n---\n\n**Step 4**  \n- **Step**: Uses: Financial Data, Compliance Standards, Organizational Policies, Audit Scope Parameters  \nAction: Perform gap analysis to identify risks/issues using rule-based checks  \nProduces: List of financial risks and compliance issues  \nStores/Sends To: Risk management database  \n- **Is AEB**: No  \n- **Reason**: Combines **gap analysis** (complex logic with branching/sequencing) and **storage** (system boundary interaction).  \n- **Suggested Breakdown**:  \n  1. Execute rule-based gap analysis on inputs.  \n  2. Store results (financial risks/compliance issues) in risk management database.  \n\n---\n\n**Step 5**  \n- **Step**: Uses: List of Financial Risks and Compliance Issues, Report Templates  \nAction: Generate technical and executive reports with prioritized recommendations  \nProduces: Technical Audit Report, Executive Summary Report  \nStores/Sends To: Cloud CMS and internal stakeholders via email  \n- **Is AEB**: No  \n- **Reason**: Combines **report generation** (internal processing) and **multiple outputs** (two system boundary interactions).  \n- **Suggested Breakdown**:  \n  1. Generate technical and executive reports from templates.  \n  2. Store reports in Cloud CMS.  \n  3. Email reports to internal stakeholders.  \n\n---\n\n**Step 6**",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

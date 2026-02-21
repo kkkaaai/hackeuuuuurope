@@ -1,0 +1,105 @@
+{
+  "task_id": "1c6bfa21cb2d",
+  "input": "Launch an end-to-end healthcare campaign, beginning with audience research, then produce consistent blog posts, videos, and social content, and finally track performance against specific lead generation or awareness goals.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "Existing Customer Data",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "CRM Database (e.g., Salesforce)",
+        "input_data": "Patient demographics, medical history, engagement history",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Demographic Data API",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "External API (e.g., Census Bureau, Statista)",
+        "input_data": "Regional health trends, age/gender distributions",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Content Calendar",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Marketing team",
+        "input_data": "Scheduled topics, deadlines, content formats",
+        "bound_reference": null
+      },
+      {
+        "name": "Brand Guidelines",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Internal documentation",
+        "input_data": "Tone, style, compliance requirements",
+        "bound_reference": null
+      },
+      {
+        "name": "Analytics Tool Access",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Google Analytics, Meta Insights",
+        "input_data": "Traffic, engagement, conversion metrics",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Campaign Goals",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Stakeholders",
+        "input_data": "Lead targets (e.g., 500 new signups), awareness KPIs (e.g., 10k impressions)",
+        "bound_reference": null
+      },
+      {
+        "name": "Stock Media Library",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Subscription service (e.g., Shutterstock)",
+        "input_data": "Images, video clips, audio files",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Audience Segments",
+        "source_type": "DERIVABLE",
+        "source_origin": "Derived from Input 1 (CRM Data) and Input 2 (Demographic Data)",
+        "input_data": "Targetable patient groups (e.g., \"Diabetic patients aged 40–60\")",
+        "bound_reference": "Inputs 1, 2"
+      },
+      {
+        "name": "Content Performance Metrics",
+        "source_type": "DERIVABLE",
+        "source_origin": "Derived from Input 5 (Analytics Data) and Input 6 (Campaign Goals)",
+        "input_data": "Conversion rates, ROI, goal completion status",
+        "bound_reference": "Inputs 5, 6"
+      }
+    ],
+    "outputs": [
+      "**Audience Research Report**",
+      "**Published Content**",
+      "**Performance Report**",
+      "**Updated CRM Records**"
+    ],
+    "steps": [
+      "Uses: Input 1 (CRM Data), Input 2 (Demographic Data)  \nAction: Cluster patient data into segments using statistical analysis  \nProduces: Audience Segments (Input 8)  \nStores/Sends To: Internal database for segmentation",
+      "Uses: Input 8 (Audience Segments), Input 4 (Brand Guidelines)  \nAction: Develop content strategy aligning with audience needs and brand voice  \nProduces: Content Strategy Document  \nStores/Sends To: Shared drive (Google Docs)",
+      "Uses: Input 3 (Content Calendar), Input 7 (Stock Media)  \nAction: Create blog posts, videos, and social assets per calendar schedule  \nProduces: Draft Content Files  \nStores/Sends To: CMS (e.g., WordPress) or video editing software",
+      "Uses: Input 5 (Analytics Tool Access), Input 6 (Campaign Goals)  \nAction: Deploy tracking pixels and goal funnels in analytics platforms  \nProduces: Tracked Campaign URLs  \nStores/Sends To: Analytics tool configuration",
+      "Uses: Draft Content Files (from Step 3)  \nAction: Publish content across blogs, social media, and video platforms  \nProduces: Published Content (Output 2)  \nStores/Sends To: External platforms (e.g., LinkedIn, YouTube)",
+      "Uses: Input 5 (Analytics Data), Input 6 (Campaign Goals)  \nAction: Calculate performance metrics (e.g., conversions vs. targets)  \nProduces: Content Performance Metrics (Input 9)  \nStores/Sends To: Analytics dashboard",
+      "Uses: Input 9 (Performance Metrics), Input 1 (CRM Data)  \nAction: Generate final report comparing results to goals and update CRM with new leads  \nProduces: Performance Report (Output 3), Updated CRM Records (Output 4)  \nStores/Sends To: Stakeholder email, CRM database  \n\n--- \n\n**Dependency Consistency Check**:  \n- All inputs used in steps.  \n- No implicit data sources.  \n- USER/SYSTEM-RETRIEVABLE inputs marked as [DEPTH STOP] where applicable.  \n- DERIVABLE inputs fully decomposed."
+    ],
+    "raw_response": "Inputs:  \n1. **Existing Customer Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: CRM Database (e.g., Salesforce)  \n   Input Data: Patient demographics, medical history, engagement history  \n   Bound Reference: N/A  \n\n2. **Demographic Data API**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: External API (e.g., Census Bureau, Statista)  \n   Input Data: Regional health trends, age/gender distributions  \n   Bound Reference: N/A  \n\n3. **Content Calendar**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Marketing team  \n   Input Data: Scheduled topics, deadlines, content formats  \n   Note: Requires explicit user provision or linkage.  \n\n4. **Brand Guidelines**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Internal documentation  \n   Input Data: Tone, style, compliance requirements  \n   Note: Requires explicit user provision or linkage.  \n\n5. **Analytics Tool Access**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Google Analytics, Meta Insights  \n   Input Data: Traffic, engagement, conversion metrics  \n   Bound Reference: N/A  \n\n6. **Campaign Goals**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Stakeholders  \n   Input Data: Lead targets (e.g., 500 new signups), awareness KPIs (e.g., 10k impressions)  \n   Note: Requires explicit user provision or linkage.  \n\n7. **Stock Media Library**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Subscription service (e.g., Shutterstock)  \n   Input Data: Images, video clips, audio files  \n   Bound Reference: N/A  \n\n8. **Audience Segments**  \n   Source Type: DERIVABLE  \n   Source Origin: Derived from Input 1 (CRM Data) and Input 2 (Demographic Data)  \n   Input Data: Targetable patient groups (e.g., \"Diabetic patients aged 40–60\")  \n   Bound Reference: Inputs 1, 2  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n9. **Content Performance Metrics**  \n   Source Type: DERIVABLE  \n   Source Origin: Derived from Input 5 (Analytics Data) and Input 6 (Campaign Goals)  \n   Input Data: Conversion rates, ROI, goal completion status  \n   Bound Reference: Inputs 5, 6  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n---\n\nOutputs:  \n1. **Audience Research Report**  \n   Type: Observable artifact  \n   Verification: Shared with stakeholders via PDF/Slide deck  \n\n2. **Published Content**  \n   Type: Observable artifact  \n   Verification: Blog posts (CMS), videos (YouTube), social posts (LinkedIn/Twitter)  \n\n3. **Performance Report**  \n   Type: Observable artifact  \n   Verification: Dashboard (Google Data Studio) or PDF  \n\n4. **Updated CRM Records**  \n   Type: Persisted state change  \n   Verification: New lead entries in CRM  \n\n---\n\nSteps:  \nStep 1:  \nUses: Input 1 (CRM Data), Input 2 (Demographic Data)  \nAction: Cluster patient data into segments using statistical analysis  \nProduces: Audience Segments (Input 8)  \nStores/Sends To: Internal database for segmentation  \n\nStep 2:  \nUses: Input 8 (Audience Segments), Input 4 (Brand Guidelines)  \nAction: Develop content strategy aligning with audience needs and brand voice  \nProduces: Content Strategy Document  \nStores/Sends To: Shared drive (Google Docs)  \n\nStep 3:  \nUses: Input 3 (Content Calendar), Input 7 (Stock Media)  \nAction: Create blog posts, videos, and social assets per calendar schedule  \nProduces: Draft Content Files  \nStores/Sends To: CMS (e.g., WordPress) or video editing software  \n\nStep 4:  \nUses: Input 5 (Analytics Tool Access), Input 6 (Campaign Goals)  \nAction: Deploy tracking pixels and goal funnels in analytics platforms  \nProduces: Tracked Campaign URLs  \nStores/Sends To: Analytics tool configuration  \n\nStep 5:  \nUses: Draft Content Files (from Step 3)  \nAction: Publish content across blogs, social media, and video platforms  \nProduces: Published Content (Output 2)  \nStores/Sends To: External platforms (e.g., LinkedIn, YouTube)  \n\nStep 6:  \nUses: Input 5 (Analytics Data), Input 6 (Campaign Goals)  \nAction: Calculate performance metrics (e.g., conversions vs. targets)  \nProduces: Content Performance Metrics (Input 9)  \nStores/Sends To: Analytics dashboard  \n\nStep 7:  \nUses: Input 9 (Performance Metrics), Input 1 (CRM Data)  \nAction: Generate final report comparing results to goals and update CRM with new leads  \nProduces: Performance Report (Output 3), Updated CRM Records (Output 4)  \nStores/Sends To: Stakeholder email, CRM database  \n\n--- \n\n**Dependency Consistency Check**:  \n- All inputs used in steps.  \n- No implicit data sources.  \n- USER/SYSTEM-RETRIEVABLE inputs marked as [DEPTH STOP] where applicable.  \n- DERIVABLE inputs fully decomposed."
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": "### Step-by-Step Analysis\n\n---\n\n**Step 1**  \n- **Step**: Uses: Input 1 (CRM Data), Input 2 (Demographic Data)  \nAction: Cluster patient data into segments using statistical analysis  \nProduces: Audience Segments (Input 8)  \nStores/Sends To: Internal database for segmentation  \n- **Is AEB**: No  \n- **Reason**:  \n  - **Sequencing/Branching**: Clustering involves multiple steps (e.g., data preprocessing, algorithm selection, execution, validation).  \n  - **System Boundary**: Combines statistical analysis (internal logic) and database storage (external system).  \n- **Suggestion**: Split into:  \n  1. `Preprocess patient data` (internal logic, no system boundary).  \n  2. `Run clustering algorithm` (internal logic, no system boundary).  \n  3. `Store audience segments in database` (system boundary, single intent).  \n\n---\n\n**Step 2**  \n- **Step**: Uses: Input 8 (Audience Segments), Input 4 (Brand Guidelines)  \nAction: Develop content strategy aligning with audience needs and brand voice  \nProduces: Content Strategy Document  \nStores/Sends To: Shared drive (Google Docs)  \n- **Is AEB**: No  \n- **Reason**:  \n  - **Sequencing/Branching**: Strategy development involves analysis, ideation, and alignment steps.  \n  - **System Boundary**: Combines internal logic (strategy creation) and external storage (Google Docs).  \n- **Suggestion**: Split into:  \n  1. `Analyze audience segments and brand guidelines` (internal logic).  \n  2. `Generate content strategy document` (system boundary: save to Google Docs).  \n\n---\n\n**Step 3**  \n- **Step**: Uses: Input 3 (Content Calendar), Input 7 (Stock Media)  \nAction: Create blog posts, videos, and social assets per calendar schedule  \nProduces: Draft Content Files  \nStores/Sends To: CMS (e.g., WordPress) or video editing software  \n- **Is AEB**: No  \n- **Reason**:  \n  - **Multiple System Boundaries**: CMS and video editing software are distinct systems.  \n  - **Branching**: Content creation varies by type (blog, video, social).  \n- **Suggestion**: Split into:  \n  1. `Create blog posts using CMS` (system boundary: CMS API).  \n  2. `Create videos using stock media` (system boundary: video editing software).  \n  3. `Create social assets using CMS` (system boundary: CMS API).  \n\n---\n\n**Step 4**  \n- **Step**: Uses: Input 5 (Analytics Tool Access), Input 6 (Campaign Goals)  \nAction: Deploy tracking pixels and goal funnels in analytics platforms  \nProduces: Tracked Campaign URLs  \nStores/Sends To: Analytics tool configuration  \n- **Is AEB**: No  \n- **Reason**:  \n  - **Multiple Actions**: Deploying pixels and configuring funnels are separate tasks.  \n  - **System Boundary**: Both interact with the analytics tool, but intent is split.  \n- **Suggestion**: Split into:  \n  1. `Deploy tracking pixels in analytics platform` (single intent).  \n  2. `Configure goal funnels in analytics platform` (single intent).  \n\n---\n\n**Step 5**  \n- **Step**: Uses: Draft Content Files (from Step 3)  \nAction: Publish content across blogs, social media, and video platforms  \nProduces: Published Content (Output 2)  \nStores/Sends To: External platforms (e.g., LinkedIn, YouTube)  \n- **Is AEB**: No  \n- **Reason**:  \n  - **Multiple System Boundaries**: Blogs, social media, and video platforms are distinct systems.  \n  - **Branching**: Publishing logic varies by platform.  \n- **Suggestion**: Split into:  \n  1. `Publish blog posts to WordPress` (system boundary: CMS API).  \n  2. `Publish videos to YouTube` (system boundary: YouTube API).  \n  3. `Publish social assets to LinkedIn` (system boundary: LinkedIn API).  \n\n---\n\n**Step 6**  \n- **Step**: Uses: Input 5 (Analytics Data), Input 6 (Campaign Goals)  \nAction: Calculate performance metrics (e.g., conversions vs. targets)  \nProduces: Content Performance Metrics (Input 9)  \nStores/Sends To: Analytics dashboard  \n- **Is AEB**: Yes  \n- **Reason**:  \n  - **Single Intent**: Metric calculation.  \n  - **System Boundary**: Analytics dashboard (output).  \n  - **No Sequencing/Branching**: Assumes a single function to compute metrics.  \n\n---\n\n**Step 7**  \n- **Step**: Uses: Input 9 (Performance Metrics), Input 1 (CRM Data)  \nAction: Generate final report comparing results to goals and update CRM with new leads  \nProduces: Performance Report (Output 3), Updated CRM Records (Output 4)  \nStores/Sends To: Stakeholder email, CRM database  \n- **Is AEB**: No  \n- **Reason**:  \n  - **Multiple Intents**: Report generation and CRM update.  \n  - **System Boundaries**: Email and CRM database are separate systems.  \n- **Suggestion**: Split into:  \n  1. `Generate performance report` (system boundary: email API).  \n  2. `Update CRM with new leads` (system boundary: CRM API).  \n\n---\n\n### **Dependency Consistency Check**  \n- **All inputs accounted for**: Yes.  \n- **No implicit data sources**:",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

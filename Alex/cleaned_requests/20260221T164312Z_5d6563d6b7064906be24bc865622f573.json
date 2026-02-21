@@ -1,0 +1,7 @@
+{
+  "task_id": "41115c59e156",
+  "input": "Create a SaaS customer support workflow that triages cases, auto-resolves simple issues, escalates complex ones, and tracks performance.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

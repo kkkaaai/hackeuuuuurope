@@ -1,0 +1,107 @@
+{
+  "task_id": "95b2f927f088",
+  "input": "Develop an end-to-end manufacturing content campaign involving research, multi-format creation, cross-channel consistency, and measurable goals.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      {
+        "name": "Campaign Goals",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Marketing Team",
+        "input_data": "Specific objectives (e.g., 20% lead increase, 15% sales growth)",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Target Audience Profile",
+        "source_type": "DERIVABLE",
+        "source_origin": "Market research data + Customer analytics data",
+        "input_data": "Demographics, pain points, buyer personas",
+        "bound_reference": "Inputs 4, 5"
+      },
+      {
+        "name": "Content Formats",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Content Strategy Team",
+        "input_data": "Video, blog, social media, whitepaper requirements",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Brand Guidelines",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Brand Management Team",
+        "input_data": "Tone, visual assets, compliance rules",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Market Research Data",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Third-party API (e.g., Statista, IBISWorld)",
+        "input_data": "Industry trends, competitor benchmarks",
+        "bound_reference": "Input 2"
+      },
+      {
+        "name": "Competitor Analysis Data",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Market Intelligence Tool (e.g., SEMrush, SimilarWeb)",
+        "input_data": "Competitor content strategies, channel performance",
+        "bound_reference": "Input 2"
+      },
+      {
+        "name": "Customer Analytics Data",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "CRM System (e.g., Salesforce, HubSpot)",
+        "input_data": "Purchase history, engagement metrics",
+        "bound_reference": "Input 2"
+      },
+      {
+        "name": "Budget Allocation",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Finance Team",
+        "input_data": "Spend limits per channel/format",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Channel-Specific Requirements",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Platform APIs (e.g., LinkedIn, Google Ads, YouTube)",
+        "input_data": "Ad specs, posting schedules, compliance rules",
+        "bound_reference": "Input 3"
+      }
+    ],
+    "outputs": [
+      "**Research Synthesis Report**",
+      "**Content Assets**",
+      "**Cross-Channel Distribution Plan**",
+      "**Performance Dashboard**",
+      "**Optimization Recommendations**",
+      "**Final Campaign Report**"
+    ],
+    "steps": [
+      "Uses: Inputs 5, 6, 7  \nAction: Aggregate and analyze market trends, competitor strategies, and customer behavior  \nProduces: Research Synthesis Report  \nStores/Sends To: Shared drive",
+      "Uses: Inputs 1, 2, 8  \nAction: Align objectives with audience insights and budget constraints  \nProduces: Targeted Campaign Brief  \nStores/Sends To: Project management tool",
+      "Uses: Inputs 3, 4, 9  \nAction: Design multi-format content aligned with brand guidelines and channel specs  \nProduces: Content Calendar + Asset Specifications  \nStores/Sends To: DAM system",
+      "Uses: Inputs 3, 4, 9  \nAction: Produce content assets and schedule cross-channel deployment  \nProduces: Published Content Inventory  \nStores/Sends To: Social media platforms, ad networks, CMS",
+      "Uses: Input 7  \nAction: Track engagement, conversions, and ROI via analytics tools  \nProduces: Performance Dashboard  \nStores/Sends To: Analytics platform",
+      "Uses: Inputs 1, 5, 6  \nAction: Adjust targeting, content mix, and spend allocation based on real-time data  \nProduces: Optimization Recommendations  \nStores/Sends To: Shared drive",
+      "Uses: Inputs 1, 5, 6  \nAction: Compile results against KPIs, including ROI and audience growth metrics  \nProduces: Final Campaign Report  \nStores/Sends To: Executive reporting portal"
+    ],
+    "raw_response": "Inputs:  \n1. **Campaign Goals**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Marketing Team  \n   Input Data: Specific objectives (e.g., 20% lead increase, 15% sales growth)  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n2. **Target Audience Profile**  \n   Source Type: DERIVABLE  \n   Source Origin: Market research data + Customer analytics data  \n   Input Data: Demographics, pain points, buyer personas  \n   Bound Reference: Inputs 4, 5  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n3. **Content Formats**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Content Strategy Team  \n   Input Data: Video, blog, social media, whitepaper requirements  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n4. **Brand Guidelines**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Brand Management Team  \n   Input Data: Tone, visual assets, compliance rules  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n5. **Market Research Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Third-party API (e.g., Statista, IBISWorld)  \n   Input Data: Industry trends, competitor benchmarks  \n   Bound Reference: Input 2  \n\n6. **Competitor Analysis Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Market Intelligence Tool (e.g., SEMrush, SimilarWeb)  \n   Input Data: Competitor content strategies, channel performance  \n   Bound Reference: Input 2  \n\n7. **Customer Analytics Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: CRM System (e.g., Salesforce, HubSpot)  \n   Input Data: Purchase history, engagement metrics  \n   Bound Reference: Input 2  \n\n8. **Budget Allocation**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Finance Team  \n   Input Data: Spend limits per channel/format  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n9. **Channel-Specific Requirements**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Platform APIs (e.g., LinkedIn, Google Ads, YouTube)  \n   Input Data: Ad specs, posting schedules, compliance rules  \n   Bound Reference: Input 3  \n\nOutputs:  \n1. **Research Synthesis Report**  \n   Type: Measurable report  \n   Storage: Shared drive / analytics platform  \n\n2. **Content Assets**  \n   Type: Observable artifacts  \n   Storage: Digital asset management (DAM) system  \n\n3. **Cross-Channel Distribution Plan**  \n   Type: Persisted state change  \n   Storage: Project management tool (e.g., Asana, Trello)  \n\n4. **Performance Dashboard**  \n   Type: Observable artifact  \n   Storage: Analytics platform (e.g., Tableau, Google Data Studio)  \n\n5. **Optimization Recommendations**  \n   Type: Measurable report  \n   Storage: Shared drive  \n\n6. **Final Campaign Report**  \n   Type: Observable artifact  \n   Storage: Executive reporting portal  \n\nSteps:  \nStep 1: **Conduct Market & Audience Research**  \nUses: Inputs 5, 6, 7  \nAction: Aggregate and analyze market trends, competitor strategies, and customer behavior  \nProduces: Research Synthesis Report  \nStores/Sends To: Shared drive  \n\nStep 2: **Define Campaign Goals & Audience**  \nUses: Inputs 1, 2, 8  \nAction: Align objectives with audience insights and budget constraints  \nProduces: Targeted Campaign Brief  \nStores/Sends To: Project management tool  \n\nStep 3: **Develop Content Strategy**  \nUses: Inputs 3, 4, 9  \nAction: Design multi-format content aligned with brand guidelines and channel specs  \nProduces: Content Calendar + Asset Specifications  \nStores/Sends To: DAM system  \n\nStep 4: **Create & Distribute Content**  \nUses: Inputs 3, 4, 9  \nAction: Produce content assets and schedule cross-channel deployment  \nProduces: Published Content Inventory  \nStores/Sends To: Social media platforms, ad networks, CMS  \n\nStep 5: **Monitor Performance**  \nUses: Input 7  \nAction: Track engagement, conversions, and ROI via analytics tools  \nProduces: Performance Dashboard  \nStores/Sends To: Analytics platform  \n\nStep 6: **Optimize Campaign**  \nUses: Inputs 1, 5, 6  \nAction: Adjust targeting, content mix, and spend allocation based on real-time data  \nProduces: Optimization Recommendations  \nStores/Sends To: Shared drive  \n\nStep 7: **Generate Final Report**  \nUses: Inputs 1, 5, 6  \nAction: Compile results against KPIs, including ROI and audience growth metrics  \nProduces: Final Campaign Report  \nStores/Sends To: Executive reporting portal  \n\nDependency Consistency Check:  \n- All inputs used in steps  \n- No undeclared inputs  \n- USER/SYSTEM sources explicitly classified  \n- DERIVABLE inputs fully decomposed (Input 2 → Inputs 5,6,7)  \n- [DEPTH STOP] applied only to terminal USER/SYSTEM inputs"
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": "### AEB Analysis Results\n\n---\n\n#### **Step 1**  \n**Step:** Uses Inputs 5, 6, 7 → Aggregate and analyze market trends, competitor strategies, and customer behavior → Produces Research Synthesis Report → Stores to Shared Drive  \n**Is AEB:** No  \n**Reason:** Combines multiple intents (aggregation + analysis of three distinct data types) and interacts with multiple system boundaries (market trends, competitor strategies, customer behavior). Produces a report, which may involve branching logic or sequencing.  \n**Suggest:** Break into:  \n1. Aggregate market trends data (AEB).  \n2. Analyze market trends → Generate Market Analysis Report (AEB).  \n3. Repeat for competitor strategies and customer behavior.  \n\n---\n\n#### **Step 2**  \n**Step:** Uses Inputs 1, 2, 8 → Align objectives with audience insights and budget constraints → Produces Targeted Campaign Brief → Stores to Project Management Tool  \n**Is AEB:** No  \n**Reason:** Combines two intents (aligning with audience insights *and* budget constraints). May involve branching logic (e.g., prioritizing budget vs. audience needs).  \n**Suggest:** Split into:  \n1. Align objectives with audience insights (AEB).  \n2. Adjust objectives for budget constraints (AEB).  \n\n---\n\n#### **Step 3**  \n**Step:** Uses Inputs 3, 4, 9 → Design multi-format content aligned with brand guidelines and channel specs → Produces Content Calendar + Asset Specifications → Stores to DAM System  \n**Is AEB:** No  \n**Reason:** Combines two intents (designing the calendar *and* asset specs) and two alignment requirements (brand guidelines *and* channel specs). Produces two distinct outputs.  \n**Suggest:** Split into:  \n1. Design Content Calendar aligned with brand guidelines (AEB).  \n2. Define Asset Specifications aligned with channel specs (AEB).  \n\n---\n\n#### **Step 4**  \n**Step:** Uses Inputs 3, 4, 9 → Produce content assets and schedule cross-channel deployment → Produces Published Content Inventory → Stores to Social Media Platforms, Ad Networks, CMS  \n**Is AEB:** No  \n**Reason:** Combines two intents (producing assets *and* scheduling deployment) and interacts with multiple system boundaries (social media, ad networks, CMS).  \n**Suggest:** Split into:  \n1. Produce content assets (AEB).  \n2. Schedule deployment to social media platforms (AEB).  \n3. Schedule deployment to ad networks (AEB).  \n4. Schedule deployment to CMS (AEB).  \n\n---\n\n#### **Step 5**  \n**Step:** Uses Input 7 → Track engagement, conversions, and ROI via analytics tools → Produces Performance Dashboard → Stores to Analytics Platform  \n**Is AEB:** Yes  \n**Reason:** Single intent (tracking metrics), interacts with one system boundary (analytics tools), no branching/sequencing. Can be implemented as a single API call (e.g., `track_campaign_metrics()`).  \n\n---\n\n#### **Step 6**  \n**Step:** Uses Inputs 1, 5, 6 → Adjust targeting, content mix, and spend allocation based on real-time data → Produces Optimization Recommendations → Stores to Shared Drive  \n**Is AEB:** No  \n**Reason:** Combines three intents (adjusting targeting, content mix, and spend). Likely requires branching logic (e.g., \"if X, then adjust Y\").  \n**Suggest:** Split into:  \n1. Adjust targeting based on real-time data (AEB).  \n2. Adjust content mix based on real-time data (AEB).  \n3. Adjust spend allocation based on real-time data (AEB).  \n\n---\n\n#### **Step 7**  \n**Step:** Uses Inputs 1, 5, 6 → Compile results against KPIs (ROI, audience growth) → Produces Final Campaign Report → Stores to Executive Reporting Portal  \n**Is AEB:** Yes  \n**Reason:** Single intent (compiling results against KPIs), interacts with one system boundary (reporting portal), no branching/sequencing. Can be implemented as a single API call (e.g., `generate_final_report()`).  \n\n---\n\n### Summary of AEB Compliance  \n| Step | Is AEB? | Key Reason |  \n|------|---------|------------|  \n| 1    | No      | Multiple intents, multiple system boundaries |  \n| 2    | No      | Multiple intents |  \n| 3    | No      | Multiple intents and outputs |  \n| 4    | No      | Multiple intents and system boundaries |  \n| 5    | **Yes** | Single intent, single system boundary |  \n| 6    | No      | Multiple intents |  \n| 7    | **Yes** | Single intent, single system boundary |  \n\n**Next Steps:** Break down non-AEB steps into smaller atomic actions per the suggestions.",
+    "analysis_complete": true
+  },
+  "io_decomposed": true
+}

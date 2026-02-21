@@ -1,0 +1,27 @@
+{
+  "task_id": "a38c3ea5f165",
+  "input": "After a breakdown, diagnose the fault, check spare part inventory and production schedule, order the part if available, update the maintenance log and reschedule work orders to get the line operational again.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "aeb_analysis": {
+    "steps_count": 0,
+    "aeb_analysis": []
+  },
+  "io_decomposed": true,
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [],
+    "outputs": [],
+    "steps": [],
+    "raw_response": null
+  }
+}

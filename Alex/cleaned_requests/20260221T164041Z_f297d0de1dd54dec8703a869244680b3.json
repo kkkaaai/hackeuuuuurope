@@ -1,0 +1,7 @@
+{
+  "task_id": "15165d4ab265",
+  "input": "Design a multi-case customer support workflow that automatically resolves simple issues, flags complex ones for agents, and tracks resolution performance.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

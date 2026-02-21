@@ -1,0 +1,51 @@
+{
+  "task_id": "test_complexity_20",
+  "input": "Create a simple website homepage with basic navigation and contact form",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": null,
+    "analysis_complete": true
+  },
+  "io_decomposed": true,
+  "execution_plan": {
+    "model_used": "AI1",
+    "model_endpoint": "qwen/qwen3-235b-a22b",
+    "inputs": [
+      "Website",
+      "Website",
+      "Contact",
+      "Styling",
+      "Hosting",
+      "Navigation",
+      "Contact",
+      "CSS",
+      "Website",
+      "Hosting"
+    ],
+    "outputs": [
+      "Website File Structure",
+      "Deployed Website",
+      "Deployment Confirmation"
+    ],
+    "steps": [
+      "Uses: Input 1 (Website Content), Input 2 (Website Structure)\nAction: Create HTML page structure with placeholder elements matching content requirements\nProduces: Base HTML template\nStores/Sends To: Local file system (index.html)",
+      "Uses: Input 2 (Website Structure), Input 6 (Navigation Structure)\nAction: Generate responsive navigation menu using derived navigation structure\nProduces: Navigation component HTML/CSS\nStores/Sends To: index.html header section",
+      "Uses: Input 3 (Contact Form Fields), Input 7 (Contact Form HTML)\nAction: Implement contact form with specified fields and validation\nProduces: Form component HTML\nStores/Sends To: index.html contact section",
+      "Uses: Input 4 (Styling Preferences), Input 8 (CSS Stylesheet)\nAction: Generate CSS stylesheet implementing visual preferences\nProduces: Main stylesheet\nStores/Sends To: /css/main.css",
+      "Uses: Input 1 (Website Content), Inputs 6-8 (Derived assets)\nAction: Combine all assets into deployable package\nProduces: Website Files Archive\nStores/Sends To: /dist/website.zip",
+      "Uses: Input 5 (Hosting Credentials), Input 10 (Hosting API Endpoint), Input 9 (Website Archive)\nAction: Deploy website via hosting platform API with authentication\nProduces: Deployment response\nStores/Sends To: Hosting platform server",
+      "Uses: Input 10 (Hosting API Endpoint), Step 6 output\nAction: Verify deployment status and retrieve live URL\nProduces: Deployment confirmation report\nStores/Sends To: User console output"
+    ],
+    "raw_response": "Inputs:\n1. Website Content\n   Source Type: USER-CONTROLLED\n   Source Origin: User\n   Input Data: Text content, images, and media assets for homepage\n   Bound Reference: Requires explicit user provision or linkage.\n\n2. Website Structure\n   Source Type: USER-CONTROLLED\n   Source Origin: User\n   Input Data: Page hierarchy and navigation relationships (e.g., \"Home > About > Contact\")\n   Bound Reference: Requires explicit user provision or linkage.\n\n3. Contact Form Fields\n   Source Type: USER-CONTROLLED\n   Source Origin: User\n   Input Data: List of required form fields with validation rules (e.g., \"Name [required], Email [required, email format]\")\n   Bound Reference: Requires explicit user provision or linkage.\n\n4. Styling Preferences\n   Source Type: USER-CONTROLLED\n   Source Origin: User\n   Input Data: Color scheme, font choices, layout preferences\n   Bound Reference: Requires explicit user provision or linkage.\n\n5. Hosting Platform Credentials\n   Source Type: USER-CONTROLLED\n   Source Origin: User\n   Input Data: API keys, username/password, or deployment credentials for hosting service\n   Bound Reference: Requires explicit user provision or linkage.\n\n6. Navigation Structure\n   Source Type: DERIVABLE\n   Source Origin: Derived from Website Structure\n   Input Data: Structured navigation menu data (e.g., JSON/XML format)\n   Bound Reference: Input 2 (Website Structure)\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\n7. Contact Form HTML\n   Source Type: DERIVABLE\n   Source Origin: Generated from Contact Form Fields\n   Input Data: HTML markup with form validation attributes\n   Bound Reference: Input 3 (Contact Form Fields)\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\n8. CSS Stylesheet\n   Source Type: DERIVABLE\n   Source Origin: Generated from Styling Preferences\n   Input Data: Compiled CSS file implementing visual preferences\n   Bound Reference: Input 4 (Styling Preferences)\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\n9. Website Files Archive\n   Source Type: DERIVABLE\n   Source Origin: Combined website assets\n   Input Data: Zipped directory containing HTML, CSS, JS, and media files\n   Bound Reference: Inputs 1,6,7,8\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\n10. Hosting Platform API Endpoint\n    Source Type: SYSTEM-RETRIEVABLE\n    Source Origin: Hosting provider's API documentation\n    Input Data: REST API endpoint URL for deployment (e.g., \"https://api.hosting.com/v1/deploy\")\n    Bound Reference: Input 5 (Hosting Platform Credentials)\n    Note: [DEPTH STOP - Terminal input, do not further decompose]\n\nOutputs:\n1. Website File Structure\n   Type: File system directory\n   Description: Organized HTML, CSS, JS, and media files\n   Location: Local development environment\n\n2. Deployed Website\n   Type: Live web presence\n   Description: Publicly accessible website at specified domain\n   Location: Hosting platform server\n\n3. Deployment Confirmation\n   Type: Text report\n   Description: Deployment status, URL, and error messages if applicable\n   Location: User console/output\n\nSteps:\nStep 1:\nUses: Input 1 (Website Content), Input 2 (Website Structure)\nAction: Create HTML page structure with placeholder elements matching content requirements\nProduces: Base HTML template\nStores/Sends To: Local file system (index.html)\n\nStep 2:\nUses: Input 2 (Website Structure), Input 6 (Navigation Structure)\nAction: Generate responsive navigation menu using derived navigation structure\nProduces: Navigation component HTML/CSS\nStores/Sends To: index.html header section\n\nStep 3:\nUses: Input 3 (Contact Form Fields), Input 7 (Contact Form HTML)\nAction: Implement contact form with specified fields and validation\nProduces: Form component HTML\nStores/Sends To: index.html contact section\n\nStep 4:\nUses: Input 4 (Styling Preferences), Input 8 (CSS Stylesheet)\nAction: Generate CSS stylesheet implementing visual preferences\nProduces: Main stylesheet\nStores/Sends To: /css/main.css\n\nStep 5:\nUses: Input 1 (Website Content), Inputs 6-8 (Derived assets)\nAction: Combine all assets into deployable package\nProduces: Website Files Archive\nStores/Sends To: /dist/website.zip\n\nStep 6:\nUses: Input 5 (Hosting Credentials), Input 10 (Hosting API Endpoint), Input 9 (Website Archive)\nAction: Deploy website via hosting platform API with authentication\nProduces: Deployment response\nStores/Sends To: Hosting platform server\n\nStep 7:\nUses: Input 10 (Hosting API Endpoint), Step 6 output\nAction: Verify deployment status and retrieve live URL\nProduces: Deployment confirmation report\nStores/Sends To: User console output\n\nDependency Consistency Check:\n- All inputs accounted for in steps\n- No implicit data sources\n- USER-CONTROLLED inputs clearly identified\n- SYSTEM-RETRIEVABLE inputs mapped to endpoints\n- DERIVABLE inputs fully decomposed\n- Source/Input separation maintained\n- [DEPTH STOP] markers correctly placed\n- All leaf inputs are USER/SYSTEM type"
+  }
+}
