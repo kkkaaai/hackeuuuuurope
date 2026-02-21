@@ -1,0 +1,86 @@
+{
+  "description": "A complete block definition, ready to register.",
+  "properties": {
+    "id": {
+      "description": "Unique block ID, e.g. 'scrape_hn'",
+      "title": "Id",
+      "type": "string"
+    },
+    "name": {
+      "description": "Human-readable name",
+      "title": "Name",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "category": {
+      "description": "'input', 'process', 'action', or 'memory'",
+      "title": "Category",
+      "type": "string"
+    },
+    "execution_type": {
+      "description": "'llm' or 'python'",
+      "title": "Execution Type",
+      "type": "string"
+    },
+    "input_schema": {
+      "additionalProperties": true,
+      "description": "JSON Schema defining the block's inputs",
+      "title": "Input Schema",
+      "type": "object"
+    },
+    "output_schema": {
+      "additionalProperties": true,
+      "description": "JSON Schema defining the block's outputs",
+      "title": "Output Schema",
+      "type": "object"
+    },
+    "prompt_template": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "For LLM blocks: the prompt template with {placeholder} syntax",
+      "title": "Prompt Template"
+    },
+    "execution": {
+      "anyOf": [
+        {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "For Python blocks: {'runtime': 'python', 'entrypoint': 'blocks/x/main.py'}",
+      "title": "Execution"
+    },
+    "metadata": {
+      "additionalProperties": true,
+      "title": "Metadata",
+      "type": "object"
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "description",
+    "category",
+    "execution_type",
+    "input_schema",
+    "output_schema"
+  ],
+  "title": "BlockDefinition",
+  "type": "object"
+}
