@@ -31,6 +31,9 @@ class PipelineListItem(BaseModel):
     status: str
     trigger_type: str
     node_count: int
+    nodes: list[dict]
+    edges: list[dict]
+    trigger: dict
 
 
 @router.post("/pipelines")
@@ -39,7 +42,7 @@ async def create_pipeline(request: PipelineCreate) -> dict[str, str]:
     p = request.pipeline
     with get_db() as conn:
         conn.execute(
-            "INSERT INTO pipelines (id, user_intent, definition, status) VALUES (?, ?, ?, ?)",
+            "INSERT OR REPLACE INTO pipelines (id, user_intent, definition, status) VALUES (?, ?, ?, ?)",
             (p.id, p.user_intent, p.model_dump_json(), p.status.value),
         )
         conn.commit()
@@ -73,6 +76,9 @@ async def list_pipelines() -> list[PipelineListItem]:
             status=row["status"],
             trigger_type=defn.get("trigger", {}).get("type", "manual"),
             node_count=len(defn.get("nodes", [])),
+            nodes=defn.get("nodes", []),
+            edges=defn.get("edges", []),
+            trigger=defn.get("trigger", {"type": "manual"}),
         ))
     return items
 

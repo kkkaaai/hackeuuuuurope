@@ -2,11 +2,21 @@
 
 from pathlib import Path
 
+from storage.uris import get_metadata, resolve_uri
+
 
 async def execute(inputs: dict, context: dict) -> dict:
-    fp = Path(inputs["file_path"])
+    ref = inputs["file_path"]
+    uri = resolve_uri(ref)
+    metadata = get_metadata(uri)
+
+    file_type = inputs.get("file_type")
+    if not file_type:
+        file_type = metadata.get("content_type") or Path(ref).suffix.lstrip(".")
+
     return {
-        "file_path": str(fp),
-        "file_type": inputs.get("file_type", fp.suffix.lstrip(".")),
-        "file_size_bytes": fp.stat().st_size if fp.exists() else 0,
+        "file_path": ref,
+        "file_uri": uri,
+        "file_type": file_type,
+        "file_size_bytes": metadata.get("size_bytes", 0) or 0,
     }
