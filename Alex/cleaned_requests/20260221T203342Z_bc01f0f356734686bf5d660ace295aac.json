@@ -1,0 +1,7 @@
+{
+  "task_id": "0b026238125d",
+  "input": "Develop a user authentication microservice by defining requirements, building API endpoints and database schemas, testing integration, fixing any bugs, and deploying it to a staging environment.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

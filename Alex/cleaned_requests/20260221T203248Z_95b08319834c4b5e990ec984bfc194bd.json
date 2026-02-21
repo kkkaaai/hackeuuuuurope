@@ -1,0 +1,7 @@
+{
+  "task_id": "0ae3440c76f4",
+  "input": "When a production line stops due to a faulty part, coordinate maintenance, inventory, and scheduling to source a replacement, update all systems, and resume manufacturing to fulfill the pending order.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

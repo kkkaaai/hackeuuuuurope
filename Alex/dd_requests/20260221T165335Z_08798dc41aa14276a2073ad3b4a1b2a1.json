@@ -11,37 +11,75 @@
     "graph": {},
     "total_subtasks": 0
   },
-  "aeb_analysis": {
-    "steps_count": 6,
-    "aeb_analysis_raw": null,
-    "analysis_complete": true
-  },
-  "io_decomposed": true,
   "execution_plan": {
     "model_used": "AI1",
     "model_endpoint": "qwen/qwen3-235b-a22b",
     "inputs": [
-      "Customer",
-      "Issue",
-      "Predefined",
-      "Escalation",
-      "Performance",
-      "Historical"
+      {
+        "name": "C",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Customer support ticketing system API (e.g., Zendesk, ServiceNow)",
+        "input_data": "Structured records containing issue text, metadata (priority, timestamp, user ID), and status",
+        "bound_reference": "None"
+      },
+      {
+        "name": "H",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Internal database of resolved tickets with labels (simple/complex, resolution time, resolution method)",
+        "input_data": "Labeled dataset for training classification models",
+        "bound_reference": "None"
+      },
+      {
+        "name": "A",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-defined JSON/YAML configuration",
+        "input_data": "Conditional logic (e.g., \"if keyword=payment_failure, apply template_response_1\")",
+        "bound_reference": "None"
+      },
+      {
+        "name": "E",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-defined escalation hierarchy (team/individual mappings for issue categories)",
+        "input_data": "Structured rules (e.g., \"escalate_to: Tier2_Support if complexity_score > 0.8\")",
+        "bound_reference": "None"
+      },
+      {
+        "name": "P",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "User-specified KPIs (e.g., average resolution time, escalation rate)",
+        "input_data": "Metric calculation rules and thresholds",
+        "bound_reference": "None"
+      },
+      {
+        "name": "I",
+        "source_type": "DERIVABLE",
+        "source_origin": "Trained on Historical Issue Resolution Data",
+        "input_data": "Machine learning model for issue complexity prediction",
+        "bound_reference": "Input 2 (Historical Issue Resolution Data)"
+      }
     ],
     "outputs": [
-      "Classified Issue Records",
-      "Automated Response Executions",
-      "Escalated Case Packages",
-      "Performance Dashboard"
+      "Classified Issues Dataset",
+      "Automated Resolution Responses",
+      "Escalated Case Queue",
+      "Performance Metrics Dashboard",
+      "System Logs"
     ],
     "steps": [
-      "Uses: Customer Issue Data\nAction: Pull latest open tickets from ticketing system API\nProduces: Raw issue dataset\nStores/Sends To: Processing queue",
-      "Uses: Customer Issue Data, Issue Classification Criteria\nAction: Execute rule engine to categorize issues using NLP pattern matching\nProduces: Labeled issue records with complexity scores\nStores/Sends To: Classification database",
-      "Uses: Predefined Response Templates, Classified Issue Records\nAction: Match simple issues to response templates and dispatch automated replies\nProduces: Response execution logs\nStores/Sends To: Communication system API",
-      "Uses: Escalation Routing Rules, Classified Issue Records\nAction: Create prioritized case bundles with context documentation\nProduces: Escalation packages with routing metadata\nStores/Sends To: Specialist team collaboration platform",
-      "Uses: Historical Performance Data, Performance Metrics Definitions\nAction: Calculate KPIs using time-series analysis and comparative benchmarking\nProduces: Metric calculation results\nStores/Sends To: BI platform database",
-      "Uses: Performance Metric Results\nAction: Refresh visualization components with latest metric values\nProduces: Updated dashboard views\nStores/Sends To: BI platform frontend"
+      "Uses: Customer Issue Data (Input 1)  \nAction: Retrieve unprocessed customer issues from ticketing system API  \nProduces: Raw issue dataset  \nStores/Sends To: Internal processing queue (e.g., Kafka topic, database table)",
+      "Uses: Historical Issue Resolution Data (Input 2)  \nAction: Train/publish issue classification model using supervised learning  \nProduces: Issue Classification Model (Input 6)  \nStores/Sends To: Model registry (e.g., MLflow, S3 bucket)",
+      "Uses: Issue Classification Model (Input 6), Customer Issue Data (Input 1)  \nAction: Apply model to classify issues into simple/complex categories  \nProduces: Classified Issues Dataset  \nStores/Sends To: Database collection \"classified_issues\"",
+      "Uses: Classified Issues Dataset (Output), Automation Ruleset (Input 3)  \nAction: Execute automated resolution workflows for simple issues  \nProduces: Automated Resolution Responses  \nStores/Sends To: Ticketing system API (update resolved tickets)",
+      "Uses: Classified Issues Dataset (Output), Escalation Protocols (Input 4)  \nAction: Route complex issues to appropriate escalation channels  \nProduces: Escalated Case Queue  \nStores/Sends To: Escalation management system (e.g., Jira, email queue)",
+      "Uses: Performance Metric Definitions (Input 5), Classified Issues Dataset (Output)  \nAction: Calculate KPIs using metric definitions  \nProduces: Performance Metrics Dashboard  \nStores/Sends To: BI tool (e.g., Tableau, Grafana)",
+      "Uses: All outputs  \nAction: Generate system logs for audit and debugging  \nProduces: System Logs  \nStores/Sends To: Centralized logging system (e.g., ELK stack, Splunk)"
     ],
-    "raw_response": "Inputs:\n1. Customer Issue Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Customer support ticketing system API (e.g., Zendesk/ServiceNow)\n   Input Data: Structured records containing issue text, metadata (priority, timestamp), customer ID\n   Bound Reference: [DEPTH STOP - Terminal input, do not further decompose]\n\n2. Issue Classification Criteria\n   Source Type: USER-CONTROLLED\n   Source Origin: Customer service manager\n   Input Data: Rule set defining simple/complex thresholds (e.g., keyword patterns, resolution time estimates)\n   Note: Requires explicit user provision or linkage.\n\n3. Predefined Response Templates\n   Source Type: USER-CONTROLLED\n   Source Origin: Customer service knowledge base team\n   Input Data: Structured response templates mapped to common issue types\n   Note: Requires explicit user provision or linkage.\n\n4. Escalation Routing Rules\n   Source Type: USER-CONTROLLED\n   Source Origin: Customer service operations team\n   Input Data: Hierarchical routing matrix mapping complex issue types to specialist teams/individuals\n   Note: Requires explicit user provision or linkage.\n\n5. Performance Metrics Definitions\n   Source Type: USER-CONTROLLED\n   Source Origin: Business intelligence team\n   Input Data: Metric specifications (e.g., SLA thresholds, resolution time KPIs, escalation rate targets)\n   Note: Requires explicit user provision or linkage.\n\n6. Historical Performance Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Internal analytics database\n   Input Data: Time-series records of past resolution times, escalation rates, customer satisfaction scores\n   Bound Reference: [DEPTH STOP - Terminal input, do not further decompose]\n\nOutputs:\n1. Classified Issue Records\n   Type: Structured dataset\n   Destination: Internal issue tracking database\n\n2. Automated Response Executions\n   Type: Communication logs\n   Destination: Customer communication channels (email/SMS/chat)\n\n3. Escalated Case Packages\n   Type: Bundled case files\n   Destination: Specialist team work queues\n\n4. Performance Dashboard\n   Type: Interactive visualization dashboard\n   Destination: BI platform (e.g., Tableau/Power BI)\n\nSteps:\nStep 1: Retrieve Customer Issues\nUses: Customer Issue Data\nAction: Pull latest open tickets from ticketing system API\nProduces: Raw issue dataset\nStores/Sends To: Processing queue\n\nStep 2: Apply Classification Rules\nUses: Customer Issue Data, Issue Classification Criteria\nAction: Execute rule engine to categorize issues using NLP pattern matching\nProduces: Labeled issue records with complexity scores\nStores/Sends To: Classification database\n\nStep 3: Execute Automated Responses\nUses: Predefined Response Templates, Classified Issue Records\nAction: Match simple issues to response templates and dispatch automated replies\nProduces: Response execution logs\nStores/Sends To: Communication system API\n\nStep 4: Package Escalated Cases\nUses: Escalation Routing Rules, Classified Issue Records\nAction: Create prioritized case bundles with context documentation\nProduces: Escalation packages with routing metadata\nStores/Sends To: Specialist team collaboration platform\n\nStep 5: Generate Performance Metrics\nUses: Historical Performance Data, Performance Metrics Definitions\nAction: Calculate KPIs using time-series analysis and comparative benchmarking\nProduces: Metric calculation results\nStores/Sends To: BI platform database\n\nStep 6: Update Dashboard\nUses: Performance Metric Results\nAction: Refresh visualization components with latest metric values\nProduces: Updated dashboard views\nStores/Sends To: BI platform frontend\n\nDependency Consistency Check:\n- All inputs accounted for in steps\n- No implicit data sources present\n- USER-CONTROLLED inputs clearly identified with explicit provision requirements\n- SYSTEM-RETRIEVABLE inputs mapped to specific endpoints\n- DERIVABLE inputs fully decomposed into terminal sources\n- [DEPTH STOP] markers correctly placed on terminal inputs\n- Output verification paths explicitly defined"
-  }
+    "raw_response": "Inputs:  \n1. Customer Issue Data  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Customer support ticketing system API (e.g., Zendesk, ServiceNow)  \n   Input Data: Structured records containing issue text, metadata (priority, timestamp, user ID), and status  \n   Bound Reference: None  \n   Note: [DEPTH STOP - Terminal input]  \n\n2. Historical Issue Resolution Data  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal database of resolved tickets with labels (simple/complex, resolution time, resolution method)  \n   Input Data: Labeled dataset for training classification models  \n   Bound Reference: None  \n   Note: [DEPTH STOP - Terminal input]  \n\n3. Automation Ruleset  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-defined JSON/YAML configuration  \n   Input Data: Conditional logic (e.g., \"if keyword=payment_failure, apply template_response_1\")  \n   Bound Reference: None  \n   Note: Requires explicit user provision or linkage.  \n\n4. Escalation Protocols  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-defined escalation hierarchy (team/individual mappings for issue categories)  \n   Input Data: Structured rules (e.g., \"escalate_to: Tier2_Support if complexity_score > 0.8\")  \n   Bound Reference: None  \n   Note: Requires explicit user provision or linkage.  \n\n5. Performance Metric Definitions  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-specified KPIs (e.g., average resolution time, escalation rate)  \n   Input Data: Metric calculation rules and thresholds  \n   Bound Reference: None  \n   Note: Requires explicit user provision or linkage.  \n\n6. Issue Classification Model  \n   Source Type: DERIVABLE  \n   Source Origin: Trained on Historical Issue Resolution Data  \n   Input Data: Machine learning model for issue complexity prediction  \n   Bound Reference: Input 2 (Historical Issue Resolution Data)  \n   Note: [DEPTH STOP - Terminal input]  \n\nOutputs:  \n1. Classified Issues Dataset  \n   Type: Persisted state change  \n   Description: Customer issues tagged with complexity scores and categories  \n\n2. Automated Resolution Responses  \n   Type: Observable artifact  \n   Description: Generated text responses or actions applied to simple issues  \n\n3. Escalated Case Queue  \n   Type: Persisted state change  \n   Description: List of complex issues with assigned teams/individuals  \n\n4. Performance Metrics Dashboard  \n   Type: Measurable report  \n   Description: Visualizations and alerts for tracked KPIs  \n\n5. System Logs  \n   Type: Observable artifact  \n   Description: Audit trail of classification decisions and automation actions  \n\nSteps:  \nStep 1:  \nUses: Customer Issue Data (Input 1)  \nAction: Retrieve unprocessed customer issues from ticketing system API  \nProduces: Raw issue dataset  \nStores/Sends To: Internal processing queue (e.g., Kafka topic, database table)  \n\nStep 2:  \nUses: Historical Issue Resolution Data (Input 2)  \nAction: Train/publish issue classification model using supervised learning  \nProduces: Issue Classification Model (Input 6)  \nStores/Sends To: Model registry (e.g., MLflow, S3 bucket)  \n\nStep 3:  \nUses: Issue Classification Model (Input 6), Customer Issue Data (Input 1)  \nAction: Apply model to classify issues into simple/complex categories  \nProduces: Classified Issues Dataset  \nStores/Sends To: Database collection \"classified_issues\"  \n\nStep 4:  \nUses: Classified Issues Dataset (Output), Automation Ruleset (Input 3)  \nAction: Execute automated resolution workflows for simple issues  \nProduces: Automated Resolution Responses  \nStores/Sends To: Ticketing system API (update resolved tickets)  \n\nStep 5:  \nUses: Classified Issues Dataset (Output), Escalation Protocols (Input 4)  \nAction: Route complex issues to appropriate escalation channels  \nProduces: Escalated Case Queue  \nStores/Sends To: Escalation management system (e.g., Jira, email queue)  \n\nStep 6:  \nUses: Performance Metric Definitions (Input 5), Classified Issues Dataset (Output)  \nAction: Calculate KPIs using metric definitions  \nProduces: Performance Metrics Dashboard  \nStores/Sends To: BI tool (e.g., Tableau, Grafana)  \n\nStep 7:  \nUses: All outputs  \nAction: Generate system logs for audit and debugging  \nProduces: System Logs  \nStores/Sends To: Centralized logging system (e.g., ELK stack, Splunk)"
+  },
+  "aeb_analysis": {
+    "steps_count": 7,
+    "aeb_analysis_raw": null,
+    "analysis_complete": true
+  },
+  "io_decomposed": true
 }

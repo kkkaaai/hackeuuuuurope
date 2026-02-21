@@ -11,11 +11,6 @@
     "graph": {},
     "total_subtasks": 0
   },
-  "aeb_analysis": {
-    "steps_count": 0,
-    "aeb_analysis": []
-  },
-  "io_decomposed": true,
   "execution_plan": {
     "model_used": "AI1",
     "model_endpoint": "qwen/qwen3-235b-a22b",
@@ -23,5 +18,10 @@
     "outputs": [],
     "steps": [],
     "raw_response": null
-  }
+  },
+  "aeb_analysis": {
+    "steps_count": 0,
+    "aeb_analysis": []
+  },
+  "io_decomposed": true
 }

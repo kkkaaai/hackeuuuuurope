@@ -1,0 +1,7 @@
+{
+  "task_id": "20f51a9f976f",
+  "input": "Create a customer support automation system for a managed hosting provider that performs triage, auto-resolves simple issues, escalates complex cases, and includes performance tracking.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}
