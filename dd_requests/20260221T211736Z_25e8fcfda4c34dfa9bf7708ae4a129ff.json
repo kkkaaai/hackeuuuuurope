@@ -1,6 +1,6 @@
 {
-  "task_id": "dcf821e77f43",
-  "input": "When a defective part halts assembly, locate a replacement in inventory, update the quality log and stock system, then resume production to complete the order.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

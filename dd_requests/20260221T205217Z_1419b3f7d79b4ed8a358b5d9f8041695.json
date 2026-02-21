@@ -1,6 +1,6 @@
 {
-  "task_id": "a7cdeb07ca94",
-  "input": "Coordinate new student enrollment by verifying prerequisite completion, resolving schedule conflicts, updating the SIS and LMS, and delivering a finalized class schedule to the student.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

@@ -1,6 +1,6 @@
 {
-  "task_id": "17388c1b3d68",
-  "input": "Investigate a flagged transaction, verify the customer's identity, and either unfreeze the legitimate payment or update the fraud system to block it permanently.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

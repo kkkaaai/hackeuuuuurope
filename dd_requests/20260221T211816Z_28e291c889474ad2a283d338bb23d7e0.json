@@ -1,6 +1,6 @@
 {
-  "task_id": "41f29b603384",
-  "input": "Create an automated SaaS support workflow that triages tickets, resolves simple issues automatically, escalates complex cases, and tracks performance metrics.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

@@ -1,6 +1,6 @@
 {
-  "task_id": "3d960e6b2069",
-  "input": "Create an automated system that triages customer queries, resolves simple issues automatically, escalates complex cases to agents, and tracks performance for a telecom operator.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

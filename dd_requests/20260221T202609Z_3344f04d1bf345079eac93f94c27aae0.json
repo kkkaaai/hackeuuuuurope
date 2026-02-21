@@ -1,6 +1,6 @@
 {
-  "task_id": "d2e6863643ce",
-  "input": "Create a customer support automation workflow that triages issues, automatically resolves simple ones, escalates complex cases, and tracks performance for a telecom operator.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

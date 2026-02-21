@@ -1,6 +1,6 @@
 {
-  "task_id": "0ec1bce49b5e",
-  "input": "Process a customer's loan application by checking credit, verifying income, resolving documentation gaps, updating the lending platform, and providing approval or denial.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

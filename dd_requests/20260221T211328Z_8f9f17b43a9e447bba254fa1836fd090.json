@@ -1,6 +1,6 @@
 {
-  "task_id": "5927ced0c5cb",
-  "input": "Analyze real-time sensor data, adjust conveyor speeds and routing within safe operating limits, monitor throughput, and report efficiency gains.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

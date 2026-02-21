@@ -1,6 +1,6 @@
 {
-  "task_id": "c8067321dc91",
-  "input": "Define requirements for a secure VPC, build its components in Terraform, test with linting and security scans, fix any issues, and deploy to a staging environment.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"

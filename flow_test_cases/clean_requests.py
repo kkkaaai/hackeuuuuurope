@@ -1,14 +1,19 @@
 import os
+import sys
 import json
 import glob
 from pathlib import Path
 
+# Add parent directory to path
+SCRIPT_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(SCRIPT_DIR)
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
 from task_id_manager import generate_base_id
 
-
-BASE_DIR = os.path.dirname(__file__)
 SAMPLE_DIR = os.path.join(BASE_DIR, "sample_requests")
-CLEANED_DIR = os.path.join(BASE_DIR, "cleaned_requests")
+CLEANED_DIR = os.path.join(SCRIPT_DIR, "cleaned_requests")
 
 
 def extract_response_content(response_obj):

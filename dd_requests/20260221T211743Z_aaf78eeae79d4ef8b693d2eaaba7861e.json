@@ -1,6 +1,6 @@
 {
-  "task_id": "7fb0276de00a",
-  "input": "Analyze a clinical trial protocol to identify compliance risks, propose revisions, and create both technical and executive summaries.",
+  "task_id": "",
+  "input": "",
   "required_inputs": [],
   "outputs": [
     "result"
