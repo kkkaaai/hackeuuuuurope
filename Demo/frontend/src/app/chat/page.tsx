@@ -16,6 +16,7 @@ import {
   MessageCircle,
 } from "lucide-react";
 import { createAgentStream, clarifyIntent, savePipeline, runPipeline, listBlocks } from "@/lib/api";
+import { useDashboard } from "@/lib/dashboard-context";
 import { PipelineGraph } from "@/components/pipeline/PipelineGraph";
 import { PipelineResultDisplay } from "@/components/pipeline/PipelineResultDisplay";
 import { StageProgressBar } from "@/components/thinker/StageProgressBar";
@@ -124,7 +125,7 @@ function reducer(state: State, action: Action): State {
         phase: "ready",
         pipeline: action.pipeline,
         currentStage: null,
-        completedStages: new Set(["decompose", "match", "create", "wire"]),
+        completedStages: new Set(["decompose", "search", "create", "wire"]),
       };
 
     case "THINKING_ERROR":
@@ -181,7 +182,7 @@ const INITIAL_STATE: State = {
 
 export default function AgentStudioPage() {
   const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
-  const [input, setInput] = useState("");
+  const { chatDraft: input, setChatDraft: setInput } = useDashboard();
   const [blocksLoaded, setBlocksLoaded] = useState(false);
   const [isClarifyLoading, setIsClarifyLoading] = useState(false);
   const [thinkerOpen, setThinkerOpen] = useState(true);
@@ -217,7 +218,7 @@ export default function AgentStudioPage() {
         const event: SSEEvent = { type: eventType, ...data };
         dispatch({ type: "SSE_EVENT", event });
 
-        if ((eventType === "match_found" || eventType === "block_created") && data.block_id) {
+        if ((eventType === "search_found" || eventType === "match_found" || eventType === "block_created") && data.block_id) {
           addBlockMetadata([{
             id: data.block_id as string,
             name: (data.block_name || data.block_id) as string,

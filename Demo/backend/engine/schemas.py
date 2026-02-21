@@ -35,8 +35,8 @@ class NewBlockSpec(BaseModel):
         description="Block category: 'input', 'process', 'action', or 'memory'",
     )
     execution_type: str = Field(
-        default="llm",
-        description="How the block runs: 'llm' or 'python'",
+        default="python",
+        description="How the block runs — always 'python'",
     )
     input_schema: dict[str, Any] = Field(
         description="JSON Schema for the block's inputs",
@@ -55,7 +55,7 @@ class NewBlockSpec(BaseModel):
     )
     prompt_template: str | None = Field(
         default=None,
-        description="For LLM blocks: prompt with {input_name} placeholders",
+        description="Deprecated — legacy LLM blocks only. New blocks use source_code.",
     )
     examples: list[dict[str, Any]] = Field(
         default_factory=list,
@@ -105,7 +105,7 @@ class BlockDefinition(BaseModel):
     name: str = Field(description="Human-readable name")
     description: str
     category: str = Field(description="'input', 'process', 'action', or 'memory'")
-    execution_type: str = Field(description="'llm' or 'python'")
+    execution_type: str = Field(default="python", description="Always 'python'")
     input_schema: dict[str, Any] = Field(
         description="JSON Schema defining the block's inputs",
     )
@@ -114,11 +114,11 @@ class BlockDefinition(BaseModel):
     )
     prompt_template: str | None = Field(
         default=None,
-        description="For LLM blocks: the prompt template with {placeholder} syntax",
+        description="Deprecated — legacy LLM blocks only",
     )
     source_code: str | None = Field(
         default=None,
-        description="For Python blocks: inline source code with async execute() function",
+        description="Python source code with async execute(inputs, context) function",
     )
     metadata: dict[str, Any] = Field(
         default_factory=lambda: {"created_by": "thinker", "tier": 2},

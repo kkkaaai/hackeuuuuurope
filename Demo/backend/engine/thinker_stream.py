@@ -1,8 +1,10 @@
-"""Streaming Thinker — yields SSE events as it runs each stage.
+"""The Thinker — takes user intent, produces Pipeline JSON via SSE stream.
 
-Reuses prompt builders and logic from thinker.py but yields events
-between each LLM call so the frontend can show live progress,
-including the full prompts sent and raw LLM responses received.
+Pipeline: decompose → search → create (if missing) → wire
+
+Yields SSE events between each LLM call so the frontend can show live
+progress. Shared helpers (prompts, block finalization, testing) live in
+thinker.py.
 """
 
 import asyncio
@@ -15,6 +17,7 @@ from engine.state import ThinkerState
 from engine.thinker import (
     _finalize_created_block,
     _is_good_match,
+    _test_block,
     build_create_block_prompt,
     build_decompose_prompts,
     build_wire_prompts,
@@ -82,6 +85,17 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
     })
     await asyncio.sleep(0)
 
+    # Emit decompose_blocks summary for the UI
+    yield _event("decompose_blocks", {
+        "blocks": [
+            {"suggested_id": b.get("suggested_id", "?"),
+             "description": b.get("description", ""),
+             "execution_type": b.get("execution_type", "python")}
+            for b in required_blocks
+        ]
+    })
+    await asyncio.sleep(0)
+
     try:
         validate_stage_output("decompose", {"required_blocks": required_blocks})
         yield _event("validation", {"stage": "decompose", "valid": True})
@@ -100,16 +114,11 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
         description = req.get("description", "")
         suggested_id = req.get("suggested_id", req.get("block_id", "?"))
 
-        # Build search query from description + suggested_id
-        query_parts = []
-        if req.get("suggested_id"):
-            query_parts.append(req["suggested_id"].replace("_", " "))
-        if description:
-            query_parts.append(description)
-        query = " ".join(query_parts) or suggested_id
+        # Search by description only — compare desired functionality to existing
+        query = description or suggested_id.replace("_", " ")
 
         # Hybrid search in Supabase
-        candidates = await registry.search(query, limit=3)
+        candidates = await registry.search(query, limit=5)
 
         # Find the best match
         found = False
@@ -170,6 +179,7 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
         await asyncio.sleep(0)
 
         created = []
+        creation_failures = []
         for i, spec in enumerate(state["missing_blocks"]):
             block_name = spec.get("suggested_id", f"block_{i}")
             yield _event("creating_block", {
@@ -194,11 +204,32 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
 
             parsed = parse_json_output(response)
 
-            parsed = _finalize_created_block(parsed, spec)
-            block_id = parsed["id"]
+            try:
+                parsed = _finalize_created_block(parsed, spec)
+            except (SyntaxError, ValueError) as exc:
+                # Finalize failed (compile error or missing source_code) — treat as test failure
+                # so the retry loop below can fix it
+                error = str(exc)
+                block_id = parsed.get("id", spec.get("suggested_id", f"block_{i}"))
+                yield _event("block_test_failed", {"block_id": block_id, "error": error, "retry": True})
+                await asyncio.sleep(0)
+                # Retry creation with error context
+                retry_user = (
+                    f"{user}\n\nIMPORTANT: The previous version failed with this error:\n"
+                    f"{error}\n\nFix the code so it does not produce this error. "
+                    f"You MUST include a 'source_code' field with valid Python."
+                )
+                response = await call_llm(system=system, user=retry_user)
+                parsed = parse_json_output(response)
+                try:
+                    parsed = _finalize_created_block(parsed, spec)
+                except (SyntaxError, ValueError):
+                    # Second finalize failure — will be caught by test loop
+                    parsed.setdefault("id", spec.get("suggested_id", f"block_{i}"))
+                    parsed["execution_type"] = "python"
+                    parsed.setdefault("source_code", "async def execute(inputs, context):\n    return {}\n")
 
-            await registry.save(parsed)
-            created.append(parsed)
+            block_id = parsed["id"]
 
             yield _event("block_created", {
                 "block_id": block_id,
@@ -211,18 +242,70 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
             })
             await asyncio.sleep(0)
 
+            # Test block with sample inputs — retry up to 3 times
+            MAX_TEST_RETRIES = 3
+            passed, error = await _test_block(parsed)
+            retry_user = user
+            for attempt in range(1, MAX_TEST_RETRIES + 1):
+                if passed:
+                    yield _event("block_test_passed", {"block_id": block_id})
+                    await asyncio.sleep(0)
+                    break
+
+                will_retry = attempt < MAX_TEST_RETRIES
+                yield _event("block_test_failed", {"block_id": block_id, "error": error, "retry": will_retry})
+                await asyncio.sleep(0)
+
+                if not will_retry:
+                    parsed.setdefault("metadata", {})
+                    parsed["metadata"]["test_passed"] = False
+                    break
+
+                # Retry creation with error context
+                retry_user = (
+                    f"{retry_user}\n\nIMPORTANT: The previous version failed at runtime with this error:\n"
+                    f"{error}\n\nFix the code so it does not produce this error."
+                )
+                response = await call_llm(system=system, user=retry_user)
+                parsed = parse_json_output(response)
+                try:
+                    parsed = _finalize_created_block(parsed, spec)
+                except (SyntaxError, ValueError) as exc:
+                    error = str(exc)
+                    passed = False
+                    continue
+                block_id = parsed["id"]
+                passed, error = await _test_block(parsed)
+
+            if parsed.get("metadata", {}).get("test_passed") is False:
+                creation_failures.append(block_id)
+                yield _event("block_create_failed", {
+                    "block_id": block_id,
+                    "error": error,
+                    "message": "Block failed all test retries — not saved to registry.",
+                })
+                await asyncio.sleep(0)
+            else:
+                await registry.save(parsed)
+                created.append(parsed)
+
         state = {
             **state,
             "matched_blocks": state["matched_blocks"] + created,
             "missing_blocks": [],
             "status": "wiring",
-            "log": state["log"] + [{"step": "create", "created": [b["id"] for b in created]}],
+            "log": state["log"] + [{
+                "step": "create",
+                "created": [b["id"] for b in created],
+                "failed": creation_failures,
+            }],
         }
 
         yield _event("stage_result", {
             "stage": "create",
             "status": "done",
             "created": [b["id"] for b in created],
+            "failed": creation_failures,
         })
         await asyncio.sleep(0)
 
@@ -279,3 +362,22 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
         "pipeline": state["pipeline_json"],
         "log": state["log"],
     })
+
+
+async def run_thinker(intent: str, user_id: str) -> dict:
+    """Run the full Thinker pipeline via the stream, return the final state.
+
+    Consumes all SSE events and extracts the result from the 'complete' event.
+    Used by non-streaming API endpoints that still need the final result.
+    """
+    result: dict = {"pipeline_json": None, "status": "error", "log": [], "missing_blocks": []}
+    async for event_str in run_thinker_stream(intent, user_id):
+        # Each event_str is "event: ...\ndata: {...}\n\n"
+        for line in event_str.strip().split("\n"):
+            if line.startswith("data: "):
+                data = json.loads(line[6:])
+                if data.get("type") == "complete":
+                    result["pipeline_json"] = data.get("pipeline")
+                    result["status"] = data.get("status", "done")
+                    result["log"] = data.get("log", [])
+    return result

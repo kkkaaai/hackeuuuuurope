@@ -16,6 +16,10 @@ import {
   Clock,
   AlertCircle,
   ArrowDown,
+  Puzzle,
+  Code,
+  RefreshCw,
+  TestTube2,
 } from "lucide-react";
 import type { SSEEvent } from "@/lib/types";
 
@@ -36,7 +40,7 @@ function EventItem({ event }: { event: SSEEvent }) {
       );
 
     case "stage": {
-      const stageNumbers: Record<string, number> = { decompose: 1, match: 2, create: 3, wire: 4 };
+      const stageNumbers: Record<string, number> = { decompose: 1, search: 2, create: 3, wire: 4 };
       const num = stageNumbers[String(event.stage)] ?? "";
       return (
         <div className="flex items-center gap-2 text-white text-sm font-medium pt-4 pb-1.5">
@@ -120,13 +124,46 @@ function EventItem({ event }: { event: SSEEvent }) {
         </div>
       );
 
+    case "decompose_blocks": {
+      const blocks = Array.isArray(event.blocks) ? event.blocks as Array<{ suggested_id: string; description: string; execution_type: string }> : [];
+      return (
+        <div className="py-1.5">
+          <div className="flex items-center gap-2 text-xs text-gray-300 mb-1.5">
+            <Puzzle className="w-3.5 h-3.5 text-blue-400 flex-shrink-0" />
+            <span>Identified {blocks.length} block{blocks.length !== 1 ? "s" : ""}</span>
+          </div>
+          <div className="ml-6 space-y-1">
+            {blocks.map((b, i) => (
+              <div key={i} className="flex items-center gap-2 text-[11px]">
+                <span className="px-1.5 py-0.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded text-[10px] font-mono">
+                  {b.suggested_id}
+                </span>
+                <span className={`px-1 py-0.5 rounded text-[9px] font-medium ${
+                  b.execution_type === "python"
+                    ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
+                    : "bg-cyan-500/10 text-cyan-400 border border-cyan-500/20"
+                }`}>
+                  {b.execution_type === "python" ? <Code className="w-2.5 h-2.5 inline mr-0.5" /> : null}
+                  {b.execution_type}
+                </span>
+                {b.description && (
+                  <span className="text-gray-600 truncate">{b.description}</span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    case "search_found":
     case "match_found":
       return (
         <div className="py-1.5">
           <div className="flex items-center gap-2 text-xs">
             <Search className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
             <span className="px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/20 rounded text-[10px] font-mono">
-              {String(event.name || event.block_id)}
+              {String(event.name || event.matched_block_id || event.block_id)}
             </span>
             <span className="text-green-500/60">found in registry</span>
           </div>
@@ -136,6 +173,7 @@ function EventItem({ event }: { event: SSEEvent }) {
         </div>
       );
 
+    case "search_missing":
     case "match_missing":
       return (
         <div className="py-1.5">
@@ -184,6 +222,35 @@ function EventItem({ event }: { event: SSEEvent }) {
           </div>
           {typeof event.description === "string" && event.description && (
             <p className="ml-6 mt-0.5 text-[10px] text-gray-600 leading-tight">{event.description}</p>
+          )}
+        </div>
+      );
+
+    case "block_test_passed":
+      return (
+        <div className="flex items-center gap-2 text-xs py-1.5 ml-6">
+          <TestTube2 className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+          <span className="text-green-400">Test passed</span>
+          <span className="text-gray-600 font-mono text-[10px]">{String(event.block_id || "")}</span>
+        </div>
+      );
+
+    case "block_test_failed":
+      return (
+        <div className="py-1.5 ml-6">
+          <div className="flex items-center gap-2 text-xs">
+            <TestTube2 className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />
+            <span className="text-red-400">Test failed</span>
+            <span className="text-gray-600 font-mono text-[10px]">{String(event.block_id || "")}</span>
+            {Boolean(event.retry) && (
+              <span className="flex items-center gap-1 text-yellow-400 text-[10px]">
+                <RefreshCw className="w-2.5 h-2.5" />
+                Retrying...
+              </span>
+            )}
+          </div>
+          {typeof event.error === "string" && event.error && (
+            <p className="mt-0.5 text-[10px] text-red-400/60 leading-tight ml-6 font-mono">{event.error}</p>
           )}
         </div>
       );
