@@ -42,6 +42,12 @@ from .flow_executor import (
     execute_flow,
 )
 
+from .run_synthesis import (
+    ParsedPrompt,
+    parse_block_prompt,
+    synthesize_from_prompt,
+)
+
 __all__ = [
     # Synthesis (generation-time)
     "BaseSandbox",
@@ -69,4 +75,8 @@ __all__ = [
     "FlowResult",
     "FlowSandbox",
     "execute_flow",
+    # Prompt-based synthesis
+    "ParsedPrompt",
+    "parse_block_prompt",
+    "synthesize_from_prompt",
 ]

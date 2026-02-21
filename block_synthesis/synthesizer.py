@@ -15,8 +15,6 @@ import json
 import logging
 import os
 import re
-import resource
-import signal
 import subprocess
 import sys
 import tarfile
@@ -27,6 +25,13 @@ from enum import Enum
 from io import BytesIO
 from pathlib import Path
 from typing import Any
+
+RESOURCE_AVAILABLE = False
+try:
+    import resource
+    RESOURCE_AVAILABLE = True
+except ImportError:
+    pass
 
 DOCKER_AVAILABLE = False
 try:
@@ -898,17 +903,52 @@ Fix the code and return the corrected version."""
     
     def _parse_synthesis_response(self, response: str) -> SynthesisResult:
         """Parse LLM response into SynthesisResult."""
-        json_match = re.search(r"\{[\s\S]*\}", response)
-        if not json_match:
+        json_matches = list(re.finditer(r"\{[\s\S]*?\}", response))
+        
+        if not json_matches:
             raise SynthesisError("No JSON object found in LLM response")
         
-        try:
-            data = json.loads(json_match.group())
-        except json.JSONDecodeError as e:
-            raise SynthesisError(f"Invalid JSON in response: {e}")
+        data = None
+        for match in json_matches:
+            try:
+                candidate = json.loads(match.group())
+                if isinstance(candidate, dict) and "code" in candidate:
+                    data = candidate
+                    break
+            except json.JSONDecodeError:
+                continue
+        
+        if data is None:
+            all_json_text = re.search(r"\{[\s\S]*\}", response)
+            if all_json_text:
+                try:
+                    data = json.loads(all_json_text.group())
+                except json.JSONDecodeError:
+                    brace_count = 0
+                    start_idx = response.find("{")
+                    if start_idx >= 0:
+                        for i, char in enumerate(response[start_idx:], start_idx):
+                            if char == "{":
+                                brace_count += 1
+                            elif char == "}":
+                                brace_count -= 1
+                                if brace_count == 0:
+                                    try:
+                                        data = json.loads(response[start_idx : i + 1])
+                                        break
+                                    except json.JSONDecodeError:
+                                        continue
+        
+        if data is None:
+            raise SynthesisError("Could not parse valid JSON from LLM response")
         
         if "code" not in data:
             raise SynthesisError("Response missing 'code' field")
+        
+        code = data["code"]
+        if "\\n" in code and "\n" not in code:
+            code = code.replace("\\n", "\n").replace("\\t", "\t")
+        data["code"] = code
         
         output_format_str = data.get("output_format", "json").lower()
         try:
@@ -931,51 +971,66 @@ Fix the code and return the corrected version."""
     async def _call_llm(self, system: str, user: str) -> str:
         """Call LLM with system and user prompts.
         
-        Uses OpenAI or Anthropic based on provider setting.
+        Uses direct SDK calls to OpenAI or Anthropic.
         """
         if self.provider == "openai":
-            return await self._call_openai(system, user)
+            from openai import OpenAI
+            
+            client = OpenAI()
+            
+            def _call():
+                return client.chat.completions.create(
+                    model=self.model,
+                    temperature=0.0,
+                    messages=[
+                        {"role": "system", "content": system},
+                        {"role": "user", "content": user},
+                    ],
+                )
+            
+            response = await asyncio.to_thread(_call)
+            return response.choices[0].message.content or ""
+        
         elif self.provider == "anthropic":
-            return await self._call_anthropic(system, user)
+            import anthropic
+            
+            client = anthropic.Anthropic()
+            
+            def _call():
+                return client.messages.create(
+                    model=self.model,
+                    max_tokens=4096,
+                    temperature=0.0,
+                    system=system,
+                    messages=[{"role": "user", "content": user}],
+                )
+            
+            response = await asyncio.to_thread(_call)
+            return response.content[0].text
+        
         else:
             raise SynthesisError(f"Unknown provider: {self.provider}")
-    
-    async def _call_openai(self, system: str, user: str) -> str:
-        """Call OpenAI API."""
-        from openai import OpenAI
         
-        client = OpenAI()
-        
-        def _call():
-            return client.chat.completions.create(
-                model=self.model,
-                temperature=0.0,
-                messages=[
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-            )
-        
-        response = await asyncio.to_thread(_call)
-        return response.choices[0].message.content or ""
-    
-    async def _call_anthropic(self, system: str, user: str) -> str:
-        """Call Anthropic API."""
-        import anthropic
-        
-        client = anthropic.Anthropic()
-        
-        def _call():
-            return client.messages.create(
-                model=self.model,
-                max_tokens=4096,
-                temperature=0.0,
-                system=system,
-                messages=[{"role": "user", "content": user}],
-            )
-        
-        response = await asyncio.to_thread(_call)
-        return response.content[0].text
+        # ─────────────────────────────────────────────────────────────────────
+        # Alternative: Use Demo/backend/llm/service.py
+        # Uncomment below and comment out the direct SDK code above
+        # ─────────────────────────────────────────────────────────────────────
+        # import sys as _sys
+        # from pathlib import Path
+        # 
+        # project_root = Path(__file__).parent.parent
+        # demo_backend = project_root / "Demo" / "backend"
+        # if str(demo_backend) not in _sys.path:
+        #     _sys.path.insert(0, str(demo_backend))
+        # 
+        # from llm.service import call_llm
+        # 
+        # return await call_llm(
+        #     system=system,
+        #     user=user,
+        #     provider=self.provider,
+        #     model=self.model,
+        # )
 
 
 # =============================================================================
