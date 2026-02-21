@@ -14,6 +14,7 @@ from engine.schemas import validate_stage_output
 from engine.state import ThinkerState
 from engine.thinker import (
     _finalize_created_block,
+    _is_good_match,
     build_create_block_prompt,
     build_decompose_prompts,
     build_wire_prompts,
@@ -51,8 +52,7 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
                            "message": "Breaking intent into atomic blocks..."})
     await asyncio.sleep(0)
 
-    blocks_available = registry.list_all()
-    system, user = build_decompose_prompts(intent, blocks_available)
+    system, user = build_decompose_prompts(intent)
 
     yield _event("llm_prompt", {"stage": "decompose", "system": system, "user": user})
     await asyncio.sleep(0)
@@ -70,7 +70,7 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
     state = {
         **state,
         "required_blocks": required_blocks,
-        "status": "matching",
+        "status": "searching",
         "log": state["log"] + [{"step": "decompose", "required_blocks": required_blocks}],
     }
 
@@ -89,37 +89,49 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
         yield _event("validation", {"stage": "decompose", "valid": False, "error": str(e)})
     await asyncio.sleep(0)
 
-    # ── Stage 2: MATCH ──
-    yield _event("stage", {"stage": "match", "status": "running",
-                           "message": "Matching blocks against registry..."})
+    # ── Stage 2: SEARCH ──
+    yield _event("stage", {"stage": "search", "status": "running",
+                           "message": "Searching registry for matching blocks..."})
     await asyncio.sleep(0)
 
     matched = []
     missing = []
     for req in state["required_blocks"]:
-        block_id = req.get("block_id")
         description = req.get("description", "")
-        if block_id:
-            try:
-                block_def = registry.get(block_id)
-                matched.append(block_def)
-                yield _event("match_found", {
-                    "block_id": block_id,
-                    "name": block_def["name"],
-                    "description": block_def.get("description", description),
-                    "block_def": block_def,
+        suggested_id = req.get("suggested_id", req.get("block_id", "?"))
+
+        # Build search query from description + suggested_id
+        query_parts = []
+        if req.get("suggested_id"):
+            query_parts.append(req["suggested_id"].replace("_", " "))
+        if description:
+            query_parts.append(description)
+        query = " ".join(query_parts) or suggested_id
+
+        # Hybrid search in Supabase
+        candidates = await registry.search(query, limit=3)
+
+        # Find the best match
+        found = False
+        for candidate in candidates:
+            if _is_good_match(candidate, req):
+                matched.append(candidate)
+                yield _event("search_found", {
+                    "suggested_id": suggested_id,
+                    "matched_block_id": candidate["id"],
+                    "name": candidate["name"],
+                    "description": candidate.get("description", description),
+                    "block_def": candidate,
                 })
-            except KeyError:
-                missing.append(req)
-                yield _event("match_missing", {
-                    "block_id": block_id,
-                    "description": description,
-                })
-        else:
+                found = True
+                break
+
+        if not found:
             missing.append(req)
-            yield _event("match_missing", {
-                "suggested_id": req.get("suggested_id", "?"),
+            yield _event("search_missing", {
+                "suggested_id": suggested_id,
                 "description": description or "new block",
+                "candidates_checked": len(candidates),
             })
         await asyncio.sleep(0)
 
@@ -129,14 +141,14 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
         "missing_blocks": missing,
         "status": "creating" if missing else "wiring",
         "log": state["log"] + [{
-            "step": "match",
+            "step": "search",
             "matched": [b["id"] for b in matched],
             "missing": [m.get("suggested_id") or m.get("block_id", "?") for m in missing],
         }],
     }
 
     yield _event("stage_result", {
-        "stage": "match",
+        "stage": "search",
         "status": "done",
         "matched": len(matched),
         "missing": len(missing),

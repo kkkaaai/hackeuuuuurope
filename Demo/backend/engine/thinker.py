@@ -1,6 +1,6 @@
 """The Thinker — takes user intent, produces Pipeline JSON.
 
-Pipeline: decompose → match → create (if missing) → wire
+Pipeline: decompose → search → create (if missing) → wire
 
 Each stage has a strict JSON schema (see engine/schemas.py).
 Validation happens at every boundary so malformed data fails fast.
@@ -44,45 +44,39 @@ def _build_block_catalog(blocks: list[dict]) -> str:
     return json.dumps(entries, indent=2)
 
 
-def build_decompose_prompts(intent: str, blocks: list[dict]) -> tuple[str, str]:
-    blocks_summary = _build_block_catalog(blocks)
+def build_decompose_prompts(intent: str) -> tuple[str, str]:
+    """Build decompose prompts using example blocks only — no full catalog.
 
-    system = f"""You are a task decomposer for AgentFlow, an AI agent platform.
-Given a user's intent and available blocks, break the intent into a sequence of atomic steps.
+    The LLM freely decides what blocks are needed based on the intent.
+    A search step will later find existing matches in the registry.
+    """
+    system = """You are a task decomposer for AgentFlow, an AI agent platform.
+Break the user's intent into atomic blocks.
 
-## Available Blocks
-{blocks_summary}
+A block is a unit of work defined by its inputs and outputs:
+- **python** blocks: run Python code (good for API calls, calculations, data transforms, web scraping)
+- **llm** blocks: send a prompt template to an LLM (good for analysis, generation, summarization, knowledge)
 
-## Execution Types
-- **llm**: Good for knowledge retrieval, text generation, analysis, search. The block sends a prompt to an LLM and parses the JSON response.
-- **python**: Good for calculations, sorting, ranking, filtering, comparisons, math, data transformations. The block runs Python code deterministically — much more reliable for numerical operations.
+## Example blocks (for format reference only)
+- web_search (python): Search the web. Inputs: {query: string}. Outputs: {results: array}
+- web_scrape (python): Fetch URL content. Inputs: {url: string}. Outputs: {content: string}
+- summarize (llm): Summarize text. Inputs: {content: string}. Outputs: {summary: string}
 
-## REUSE RULES (CRITICAL)
-1. **PREFER REUSE**: Before proposing a new block, check if an existing block handles the task with different input parameters. For example, use `web_search` with query="AirPods price" instead of creating `search_airpods_price`. Use `claude_analyze` with analysis_type="extraction" instead of creating `extract_airpods_price`.
-2. **CHECK use_when**: Read the `use_when` field on each block — it tells you exactly when that block is appropriate.
-3. **GENERALIZE**: If you truly must create a new block, make it generic and reusable. Name it `extract_field_from_results` not `extract_airpods_price`. It should work for ANY similar task, not just the specific one at hand.
-4. **MATCH BY TAGS**: Use the `tags` on each block to find semantic matches for the task.
-
-## Other Rules
-1. Use existing blocks by referencing their "block_id" when they fit the need.
-2. If NO existing block fits, describe a NEW block with: suggested_id, description, execution_type, input_schema, output_schema.
-3. Each block must do ONE atomic thing.
-4. List blocks in execution order.
-5. Think about data flow: what does each block need as input, and what does it output?
-6. For NEW blocks: use execution_type "python" for any task involving calculations, sorting, ranking, numerical comparisons, or data transformations. Use "llm" for knowledge retrieval, text generation, or subjective analysis.
+## Rules
+1. Each block does ONE atomic thing
+2. List blocks in execution order
+3. Think about data flow: what each block needs as input, what it outputs
+4. Use "python" for API calls, calculations, sorting, ranking, data transforms, web scraping
+5. Use "llm" for knowledge, analysis, text generation, summarization
+6. Make blocks generic and reusable (e.g. "extract_fields" not "extract_airpods_price")
 
 ## Output
 Return ONLY a JSON object (no markdown, no explanation):
-{{
-  "required_blocks": [
-    {{"block_id": "existing_id", "reason": "why"}},
-    {{"suggested_id": "new_id", "description": "what it does",
-      "execution_type": "llm or python",
-      "input_schema": {{"type": "object", "properties": {{...}}, "required": [...]}},
-      "output_schema": {{"type": "object", "properties": {{...}}}}
-    }}
-  ]
-}}"""
+{"required_blocks": [
+  {"suggested_id": "...", "description": "...", "execution_type": "llm|python",
+   "input_schema": {"type": "object", "properties": {...}, "required": [...]},
+   "output_schema": {"type": "object", "properties": {...}}}
+]}"""
 
     user = f'User intent: "{intent}"'
     return system, user
@@ -258,7 +252,7 @@ def _finalize_created_block(parsed: dict, spec: dict) -> dict:
 
 async def decompose_intent(state: ThinkerState) -> ThinkerState:
     """Decompose user intent into a list of required blocks using LLM."""
-    system, user = build_decompose_prompts(state["user_intent"], registry.list_all())
+    system, user = build_decompose_prompts(state["user_intent"])
     response = await call_llm(system=system, user=user)
     parsed = parse_json_output(response)
     required_blocks = parsed.get("required_blocks", [])
@@ -266,31 +260,85 @@ async def decompose_intent(state: ThinkerState) -> ThinkerState:
     return {
         **state,
         "required_blocks": required_blocks,
-        "status": "matching",
+        "status": "searching",
         "log": state["log"] + [{"step": "decompose", "required_blocks": required_blocks}],
     }
 
 
 # ─────────────────────────────────────────────
-# Stage 2: MATCH (no LLM needed)
+# Stage 2: SEARCH (hybrid search, no LLM needed)
 # ─────────────────────────────────────────────
 
 
-async def match_blocks(state: ThinkerState) -> ThinkerState:
-    """Check registry for each required block. Split into matched vs missing."""
+def _is_good_match(candidate: dict, req: dict) -> bool:
+    """Check if a search candidate is a good match for the required block.
+
+    Compares description keywords and IO schema overlap.
+    """
+    # Compare execution type if specified
+    req_exec = req.get("execution_type")
+    if req_exec and candidate.get("execution_type") != req_exec:
+        return False
+
+    # Check description keyword overlap
+    req_desc = (req.get("description", "") + " " + req.get("suggested_id", "")).lower()
+    cand_desc = (candidate.get("description", "") + " " + candidate.get("id", "")).lower()
+    req_words = set(req_desc.replace("_", " ").split())
+    cand_words = set(cand_desc.replace("_", " ").split())
+    # Remove common stop words
+    stop = {"a", "an", "the", "to", "of", "for", "and", "or", "in", "on", "is", "it", "that", "with"}
+    req_words -= stop
+    cand_words -= stop
+    if req_words and cand_words:
+        overlap = len(req_words & cand_words) / len(req_words)
+        if overlap >= 0.3:
+            return True
+
+    # Check IO schema overlap (property names)
+    req_inputs = set(req.get("input_schema", {}).get("properties", {}).keys())
+    cand_inputs = set(candidate.get("input_schema", {}).get("properties", {}).keys())
+    req_outputs = set(req.get("output_schema", {}).get("properties", {}).keys())
+    cand_outputs = set(candidate.get("output_schema", {}).get("properties", {}).keys())
+
+    if req_inputs and cand_inputs and req_inputs & cand_inputs:
+        return True
+    if req_outputs and cand_outputs and req_outputs & cand_outputs:
+        return True
+
+    return False
+
+
+async def search_blocks(state: ThinkerState) -> ThinkerState:
+    """Search registry for each required block using hybrid search."""
     matched = []
     missing = []
 
     for req in state["required_blocks"]:
-        block_id = req.get("block_id")
-        if block_id:
-            try:
-                block_def = registry.get(block_id)
-                matched.append(block_def)
-            except KeyError:
-                missing.append(req)
-        else:
+        # Build search query from the block's description + suggested_id
+        query_parts = []
+        if req.get("suggested_id"):
+            query_parts.append(req["suggested_id"].replace("_", " "))
+        if req.get("description"):
+            query_parts.append(req["description"])
+        query = " ".join(query_parts) or req.get("block_id", "block")
+
+        # Hybrid search in Supabase
+        candidates = await registry.search(query, limit=3)
+
+        # Find the best match
+        found = False
+        for candidate in candidates:
+            if _is_good_match(candidate, req):
+                matched.append(candidate)
+                logger.info("Search found block '%s' for requirement '%s'",
+                            candidate["id"], req.get("suggested_id", req.get("block_id", "?")))
+                found = True
+                break
+
+        if not found:
             missing.append(req)
+            logger.info("Search found no match for requirement '%s'",
+                        req.get("suggested_id", req.get("block_id", "?")))
 
     has_missing = len(missing) > 0
 
@@ -301,7 +349,7 @@ async def match_blocks(state: ThinkerState) -> ThinkerState:
         "status": "creating" if has_missing else "wiring",
         "error": None,
         "log": state["log"] + [{
-            "step": "match",
+            "step": "search",
             "matched": [b["id"] for b in matched],
             "missing": [m.get("suggested_id") or m.get("block_id", "?") for m in missing],
         }],
@@ -323,6 +371,7 @@ async def create_block(state: ThinkerState) -> ThinkerState:
         parsed = parse_json_output(response)
 
         parsed = _finalize_created_block(parsed, spec)
+        logger.info("Block '%s' created and verified (type=%s)", parsed["id"], parsed["execution_type"])
 
         await registry.save(parsed)
         created.append(parsed)
@@ -369,7 +418,7 @@ async def wire_pipeline(state: ThinkerState) -> ThinkerState:
 
 
 async def run_thinker(intent: str, user_id: str) -> ThinkerState:
-    """Run the full Thinker pipeline: decompose → match → create → wire."""
+    """Run the full Thinker pipeline: decompose → search → create → wire."""
     state: ThinkerState = {
         "user_intent": intent,
         "user_id": user_id,
@@ -386,8 +435,8 @@ async def run_thinker(intent: str, user_id: str) -> ThinkerState:
     state = await decompose_intent(state)
     validate_stage_output("decompose", {"required_blocks": state["required_blocks"]})
 
-    # Step 2: Match
-    state = await match_blocks(state)
+    # Step 2: Search
+    state = await search_blocks(state)
 
     # Step 3: Create missing blocks (if any)
     if state["status"] == "creating" and state["missing_blocks"]:

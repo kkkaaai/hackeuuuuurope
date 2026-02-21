@@ -6,12 +6,13 @@ from unittest.mock import AsyncMock, patch
 import pytest
 
 from engine.thinker import (
+    _is_good_match,
     build_decompose_prompts,
     build_create_block_prompt,
     build_wire_prompts,
     create_block,
     decompose_intent,
-    match_blocks,
+    search_blocks,
     run_thinker,
     wire_pipeline,
 )
@@ -34,63 +35,111 @@ def _base_state(**overrides) -> ThinkerState:
     return state
 
 
-class TestMatchBlocks:
+class TestIsGoodMatch:
+    def test_matching_description_keywords(self):
+        candidate = {"id": "web_search", "description": "Search the web for results", "execution_type": "python",
+                      "input_schema": {"properties": {"query": {"type": "string"}}},
+                      "output_schema": {"properties": {"results": {"type": "array"}}}}
+        req = {"suggested_id": "web_search", "description": "Search the web", "execution_type": "python",
+               "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}},
+               "output_schema": {"type": "object", "properties": {"results": {"type": "array"}}}}
+        assert _is_good_match(candidate, req) is True
+
+    def test_execution_type_mismatch(self):
+        candidate = {"id": "summarize", "description": "Summarize text", "execution_type": "llm",
+                      "input_schema": {"properties": {}}, "output_schema": {"properties": {}}}
+        req = {"suggested_id": "summarize", "description": "Summarize text", "execution_type": "python",
+               "input_schema": {"type": "object", "properties": {}},
+               "output_schema": {"type": "object", "properties": {}}}
+        assert _is_good_match(candidate, req) is False
+
+    def test_io_schema_overlap(self):
+        candidate = {"id": "fetch_url", "description": "Fetch a URL", "execution_type": "python",
+                      "input_schema": {"properties": {"url": {"type": "string"}}},
+                      "output_schema": {"properties": {"content": {"type": "string"}}}}
+        req = {"suggested_id": "web_scrape", "description": "Download page content",
+               "input_schema": {"type": "object", "properties": {"url": {"type": "string"}}},
+               "output_schema": {"type": "object", "properties": {"content": {"type": "string"}}}}
+        assert _is_good_match(candidate, req) is True
+
+    def test_no_overlap_returns_false(self):
+        candidate = {"id": "send_email", "description": "Send an email notification",
+                      "execution_type": "python",
+                      "input_schema": {"properties": {"to": {"type": "string"}}},
+                      "output_schema": {"properties": {"sent": {"type": "boolean"}}}}
+        req = {"suggested_id": "web_search", "description": "Search the web",
+               "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}},
+               "output_schema": {"type": "object", "properties": {"results": {"type": "array"}}}}
+        assert _is_good_match(candidate, req) is False
+
+
+class TestSearchBlocks:
     @pytest.mark.asyncio
-    async def test_all_blocks_found(self):
+    @patch("engine.thinker.registry")
+    async def test_all_blocks_found(self, mock_registry):
+        mock_registry.search = AsyncMock(side_effect=[
+            [{"id": "web_search", "name": "Web Search", "description": "Search the web",
+              "execution_type": "python",
+              "input_schema": {"properties": {"query": {"type": "string"}}},
+              "output_schema": {"properties": {"results": {"type": "array"}}}}],
+            [{"id": "summarize", "name": "Summarize", "description": "Summarize text content",
+              "execution_type": "llm",
+              "input_schema": {"properties": {"content": {"type": "string"}}},
+              "output_schema": {"properties": {"summary": {"type": "string"}}}}],
+        ])
         state = _base_state(
             required_blocks=[
-                {"block_id": "web_search", "reason": "search"},
-                {"block_id": "claude_summarize", "reason": "summarize"},
-                {"block_id": "notify_push", "reason": "notify"},
+                {"suggested_id": "web_search", "description": "Search the web",
+                 "execution_type": "python",
+                 "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}},
+                 "output_schema": {"type": "object", "properties": {"results": {"type": "array"}}}},
+                {"suggested_id": "summarize", "description": "Summarize text content",
+                 "execution_type": "llm",
+                 "input_schema": {"type": "object", "properties": {"content": {"type": "string"}}},
+                 "output_schema": {"type": "object", "properties": {"summary": {"type": "string"}}}},
             ]
         )
-        result = await match_blocks(state)
-        assert len(result["matched_blocks"]) == 3
+        result = await search_blocks(state)
+        assert len(result["matched_blocks"]) == 2
         assert len(result["missing_blocks"]) == 0
         assert result["status"] == "wiring"
-        assert result["error"] is None
 
     @pytest.mark.asyncio
-    async def test_missing_block_routes_to_creating(self):
-        """Missing blocks should set status to 'creating', not 'error'."""
+    @patch("engine.thinker.registry")
+    async def test_missing_block_routes_to_creating(self, mock_registry):
+        mock_registry.search = AsyncMock(return_value=[])
         state = _base_state(
             required_blocks=[
-                {"block_id": "web_search", "reason": "search"},
-                {"block_id": "nonexistent_block", "reason": "missing"},
+                {"suggested_id": "custom_block", "description": "A totally custom thing",
+                 "input_schema": {"type": "object", "properties": {}},
+                 "output_schema": {"type": "object", "properties": {}}},
             ]
         )
-        result = await match_blocks(state)
-        assert len(result["matched_blocks"]) == 1
+        result = await search_blocks(state)
+        assert len(result["matched_blocks"]) == 0
         assert len(result["missing_blocks"]) == 1
         assert result["status"] == "creating"
 
     @pytest.mark.asyncio
-    async def test_new_block_spec_treated_as_missing(self):
-        """Block described without block_id → treated as missing → routes to creating."""
+    @patch("engine.thinker.registry")
+    async def test_log_entry_added(self, mock_registry):
+        mock_registry.search = AsyncMock(return_value=[
+            {"id": "web_search", "name": "Web Search", "description": "Search the web",
+             "execution_type": "python",
+             "input_schema": {"properties": {"query": {"type": "string"}}},
+             "output_schema": {"properties": {"results": {"type": "array"}}}}
+        ])
         state = _base_state(
             required_blocks=[
-                {"block_id": "web_search", "reason": "search"},
-                {
-                    "suggested_id": "scrape_hn",
-                    "description": "custom scraper",
-                    "input_schema": {"type": "object", "properties": {"url": {"type": "string"}}},
-                    "output_schema": {"type": "object", "properties": {"posts": {"type": "array"}}},
-                },
+                {"suggested_id": "web_search", "description": "Search the web",
+                 "execution_type": "python",
+                 "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}},
+                 "output_schema": {"type": "object", "properties": {"results": {"type": "array"}}}},
             ]
         )
-        result = await match_blocks(state)
-        assert len(result["matched_blocks"]) == 1
-        assert len(result["missing_blocks"]) == 1
-        assert result["status"] == "creating"
-
-    @pytest.mark.asyncio
-    async def test_log_entry_added(self):
-        state = _base_state(
-            required_blocks=[{"block_id": "web_search", "reason": "search"}]
-        )
-        result = await match_blocks(state)
+        result = await search_blocks(state)
         assert len(result["log"]) == 1
-        assert result["log"][0]["step"] == "match"
+        assert result["log"][0]["step"] == "search"
         assert "web_search" in result["log"][0]["matched"]
 
 
@@ -100,14 +149,20 @@ class TestDecomposeIntent:
     async def test_decompose_returns_required_blocks(self, mock_llm):
         mock_llm.return_value = json.dumps({
             "required_blocks": [
-                {"block_id": "web_search", "reason": "search"},
-                {"block_id": "claude_summarize", "reason": "summarize"},
+                {"suggested_id": "web_search", "description": "Search the web",
+                 "execution_type": "python",
+                 "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}},
+                 "output_schema": {"type": "object", "properties": {"results": {"type": "array"}}}},
+                {"suggested_id": "summarize", "description": "Summarize text",
+                 "execution_type": "llm",
+                 "input_schema": {"type": "object", "properties": {"content": {"type": "string"}}},
+                 "output_schema": {"type": "object", "properties": {"summary": {"type": "string"}}}},
             ]
         })
         state = _base_state()
         result = await decompose_intent(state)
         assert len(result["required_blocks"]) == 2
-        assert result["status"] == "matching"
+        assert result["status"] == "searching"
         assert result["log"][-1]["step"] == "decompose"
 
     @pytest.mark.asyncio
@@ -185,14 +240,8 @@ class TestWirePipeline:
 
 class TestPromptBuilders:
     def test_build_decompose_prompts(self):
-        blocks = [{
-            "id": "web_search", "name": "Web Search",
-            "description": "Search the web",
-            "input_schema": {"properties": {"query": {"type": "string"}}},
-            "output_schema": {"properties": {"results": {"type": "string"}}},
-        }]
-        system, user = build_decompose_prompts("Find news", blocks)
-        assert "web_search" in system
+        system, user = build_decompose_prompts("Find news")
+        assert "atomic" in system.lower() or "block" in system.lower()
         assert "Find news" in user
 
     def test_build_create_block_prompt(self):
@@ -219,15 +268,41 @@ class TestPromptBuilders:
 
 class TestRunThinker:
     @pytest.mark.asyncio
+    @patch("engine.thinker.registry")
     @patch("engine.thinker.call_llm")
-    async def test_full_pipeline_with_existing_blocks(self, mock_llm):
-        """Full thinker run where all blocks exist in registry."""
-        # decompose returns existing blocks
+    async def test_full_pipeline_with_existing_blocks(self, mock_llm, mock_registry):
+        """Full thinker run where all blocks are found via search."""
+        web_search_block = {
+            "id": "web_search", "name": "Web Search",
+            "description": "Search the web for results",
+            "execution_type": "python",
+            "input_schema": {"properties": {"query": {"type": "string"}}},
+            "output_schema": {"properties": {"results": {"type": "array"}}},
+        }
+        summarize_block = {
+            "id": "claude_summarize", "name": "Summarize",
+            "description": "Summarize text content",
+            "execution_type": "llm",
+            "input_schema": {"properties": {"text": {"type": "string"}}},
+            "output_schema": {"properties": {"summary": {"type": "string"}}},
+        }
+        mock_registry.search = AsyncMock(side_effect=[
+            [web_search_block],
+            [summarize_block],
+        ])
+
         mock_llm.side_effect = [
+            # decompose returns blocks
             json.dumps({
                 "required_blocks": [
-                    {"block_id": "web_search", "reason": "search"},
-                    {"block_id": "claude_summarize", "reason": "summarize"},
+                    {"suggested_id": "web_search", "description": "Search the web for results",
+                     "execution_type": "python",
+                     "input_schema": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]},
+                     "output_schema": {"type": "object", "properties": {"results": {"type": "array"}}}},
+                    {"suggested_id": "summarize", "description": "Summarize text content",
+                     "execution_type": "llm",
+                     "input_schema": {"type": "object", "properties": {"text": {"type": "string"}}, "required": ["text"]},
+                     "output_schema": {"type": "object", "properties": {"summary": {"type": "string"}}}},
                 ]
             }),
             # wire returns pipeline
