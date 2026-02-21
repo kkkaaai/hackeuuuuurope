@@ -1,7 +1,0 @@
-{
-  "task_id": "0a317b9bf486",
-  "input": "After a quality inspection flags a defective batch, coordinate the MES to halt production, resolve the machine calibration constraint, update the ERP inventory, and schedule the rework order to fulfill the original shipment.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

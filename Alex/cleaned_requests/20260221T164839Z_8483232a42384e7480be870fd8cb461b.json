@@ -1,7 +1,0 @@
-{
-  "task_id": "051e8d324267",
-  "input": "Design a support workflow that triages retail customer inquiries, resolves simple ones automatically, escalates complex cases, and tracks performance metrics.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

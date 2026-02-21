@@ -1,7 +1,0 @@
-{
-  "task_id": "290dbadac031",
-  "input": "Define requirements, build, test, debug, and deploy a new payment method integration for the mobile app's staging environment.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

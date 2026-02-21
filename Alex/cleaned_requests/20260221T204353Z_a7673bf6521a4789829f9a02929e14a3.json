@@ -1,7 +1,0 @@
-{
-  "task_id": "822829cec8d9",
-  "input": "Process a customer's loan application by checking credit via multiple APIs, resolving a debt-to-income ratio constraint, updating the loan management system, and issuing an approval decision.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

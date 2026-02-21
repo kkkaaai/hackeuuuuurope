@@ -1,7 +1,0 @@
-{
-  "task_id": "14a5e9db17a9",
-  "input": "Review a high-risk payment flagged by the fraud system, then either approve or block it in the payment gateway, and notify the customer of the decision.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

@@ -1,7 +1,0 @@
-{
-  "task_id": "e220c580ee5c",
-  "input": "Process a customer's credit application by integrating APIs for credit checks and AML screening, resolving any flagged transactions, updating the loan management and core banking systems, then disburse the approved funds.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

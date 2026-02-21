@@ -1,7 +1,0 @@
-{
-  "task_id": "4477ca1bf9a3",
-  "input": "Design a customer support workflow that routes inquiries, resolves simple ones automatically, escalates complex cases, and tracks performance metrics.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

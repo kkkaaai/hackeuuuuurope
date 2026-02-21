@@ -1,7 +1,0 @@
-{
-  "task_id": "519cc6271624",
-  "input": "Design, build, test, debug, and deploy a system to collect and transmit sensor data from remote edge sites to a central server.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

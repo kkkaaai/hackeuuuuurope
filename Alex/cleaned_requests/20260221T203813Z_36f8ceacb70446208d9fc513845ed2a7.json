@@ -1,7 +1,0 @@
-{
-  "task_id": "c1432d97d141",
-  "input": "Design a telecom support automation workflow that triages issues, auto-resolves simple ones, escalates complex cases, and tracks performance.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}

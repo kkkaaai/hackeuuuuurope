@@ -1,7 +1,0 @@
-{
-  "task_id": "9154fe5891cf",
-  "input": "Design and implement a new microservice with a REST API for user notifications, write unit/integration tests, debug any failures, and deploy it to the staging environment.",
-  "complexity_score": null,
-  "eval_gen": 1,
-  "subtasks": []
-}
