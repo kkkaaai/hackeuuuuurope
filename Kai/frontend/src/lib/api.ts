@@ -10,6 +10,7 @@ import type {
   ExecutionRun,
   ExecutionDetail,
   Notification,
+  ScheduleItem,
 } from "./types";
 
 export async function sendChat(req: ChatRequest): Promise<ChatResponse> {
@@ -107,4 +108,10 @@ export async function listNotifications(limit = 50): Promise<Notification[]> {
 export async function markNotificationRead(id: number): Promise<void> {
   const res = await fetch(`/api/notifications/${id}/read`, { method: "POST" });
   if (!res.ok) throw new Error(`Mark notification read failed: ${res.status}`);
+}
+
+export async function listSchedules(): Promise<ScheduleItem[]> {
+  const res = await fetch("/api/schedules");
+  if (!res.ok) throw new Error(`List schedules failed: ${res.status}`);
+  return res.json();
 }

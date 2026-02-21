@@ -4,7 +4,6 @@ import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Send,
-  Play,
   X,
   Loader2,
   CheckCircle2,
@@ -12,7 +11,10 @@ import {
   Sparkles,
   HelpCircle,
   RotateCcw,
+  LayoutDashboard,
+  FlaskConical,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { sendChat, savePipeline, runPipeline } from "@/lib/api";
 import { PipelineGraph } from "@/components/pipeline/PipelineGraph";
 import { PipelineResultDisplay } from "@/components/pipeline/PipelineResultDisplay";
@@ -22,7 +24,7 @@ import { listBlocks } from "@/lib/api";
 import { CATEGORY_BG } from "@/lib/constants";
 import type { ChatResponse, ExecutionResult } from "@/lib/types";
 
-type Phase = "idle" | "loading" | "preview" | "clarifying" | "executing" | "complete" | "error";
+type Phase = "idle" | "loading" | "preview" | "clarifying" | "executing" | "complete" | "error" | "saved";
 
 interface Message {
   id: string;
@@ -52,7 +54,8 @@ type Action =
   | { type: "EXECUTION_COMPLETE"; result: ExecutionResult }
   | { type: "ERROR"; error: string }
   | { type: "REJECT" }
-  | { type: "RESET" };
+  | { type: "RESET" }
+  | { type: "SAVED_TO_DASHBOARD" };
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {
@@ -135,6 +138,8 @@ function reducer(state: State, action: Action): State {
           },
         ],
       };
+    case "SAVED_TO_DASHBOARD":
+      return { ...state, phase: "saved" };
     case "REJECT":
     case "RESET":
       return {
@@ -166,6 +171,8 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const wsRef = useRef<WebSocket | null>(null);
+  const pipelineSavedRef = useRef(false);
+  const router = useRouter();
 
   // Load block metadata on mount
   useEffect(() => {
@@ -219,6 +226,7 @@ export default function ChatPage() {
     if (!message || state.phase === "loading") return;
 
     setInput("");
+    pipelineSavedRef.current = false;
     dispatch({ type: "SEND_MESSAGE", content: message });
 
     try {
@@ -243,18 +251,24 @@ export default function ChatPage() {
     }
   }, [input, state.phase, state.sessionId]);
 
+  const buildSavePayload = useCallback(() => {
+    const p = state.currentPipeline!;
+    return {
+      id: p.pipeline_id,
+      user_intent: p.user_intent,
+      trigger: p.trigger,
+      nodes: p.nodes,
+      edges: p.edges,
+    };
+  }, [state.currentPipeline]);
+
   const handleExecute = useCallback(async () => {
     if (!state.currentPipeline) return;
     dispatch({ type: "START_EXECUTION" });
 
     try {
-      const saved = await savePipeline({
-        id: state.currentPipeline.pipeline_id,
-        user_intent: state.currentPipeline.user_intent,
-        trigger: state.currentPipeline.trigger,
-        nodes: state.currentPipeline.nodes,
-        edges: state.currentPipeline.edges,
-      });
+      const saved = await savePipeline(buildSavePayload());
+      pipelineSavedRef.current = true;
 
       connectWebSocket(saved.id);
 
@@ -273,7 +287,20 @@ export default function ChatPage() {
         },
       });
     }
-  }, [state.currentPipeline, connectWebSocket]);
+  }, [state.currentPipeline, connectWebSocket, buildSavePayload]);
+
+  const handleAddToDashboard = useCallback(async () => {
+    if (!state.currentPipeline) return;
+
+    try {
+      if (!pipelineSavedRef.current) {
+        await savePipeline(buildSavePayload());
+      }
+      dispatch({ type: "SAVED_TO_DASHBOARD" });
+    } catch {
+      dispatch({ type: "ERROR", error: "Failed to save pipeline." });
+    }
+  }, [state.currentPipeline, buildSavePayload]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -336,11 +363,18 @@ export default function ChatPage() {
             {state.phase === "preview" && (
               <div className="px-6 py-3 flex items-center gap-3">
                 <button
-                  onClick={handleExecute}
+                  onClick={handleAddToDashboard}
                   className="flex items-center gap-1.5 px-5 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
                 >
-                  <Play className="w-3.5 h-3.5" />
-                  Run Pipeline
+                  <LayoutDashboard className="w-3.5 h-3.5" />
+                  Add to Dashboard
+                </button>
+                <button
+                  onClick={handleExecute}
+                  className="flex items-center gap-1.5 px-4 py-2 border border-gray-600 hover:border-gray-500 text-gray-300 hover:text-white text-sm rounded-lg transition-colors"
+                >
+                  <FlaskConical className="w-3.5 h-3.5" />
+                  Test Run
                 </button>
                 <button
                   onClick={() => dispatch({ type: "REJECT" })}
@@ -383,7 +417,7 @@ export default function ChatPage() {
                         executionResult.status === "completed" ? "text-green-400" : "text-red-400"
                       }`}
                     >
-                      {executionResult.status === "completed" ? "Pipeline completed" : "Pipeline failed"}
+                      {executionResult.status === "completed" ? "Test run completed" : "Test run failed"}
                     </span>
                   </div>
 
@@ -399,6 +433,50 @@ export default function ChatPage() {
                       errors={executionResult.errors}
                     />
                   )}
+                </div>
+
+                <div className="mt-3 flex items-center gap-3">
+                  <button
+                    onClick={handleAddToDashboard}
+                    className="flex items-center gap-1.5 px-5 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium rounded-lg transition-colors"
+                  >
+                    <LayoutDashboard className="w-3.5 h-3.5" />
+                    Add to Dashboard
+                  </button>
+                  <button
+                    onClick={() => dispatch({ type: "RESET" })}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-300 text-sm rounded-lg transition-colors"
+                  >
+                    Discard
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {state.phase === "saved" && (
+              <div className="px-6 py-3">
+                <div className="rounded-lg p-4 border bg-green-500/10 border-green-500/30">
+                  <div className="flex items-center gap-2 mb-2">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <span className="text-sm font-medium text-green-400">
+                      Pipeline added to dashboard
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 mt-2">
+                    <button
+                      onClick={() => router.push("/dashboard")}
+                      className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5" />
+                      Go to Dashboard
+                    </button>
+                    <button
+                      onClick={() => dispatch({ type: "RESET" })}
+                      className="text-xs text-gray-400 hover:text-gray-300 transition-colors"
+                    >
+                      Create another
+                    </button>
+                  </div>
                 </div>
               </div>
             )}

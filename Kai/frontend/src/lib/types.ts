@@ -78,6 +78,15 @@ export interface PipelineListItem {
   status: string;
   trigger_type: string;
   node_count: number;
+  nodes: PipelineNode[];
+  edges: PipelineEdge[];
+  trigger: TriggerConfig;
+}
+
+export interface ScheduleItem {
+  job_id: string;
+  pipeline_id: string;
+  next_run: string | null;
 }
 
 export interface ExecutionRun {
