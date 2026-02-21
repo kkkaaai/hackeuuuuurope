@@ -1,5 +1,7 @@
 """AgentFlow Engine — FastAPI app."""
 
+from __future__ import annotations
+
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
@@ -180,11 +182,8 @@ async def automate(req: CreateAgentRequest):
 
 
 @app.get("/api/blocks")
-async def list_blocks(origin: Optional[str] = Query(None, description="Filter by origin: 'system' or 'custom'")):
-    if origin == "system":
-        return registry.list_system()
-    elif origin == "custom":
-        return registry.list_custom()
+async def list_blocks():
+    """List all blocks from Supabase."""
     return registry.list_all()
 
 
@@ -198,27 +197,36 @@ async def get_block(block_id: str):
 
 @app.get("/api/blocks/{block_id}/source")
 async def get_block_source(block_id: str):
-    """Return the Python source code for a block's entrypoint."""
+    """Return the source_code or prompt_template for a block."""
     try:
         block_def = registry.get(block_id)
     except KeyError:
         raise HTTPException(404, f"Block not found: {block_id}")
 
-    entrypoint = block_def.get("execution", {}).get("entrypoint")
-    if not entrypoint:
-        raise HTTPException(404, f"Block {block_id} has no Python entrypoint")
-
-    source_path = Path(__file__).parent / entrypoint
-    if not source_path.exists():
-        raise HTTPException(404, f"Source file not found: {entrypoint}")
-
-    return {"source": source_path.read_text()}
+    if block_def.get("source_code"):
+        return {"source": block_def["source_code"], "type": "python"}
+    if block_def.get("prompt_template"):
+        return {"source": block_def["prompt_template"], "type": "llm"}
+    raise HTTPException(404, f"Block {block_id} has no source code or prompt template")
 
 
 @app.post("/api/blocks")
 async def create_block_endpoint(block: dict):
-    registry.save(block)
+    await registry.save(block)
     return {"status": "created", "block_id": block["id"]}
+
+
+# ── Block Search ──
+
+
+class BlockSearchRequest(BaseModel):
+    query: str
+
+
+@app.post("/api/blocks/search")
+async def search_blocks_endpoint(req: BlockSearchRequest):
+    """Hybrid search: full-text + semantic via Supabase."""
+    return await registry.search(req.query)
 
 
 # ── Pipeline CRUD ──
@@ -247,22 +255,12 @@ async def save_pipeline_endpoint(req: SavePipelineRequest):
     pipeline_id = pipeline.get("id", str(uuid.uuid4()))
     pipeline["id"] = pipeline_id
     memory_store.save_pipeline(pipeline_id, pipeline)
-    memory_store.save_pipeline_summary(pipeline_id, {
-        "id": pipeline_id,
-        "name": pipeline.get("name", pipeline.get("user_prompt", "Untitled")),
-        "user_intent": pipeline.get("user_prompt", pipeline.get("name", "")),
-        "user_prompt": pipeline.get("user_prompt", ""),
-        "status": "created",
-        "trigger_type": "manual",
-        "node_count": len(pipeline.get("nodes", [])),
-        "created_at": datetime.now(timezone.utc).isoformat(),
-    })
     return {"id": pipeline_id, "status": "created"}
 
 
 @app.delete("/api/pipelines/{pipeline_id}", status_code=204)
 async def delete_pipeline_endpoint(pipeline_id: str):
-    memory_store.delete_pipeline_summary(pipeline_id)
+    memory_store.delete_pipeline(pipeline_id)
 
 
 @app.post("/api/pipelines/{pipeline_id}/run")
@@ -316,15 +314,14 @@ async def run_saved_pipeline_endpoint(pipeline_id: str):
         "node_count": len(pipeline_data.get("nodes", [])),
         "status": status,
         "nodes": node_results,
+        "shared_context": shared_context,
         "finished_at": datetime.now(timezone.utc).isoformat(),
     }
     memory_store.save_execution(run_id, execution)
 
-    # Update pipeline summary status
-    summary = memory_store.get_pipeline_summary(pipeline_id)
-    if summary:
-        summary["status"] = status
-        memory_store.save_pipeline_summary(pipeline_id, summary)
+    # Update pipeline status
+    pipeline_data["status"] = status
+    memory_store.save_pipeline(pipeline_id, pipeline_data)
 
     return {
         "pipeline_id": pipeline_id,
@@ -334,18 +331,6 @@ async def run_saved_pipeline_endpoint(pipeline_id: str):
         "node_results": node_results,
         "errors": errors,
     }
-
-
-# ── Block Search ──
-
-
-class BlockSearchRequest(BaseModel):
-    query: str
-
-
-@app.post("/api/blocks/search")
-async def search_blocks_endpoint(req: BlockSearchRequest):
-    return registry.search(req.query)
 
 
 # ── Executions ──

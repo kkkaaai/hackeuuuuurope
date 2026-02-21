@@ -1,71 +1,174 @@
-"""In-memory store for users, memory, and pipelines.
+"""Supabase-backed store for pipelines, executions, notifications, and user memory.
 
-Hackathon-grade: everything lives in dicts. Swap for a real DB later.
+Replaces the old in-memory MemoryStore. Same interface, Supabase under the hood.
 """
 
+from __future__ import annotations
 
-class MemoryStore:
-    def __init__(self):
-        self._users: dict[str, dict] = {}
-        self._memory: dict[str, dict] = {}
-        self._pipelines: dict[str, dict] = {}
-        self._executions: dict[str, dict] = {}
-        self._notifications: list[dict] = []
-        self._pipeline_list: dict[str, dict] = {}
+import json
+import logging
 
-    def get_user(self, user_id: str) -> dict | None:
-        return self._users.get(user_id)
+from storage.supabase_client import get_supabase
 
-    def save_user(self, user_id: str, data: dict):
-        self._users[user_id] = data
+logger = logging.getLogger(__name__)
+
+
+class SupabaseStore:
+    """Persistent store backed by Supabase tables."""
+
+    # ── User Memory ──
 
     def get_memory(self, user_id: str) -> dict | None:
-        return self._memory.get(user_id)
+        """Get all memory key-value pairs for a user."""
+        sb = get_supabase()
+        result = sb.table("user_memory").select("key, value").eq("user_id", user_id).execute()
+        if not result.data:
+            return {}
+        memory = {}
+        for row in result.data:
+            val = row["value"]
+            # value is stored as jsonb, so it may already be parsed
+            if isinstance(val, str):
+                try:
+                    val = json.loads(val)
+                except (json.JSONDecodeError, TypeError):
+                    pass
+            memory[row["key"]] = val
+        return memory
 
     def save_memory(self, user_id: str, data: dict):
-        self._memory[user_id] = data
+        """Save full memory dict for a user (upserts each key)."""
+        sb = get_supabase()
+        for key, value in data.items():
+            sb.table("user_memory").upsert({
+                "user_id": user_id,
+                "key": key,
+                "value": json.dumps(value) if not isinstance(value, (str, int, float, bool)) else json.dumps(value),
+            }).execute()
+
+    # ── Pipelines ──
 
     def get_pipeline(self, pipeline_id: str) -> dict | None:
-        return self._pipelines.get(pipeline_id)
+        sb = get_supabase()
+        result = sb.table("pipelines").select("*").eq("id", pipeline_id).execute()
+        if not result.data:
+            return None
+        row = result.data[0]
+        return self._row_to_pipeline(row)
 
     def save_pipeline(self, pipeline_id: str, data: dict):
-        self._pipelines[pipeline_id] = data
+        sb = get_supabase()
+        row = {
+            "id": pipeline_id,
+            "name": data.get("name", "Untitled"),
+            "user_prompt": data.get("user_prompt", ""),
+            "user_id": data.get("user_id", "default_user"),
+            "nodes": data.get("nodes", []),
+            "edges": data.get("edges", []),
+            "memory_keys": data.get("memory_keys", []),
+            "status": data.get("status", "created"),
+            "trigger_type": data.get("trigger_type", "manual"),
+            "node_count": len(data.get("nodes", [])),
+        }
+        sb.table("pipelines").upsert(row).execute()
 
     def list_pipelines(self) -> list[dict]:
-        return sorted(self._pipeline_list.values(), key=lambda p: p.get("created_at", ""), reverse=True)
+        sb = get_supabase()
+        result = sb.table("pipelines").select("id, name, user_prompt, status, trigger_type, node_count, created_at").order("created_at", desc=True).execute()
+        return [
+            {
+                "id": r["id"],
+                "name": r["name"],
+                "user_intent": r.get("user_prompt", ""),
+                "user_prompt": r.get("user_prompt", ""),
+                "status": r.get("status", "created"),
+                "trigger_type": r.get("trigger_type", "manual"),
+                "node_count": r.get("node_count", 0),
+                "created_at": r.get("created_at", ""),
+            }
+            for r in result.data
+        ]
 
+    def delete_pipeline(self, pipeline_id: str):
+        sb = get_supabase()
+        sb.table("pipelines").delete().eq("id", pipeline_id).execute()
+
+    # Aliases for backward compatibility with main.py
     def get_pipeline_summary(self, pipeline_id: str) -> dict | None:
-        return self._pipeline_list.get(pipeline_id)
+        return self.get_pipeline(pipeline_id)
 
     def save_pipeline_summary(self, pipeline_id: str, data: dict):
-        self._pipeline_list[pipeline_id] = data
+        # Pipeline summary is now just the pipeline row itself
+        self.save_pipeline(pipeline_id, data)
 
     def delete_pipeline_summary(self, pipeline_id: str):
-        self._pipeline_list.pop(pipeline_id, None)
-        self._pipelines.pop(pipeline_id, None)
+        self.delete_pipeline(pipeline_id)
+
+    # ── Executions ──
 
     def save_execution(self, run_id: str, data: dict):
-        self._executions[run_id] = data
+        sb = get_supabase()
+        row = {
+            "run_id": run_id,
+            "pipeline_id": data.get("pipeline_id"),
+            "pipeline_name": data.get("pipeline_name", ""),
+            "pipeline_intent": data.get("pipeline_intent", ""),
+            "user_id": data.get("user_id", "default_user"),
+            "status": data.get("status", "completed"),
+            "node_count": data.get("node_count", 0),
+            "node_results": data.get("nodes", []),
+            "shared_context": data.get("shared_context", {}),
+            "errors": data.get("errors", []),
+            "finished_at": data.get("finished_at"),
+        }
+        sb.table("executions").upsert(row).execute()
 
     def list_executions(self, limit: int = 50) -> list[dict]:
-        execs = sorted(self._executions.values(), key=lambda e: e.get("finished_at", ""), reverse=True)
-        return execs[:limit]
+        sb = get_supabase()
+        result = sb.table("executions").select("*").order("finished_at", desc=True).limit(limit).execute()
+        return result.data or []
 
     def get_execution(self, run_id: str) -> dict | None:
-        return self._executions.get(run_id)
+        sb = get_supabase()
+        result = sb.table("executions").select("*").eq("run_id", run_id).execute()
+        if not result.data:
+            return None
+        return result.data[0]
+
+    # ── Notifications ──
 
     def add_notification(self, notif: dict):
-        notif["id"] = len(self._notifications) + 1
-        self._notifications.append(notif)
+        sb = get_supabase()
+        sb.table("notifications").insert({
+            "user_id": notif.get("user_id", "default_user"),
+            "title": notif.get("title", ""),
+            "body": notif.get("body", ""),
+            "metadata": notif.get("metadata", {}),
+        }).execute()
 
     def list_notifications(self, limit: int = 50) -> list[dict]:
-        return list(reversed(self._notifications[-limit:]))
+        sb = get_supabase()
+        result = sb.table("notifications").select("*").order("created_at", desc=True).limit(limit).execute()
+        return result.data or []
 
     def mark_notification_read(self, notif_id: int):
-        for n in self._notifications:
-            if n.get("id") == notif_id:
-                n["read"] = True
-                break
+        sb = get_supabase()
+        sb.table("notifications").update({"read": True}).eq("id", notif_id).execute()
+
+    # ── Helpers ──
+
+    @staticmethod
+    def _row_to_pipeline(row: dict) -> dict:
+        """Convert a Supabase pipeline row to the dict format used by the engine."""
+        return {
+            "id": row["id"],
+            "name": row.get("name", "Untitled"),
+            "user_prompt": row.get("user_prompt", ""),
+            "nodes": row.get("nodes", []),
+            "edges": row.get("edges", []),
+            "memory_keys": row.get("memory_keys", []),
+            "status": row.get("status", "created"),
+        }
 
 
-memory_store = MemoryStore()
+memory_store = SupabaseStore()

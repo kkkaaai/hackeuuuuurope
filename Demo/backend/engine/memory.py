@@ -1,20 +1,18 @@
-"""Memory load/save helpers for the Doer pipeline."""
+"""Memory load/save helpers for the Doer pipeline — delegates to Supabase store."""
+
+from __future__ import annotations
 
 from storage.memory import memory_store
 
 
 async def load_memory(user_id: str) -> tuple[dict, dict]:
-    """Load user profile and memory. Returns (user_dict, memory_dict)."""
+    """Load user profile and memory from Supabase. Returns (user_dict, memory_dict)."""
     return (
-        memory_store.get_user(user_id) or {},
+        {},  # user profile (not used yet, could query a users table)
         memory_store.get_memory(user_id) or {},
     )
 
 
 async def save_memory(user_id: str, memory: dict, pipeline_id: str = "", results: dict | None = None):
-    """Persist memory and optionally save last-run results (without overwriting pipeline definition)."""
+    """Persist memory to Supabase."""
     memory_store.save_memory(user_id, memory)
-    if pipeline_id and results:
-        existing = memory_store.get_pipeline(pipeline_id) or {}
-        existing["last_results"] = results
-        memory_store.save_pipeline(pipeline_id, existing)

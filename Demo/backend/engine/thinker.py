@@ -8,7 +8,6 @@ Validation happens at every boundary so malformed data fails fast.
 
 import json
 import logging
-from pathlib import Path
 
 from engine.schemas import validate_stage_output
 from engine.state import ThinkerState
@@ -56,7 +55,7 @@ Given a user's intent and available blocks, break the intent into a sequence of 
 
 ## Execution Types
 - **llm**: Good for knowledge retrieval, text generation, analysis, search. The block sends a prompt to an LLM and parses the JSON response.
-- **python**: Good for calculations, sorting, ranking, filtering, comparisons, math, data transformations. The block runs a Python module deterministically — much more reliable for numerical operations.
+- **python**: Good for calculations, sorting, ranking, filtering, comparisons, math, data transformations. The block runs Python code deterministically — much more reliable for numerical operations.
 
 ## REUSE RULES (CRITICAL)
 1. **PREFER REUSE**: Before proposing a new block, check if an existing block handles the task with different input parameters. For example, use `web_search` with query="AirPods price" instead of creating `search_airpods_price`. Use `claude_analyze` with analysis_type="extraction" instead of creating `extract_airpods_price`.
@@ -105,14 +104,14 @@ def build_create_block_prompt(spec: dict) -> tuple[str, str]:
     if exec_type in ("code", "python"):
         system = f"""You are a block creator for AgentFlow. Create a complete PYTHON block definition.
 
-A python block is a standalone .py module with an `async def execute(inputs, context) -> dict` function.
+A python block has a `source_code` field containing a Python module with an `async def execute(inputs, context) -> dict` function.
 - `inputs` is a dict with keys matching the input_schema properties.
-- `context` has `user` and `memory` sub-dicts.
+- `context` has `user`, `memory`, `user_id`, and `supabase` sub-keys.
 - The function must return a dict matching the output_schema.
-Available modules: json, math, statistics, collections, itertools, functools, re, datetime, random.
+- Available modules in exec namespace: json, math, statistics, collections, itertools, functools, re, datetime, random, os (for env vars), httpx.
 {reuse_rules}
 Return ONLY a JSON object (no markdown, no explanation).
-The JSON must include a "python_source" field containing the complete Python module source code."""
+The JSON must include a "source_code" field containing the complete Python module source code."""
 
         user = f"""Create a python block for:
 - ID: {spec.get('suggested_id', 'new_block')}
@@ -129,7 +128,7 @@ Return:
   "execution_type": "python",
   "input_schema": {json.dumps(spec.get('input_schema', {}))},
   "output_schema": {json.dumps(spec.get('output_schema', {}))},
-  "python_source": "\\\"\\\"\\\"Docstring.\\\"\\\"\\\"\\n\\nasync def execute(inputs: dict, context: dict) -> dict:\\n    ...\\n    return {{...}}\\n",
+  "source_code": "\\\"\\\"\\\"Docstring.\\\"\\\"\\\"\\n\\nasync def execute(inputs: dict, context: dict) -> dict:\\n    ...\\n    return {{...}}\\n",
   "use_when": "When to use this block",
   "tags": ["tag1", "tag2"],
   "examples": [{{"inputs": {{...}}, "outputs": {{...}}}}],
@@ -213,9 +212,8 @@ Wire the blocks above into a pipeline. Return:
 def _finalize_created_block(parsed: dict, spec: dict) -> dict:
     """Finalize a block created by the LLM.
 
-    If the block has python_source, write it to blocks/custom/<id>/main.py,
-    set execution_type to "python" with entrypoint, and validate the import.
-    Returns the finalized block dict.
+    For python blocks: validates source_code via compile(), stores it on the block dict.
+    No filesystem operations — everything goes to Supabase via registry.save().
     """
     block_id = parsed.get("id", spec.get("suggested_id", "new_block"))
     parsed.setdefault("id", block_id)
@@ -230,38 +228,25 @@ def _finalize_created_block(parsed: dict, spec: dict) -> dict:
     parsed.setdefault("tags", [])
     parsed.setdefault("examples", [])
 
+    # Handle python_source → source_code (normalize field name)
     python_source = parsed.pop("python_source", None)
     if python_source:
-        base_dir = Path(__file__).resolve().parent.parent
-        block_dir = base_dir / "blocks" / "custom" / block_id
-        block_dir.mkdir(parents=True, exist_ok=True)
-        module_path = block_dir / "main.py"
-        module_path.write_text(python_source)
-
-        entrypoint = f"blocks/custom/{block_id}/main.py"
+        parsed["source_code"] = python_source
         parsed["execution_type"] = "python"
-        parsed["execution"] = {"runtime": "python", "entrypoint": entrypoint}
 
-        # Validate the import works
+    # Validate source_code compiles
+    source_code = parsed.get("source_code")
+    if source_code:
         try:
-            import importlib.util
-            ispec = importlib.util.spec_from_file_location(
-                f"blocks.custom.{block_id}.main", str(module_path)
-            )
-            mod = importlib.util.module_from_spec(ispec)
-            ispec.loader.exec_module(mod)
-            if not hasattr(mod, "execute"):
-                raise AttributeError("Missing execute() function")
-            logger.info("Block %s: .py module validated at %s", block_id, entrypoint)
-        except Exception as exc:
+            compile(source_code, f"<block:{block_id}>", "exec")
+            logger.info("Block %s: source_code validated via compile()", block_id)
+        except SyntaxError as exc:
             logger.warning(
-                "Block %s: .py import failed (%s), falling back to llm type",
+                "Block %s: source_code failed compile() (%s), falling back to llm type",
                 block_id, exc,
             )
-            # Fall back to LLM type
-            module_path.unlink(missing_ok=True)
+            parsed.pop("source_code", None)
             parsed["execution_type"] = "llm"
-            parsed.pop("execution", None)
 
     return parsed
 
@@ -339,7 +324,7 @@ async def create_block(state: ThinkerState) -> ThinkerState:
 
         parsed = _finalize_created_block(parsed, spec)
 
-        registry.save(parsed)
+        await registry.save(parsed)
         created.append(parsed)
 
     return {

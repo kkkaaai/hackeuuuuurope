@@ -185,7 +185,7 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
             parsed = _finalize_created_block(parsed, spec)
             block_id = parsed["id"]
 
-            registry.save(parsed)
+            await registry.save(parsed)
             created.append(parsed)
 
             yield _event("block_created", {
@@ -194,7 +194,7 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
                 "description": parsed.get("description", ""),
                 "execution_type": parsed["execution_type"],
                 "has_prompt": bool(parsed.get("prompt_template")),
-                "has_python_file": parsed.get("execution_type") == "python",
+                "has_source_code": bool(parsed.get("source_code")),
                 "block_def": parsed,
             })
             await asyncio.sleep(0)
