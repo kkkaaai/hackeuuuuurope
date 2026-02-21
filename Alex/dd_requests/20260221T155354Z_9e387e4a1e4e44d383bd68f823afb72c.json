@@ -10,54 +10,5 @@
     "type": "dependency_driven",
     "graph": {},
     "total_subtasks": 0
-  },
-  "execution_plan": {
-    "model_used": "AI1",
-    "model_endpoint": "qwen/qwen3-235b-a22b",
-    "inputs": [
-      {
-        "name": "C",
-        "source_type": "USER-CONTROLLED",
-        "source_origin": "User provides the document",
-        "input_data": "Complete draft of the clinical trial protocol (PDF/Word document)",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "R",
-        "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "Official regulatory APIs (e.g., FDA Title 21 CFR Part 312, ICH E6(R2), EMA CTIS)",
-        "input_data": "Structured compliance rules, audit criteria, and legal mandates",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "R",
-        "source_type": "USER-CONTROLLED",
-        "source_origin": "User-defined risk thresholds (e.g., severity levels, probability scales)",
-        "input_data": "Numeric thresholds for risk categorization (e.g., \"high risk = >5% adverse events\")",
-        "bound_reference": "N/A"
-      }
-    ],
-    "outputs": [
-      "Compliance Gap Report",
-      "Risk Assessment Report",
-      "Technical Assessment Document",
-      "Executive Summary",
-      "Proposed Protocol Revisions"
-    ],
-    "steps": [
-      "Uses: Clinical Trial Protocol Draft  \nAction: Parse and validate document structure (e.g., sections 4.2.3, 8.2.1 per ICH E6)  \nProduces: Structured protocol dataset  \nStores/Sends To: Internal analysis database",
-      "Uses: Regulatory Requirements Database  \nAction: Retrieve latest compliance rules via REST API (endpoint: `/api/regulations/ich-e6r2`)  \nProduces: Filtered regulatory dataset relevant to trial phase/geography  \nStores/Sends To: Compliance analysis engine",
-      "Uses: Structured protocol dataset, Filtered regulatory dataset  \nAction: Execute rule-based comparison to identify gaps (e.g., missing DSMB charter, inadequate blinding procedures)  \nProduces: Compliance Gap Report  \nStores/Sends To: Document repository (path: `/reports/compliance/gaps_v1.2.pdf`)",
-      "Uses: Compliance Gap Report, Risk Assessment Criteria  \nAction: Map gaps to risk matrix (e.g., \"missing adverse event monitoring\" × \"high severity\")  \nProduces: Risk Assessment Report  \nStores/Sends To: Risk management system (Jira ticket PROJ-7891)",
-      "Uses: Structured protocol dataset, Compliance Gap Report, Risk Assessment Report  \nAction: Generate technical assessment with revision rationales (NLP summarization + SME rules)  \nProduces: Technical Assessment Document  \nStores/Sends To: SharePoint folder `\\\\CTMS\\Assessments\\2024\\Q3\\Protocol_XYZ`",
-      "Uses: Risk Assessment Report, Technical Assessment Document  \nAction: Extract key findings and financial/ethical implications for executives (e.g., delay costs, patient safety risks)  \nProduces: Executive Summary  \nStores/Sends To: Microsoft Teams channel \"Clinical Leadership"
-    ],
-    "raw_response": "Inputs:\n1. Clinical Trial Protocol Draft  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User provides the document  \n   Input Data: Complete draft of the clinical trial protocol (PDF/Word document)  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n2. Regulatory Requirements Database  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Official regulatory APIs (e.g., FDA Title 21 CFR Part 312, ICH E6(R2), EMA CTIS)  \n   Input Data: Structured compliance rules, audit criteria, and legal mandates  \n   Bound Reference: N/A  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n3. Risk Assessment Criteria  \n   Source Type: USER-CONTROLLED  \n   Source Origin: User-defined risk thresholds (e.g., severity levels, probability scales)  \n   Input Data: Numeric thresholds for risk categorization (e.g., \"high risk = >5% adverse events\")  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\nOutputs:\n1. Compliance Gap Report  \n   Type: Structured document detailing deviations from regulatory requirements  \n   Verification: Exported as PDF/JSON for audit trails  \n\n2. Risk Assessment Report  \n   Type: Quantified risk analysis with mitigation recommendations  \n   Verification: Persisted in internal risk management system  \n\n3. Technical Assessment Document  \n   Type: Detailed analysis of protocol flaws and revisions  \n   Verification: Shared via secure document repository  \n\n4. Executive Summary  \n   Type: High-level overview for non-technical stakeholders  \n   Verification: Delivered as slide deck/email attachment  \n\n5. Proposed Protocol Revisions  \n   Type: Version-controlled updated protocol draft  \n   Verification: Stored in clinical trial management system (CTMS)  \n\nSteps:\nStep 1:  \nUses: Clinical Trial Protocol Draft  \nAction: Parse and validate document structure (e.g., sections 4.2.3, 8.2.1 per ICH E6)  \nProduces: Structured protocol dataset  \nStores/Sends To: Internal analysis database  \n\nStep 2:  \nUses: Regulatory Requirements Database  \nAction: Retrieve latest compliance rules via REST API (endpoint: `/api/regulations/ich-e6r2`)  \nProduces: Filtered regulatory dataset relevant to trial phase/geography  \nStores/Sends To: Compliance analysis engine  \n\nStep 3:  \nUses: Structured protocol dataset, Filtered regulatory dataset  \nAction: Execute rule-based comparison to identify gaps (e.g., missing DSMB charter, inadequate blinding procedures)  \nProduces: Compliance Gap Report  \nStores/Sends To: Document repository (path: `/reports/compliance/gaps_v1.2.pdf`)  \n\nStep 4:  \nUses: Compliance Gap Report, Risk Assessment Criteria  \nAction: Map gaps to risk matrix (e.g., \"missing adverse event monitoring\" × \"high severity\")  \nProduces: Risk Assessment Report  \nStores/Sends To: Risk management system (Jira ticket PROJ-7891)  \n\nStep 5:  \nUses: Structured protocol dataset, Compliance Gap Report, Risk Assessment Report  \nAction: Generate technical assessment with revision rationales (NLP summarization + SME rules)  \nProduces: Technical Assessment Document  \nStores/Sends To: SharePoint folder `\\\\CTMS\\Assessments\\2024\\Q3\\Protocol_XYZ`  \n\nStep 6:  \nUses: Risk Assessment Report, Technical Assessment Document  \nAction: Extract key findings and financial/ethical implications for executives (e.g., delay costs, patient safety risks)  \nProduces: Executive Summary  \nStores/Sends To: Microsoft Teams channel \"Clinical Leadership"
-  },
-  "aeb_analysis": {
-    "steps_count": 6,
-    "aeb_analysis_raw": "### Step-by-Step AEB Analysis\n\n---\n\n#### **Step 1**  \n**Step:** Uses: Clinical Trial Protocol Draft  \nAction: Parse and validate document structure (e.g., sections 4.2.3, 8.2.1 per ICH E6)  \nProduces: Structured protocol dataset  \nStores/Sends To: Internal analysis database  \n\n- **Is AEB:** No  \n- **Reason:** The action includes **both parsing and validation**, which violates the \"single intent\" requirement. Validation is explicitly prohibited in AEBs.  \n- **If No, suggest:** Split into two AEBs:  \n  1. **Parse document structure** (e.g., extract sections into a structured format).  \n  2. **Validate document structure** (e.g., check for required sections like 4.2.3, 8.2.1).  \n\n---\n\n#### **Step 2**  \n**Step:** Uses: Regulatory Requirements Database  \nAction: Retrieve latest compliance rules via REST API (endpoint: `/api/regulations/ich-e6r2`)  \nProduces: Filtered regulatory dataset relevant to trial phase/geography  \nStores/Sends To: Compliance analysis engine  \n\n- **Is AEB:** Yes  \n- **Reason:** Single intent (retrieve compliance rules), interacts with one system boundary (REST API), no branching, sequencing, or validation.  \n- **If No, suggest:** N/A  \n\n---\n\n#### **Step 3**  \n**Step:** Uses: Structured protocol dataset, Filtered regulatory dataset  \nAction: Execute rule-based comparison to identify gaps (e.g., missing DSMB charter, inadequate blinding procedures)  \nProduces: Compliance Gap Report  \nStores/Sends To: Document repository (path: `/reports/compliance/gaps_v1.2.pdf`)  \n\n- **Is AEB:** No  \n- **Reason:** The action involves **validation** (identifying gaps) and **multiple checks** (e.g., DSMB charter, blinding procedures), violating \"single intent\" and \"no branching/sequencing.\"  \n- **",
-    "analysis_complete": true
-  },
-  "io_decomposed": true
+  }
 }

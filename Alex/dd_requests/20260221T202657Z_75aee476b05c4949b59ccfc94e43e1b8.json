@@ -1,0 +1,14 @@
+{
+  "task_id": "5a67b6a528f2",
+  "input": "Perform a structured analysis of a high-stakes financial audit to identify risks and compliance issues, propose revisions, and deliver both technical and executive summaries.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "task_id": "c6bfbafdee15",
+  "input": "Coordinate a surgery by checking OR and surgeon availability, resolve a schedule conflict, update the EHR and billing systems, and confirm the final appointment with the patient.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

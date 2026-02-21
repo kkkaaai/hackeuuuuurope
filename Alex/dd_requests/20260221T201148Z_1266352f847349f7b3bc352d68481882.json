@@ -1,0 +1,14 @@
+{
+  "task_id": "b1d1d97fab78",
+  "input": "Describe the end-to-end e-commerce workflow for order fulfillment, coordinating inventory, payment, and shipping tools to resolve stock shortages, update systems, and ensure customer delivery.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

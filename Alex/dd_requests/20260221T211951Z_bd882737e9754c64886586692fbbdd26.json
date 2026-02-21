@@ -1,0 +1,14 @@
+{
+  "task_id": "5abffe3b1987",
+  "input": "Develop an end-to-end content campaign for manufacturing that involves research, creating multiple content types, ensuring channel consistency, and defining measurable outcomes.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "task_id": "80449966808d",
+  "input": "Produce a market entry assessment for Vietnam's fintech sector, synthesizing data from multiple sources into a clear report with actionable recommendations that account for market uncertainty.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

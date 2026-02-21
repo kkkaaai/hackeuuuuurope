@@ -1,0 +1,14 @@
+{
+  "task_id": "81185218a253",
+  "input": "Create an end-to-end fintech content campaign for customer acquisition that includes research, consistent multi-format content like blogs and videos, and tracks measurable engagement and conversion goals.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

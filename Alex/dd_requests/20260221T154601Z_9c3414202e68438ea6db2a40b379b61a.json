@@ -10,58 +10,5 @@
     "type": "dependency_driven",
     "graph": {},
     "total_subtasks": 0
-  },
-  "execution_plan": {
-    "model_used": "AI1",
-    "model_endpoint": "qwen/qwen3-235b-a22b",
-    "inputs": [
-      {
-        "name": "Supplier Risk Assessment Reports",
-        "source_type": "USER-CONTROLLED",
-        "source_origin": "Supplier onboarding team or procurement department",
-        "input_data": "Structured supplier risk assessments including performance metrics, financial health, and geographic exposure",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "Market Intelligence Data",
-        "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "External market analytics API (e.g., Bloomberg, S&P Global)",
-        "input_data": "Industry trends reports, competitor analysis data, and geopolitical risk bulletins",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "Risk Scenarios Database",
-        "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "Internal risk management system or third-party risk scenario repository",
-        "input_data": "Historical disruption data, simulation models, and severity ratings for supply chain risks",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "Risk Prioritization Thresholds",
-        "source_type": "USER-CONTROLLED",
-        "source_origin": "Stakeholder-defined risk tolerance criteria",
-        "input_data": "Numeric thresholds for risk scores (e.g., \"high risk\" = score > 7/10)",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "Access to Supplier Databases",
-        "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "Internal ERP system (e.g., SAP, Oracle)",
-        "input_data": "Authentication credentials and API access to supplier performance records",
-        "bound_reference": "N/A"
-      }
-    ],
-    "outputs": [
-      "**Prioritized Resilience Action Plan**",
-      "**Aggregated Risk Heatmap**",
-      "**Supplier Risk Scorecard**"
-    ],
-    "steps": [],
-    "raw_response": "Inputs:  \n1. **Supplier Risk Assessment Reports**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Supplier onboarding team or procurement department  \n   Input Data: Structured supplier risk assessments including performance metrics, financial health, and geographic exposure  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n2. **Market Intelligence Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: External market analytics API (e.g., Bloomberg, S&P Global)  \n   Input Data: Industry trends reports, competitor analysis data, and geopolitical risk bulletins  \n   Bound Reference: N/A  \n\n3. **Risk Scenarios Database**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal risk management system or third-party risk scenario repository  \n   Input Data: Historical disruption data, simulation models, and severity ratings for supply chain risks  \n   Bound Reference: N/A  \n\n4. **Risk Prioritization Thresholds**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Stakeholder-defined risk tolerance criteria  \n   Input Data: Numeric thresholds for risk scores (e.g., \"high risk\" = score > 7/10)  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n5. **Access to Supplier Databases**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal ERP system (e.g., SAP, Oracle)  \n   Input Data: Authentication credentials and API access to supplier performance records  \n   Bound Reference: N/A  \n\n---\n\nOutputs:  \n1. **Prioritized Resilience Action Plan**  \n   Description: Documented strategy with ranked mitigation actions for suppliers, market risks, and scenario-based threats  \n   Verification: Exported PDF/report stored in organizational knowledge base  \n\n2. **Aggregated Risk Heatmap**  \n   Description: Visual representation of supplier, market, and scenario risks mapped to critical components  \n   Verification: Interactive dashboard hosted on internal analytics platform  \n\n3. **Supplier Risk Scorecard**  \n   Description: Standardized scores for each supplier’s risk profile  \n   Verification: Structured CSV/Excel file stored in shared procurement directory  \n\n---\n\nSteps:  \n**Step 1**:  \nUses: Supplier Risk Assessment Reports  \nAction: Parse and validate supplier risk assessment templates for completeness  \nProduces: Raw supplier risk data  \nStores/Sends To: Internal data lake (staging zone)  \n\n**Step 2**:  \nUses: Raw supplier risk data, Access to Supplier Databases  \nAction: Enrich supplier risk data with historical performance records from ERP  \nProduces: Supplier Risk Scores (DERIVABLE)  \nStores/Sends To: Analytics database  \n\n**Step 3**:  \nUses: Market Intelligence Data  \nAction: Apply NLP to extract volatility indicators (e.g., geopolitical tensions, commodity price swings)  \nProduces: Market Volatility Indicators (DERIVABLE)  \nStores/Sends To: Analytics database  \n\n**Step 4**:  \nUses: Risk Scenarios Database  \nAction: Run Monte Carlo simulations to quantify impact of identified risk scenarios  \nProduces: Risk Scenario Impact Metrics (DERIVABLE)  \nStores/Sends To: Analytics database  \n\n**Step 5**:  \nUses: Supplier Risk Scores, Market Volatility Indicators, Risk Scenario Impact Metrics, Risk Prioritization Thresholds  \nAction: Aggregate and weight risk scores using stakeholder-defined thresholds  \nProduces: Aggregated Risk Heatmap  \nStores/Sends To: Tableau/Power BI dashboard  \n\n**Step 6**:  \nUses: Aggregated Risk Heatmap  \nAction: Generate mitigation actions ranked by risk severity and component criticality  \nProduces: Prioritized Resilience Action Plan  \nStores/Sends To: Organizational SharePoint/Governance portal  \n\n---\n\n**DERIVABLE Input Decomposition**:  \n- **Supplier Risk Scores**  \n  Source Type: DERIVABLE  \n  Source Origin: Supplier Risk Assessment Reports + Access to Supplier Databases  \n  Input Data: Supplier performance metrics, financial health data, geographic exposure data  \n  Bound Reference: Inputs 1, 5  \n  Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n- **Market Volatility Indicators**  \n  Source Type: DERIVABLE  \n  Source Origin: Market Intelligence Data  \n  Input Data: Industry trends, competitor analysis, geopolitical risk scores  \n  Bound Reference: Input 2  \n  Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n- **Risk Scenario Impact Metrics**  \n  Source Type: DERIVABLE  \n  Source Origin: Risk Scenarios Database  \n  Input Data: Historical disruption frequency/severity, simulation outputs  \n  Bound Reference: Input 3  \n  Note: [DEPTH STOP - Terminal input, do not further decompose]"
-  },
-  "aeb_analysis": {
-    "steps_count": 0,
-    "aeb_analysis": []
-  },
-  "io_decomposed": true
+  }
 }

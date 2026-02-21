@@ -16,62 +16,68 @@
     "model_endpoint": "qwen/qwen3-235b-a22b",
     "inputs": [
       {
-        "name": "L",
+        "name": "Live Turbine Sensor Data",
         "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "Wind farm SCADA system / IoT telemetry API (e.g., Siemens Gamesa API)",
-        "input_data": "Real-time metrics (RPM, vibration, temperature, power output, yaw angle)",
-        "bound_reference": "[DEPTH STOP - Terminal input]"
+        "source_origin": "SCADA system/IoT platform (e.g., Siemens MindSphere, GE Predix)",
+        "input_data": "Real-time metrics (RPM, vibration, temperature, power output) for all turbines",
+        "bound_reference": "N/A"
       },
       {
-        "name": "S",
+        "name": "Safety Constraints",
         "source_type": "USER-CONTROLLED",
-        "source_origin": "Engineering team provides via CSV/JSON file upload",
-        "input_data": "Maximum RPM, vibration thresholds, temperature limits, operational boundaries",
-        "bound_reference": "Requires explicit user provision or linkage."
+        "source_origin": "Wind farm operator/engineering team",
+        "input_data": "Numeric thresholds (e.g., max RPM = 120, vibration limit = 5 mm/s)",
+        "bound_reference": null
       },
       {
-        "name": "R",
+        "name": "Historical Performance Data",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Data warehouse (e.g., AWS Redshift, Snowflake)",
+        "input_data": "Past turbine performance records (daily/seasonal trends, failure logs)",
+        "bound_reference": "N/A"
+      },
+      {
+        "name": "Target Optimization Goal",
         "source_type": "USER-CONTROLLED",
-        "source_origin": "Operations manager defines via form or config file",
-        "input_data": "Target metrics (e.g., % efficiency gain, ROI threshold, downtime tolerance)",
-        "bound_reference": "Requires explicit user provision or linkage."
+        "source_origin": "Operations manager",
+        "input_data": "Quantitative objective (e.g., \"increase energy efficiency by 8%\")",
+        "bound_reference": null
       },
       {
-        "name": "H",
+        "name": "Regulatory Standards",
         "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "Internal data warehouse (e.g., Snowflake \"wind_performance\" table)",
-        "input_data": "Pre-adjustment power output averages, failure rates, maintenance logs",
-        "bound_reference": "[DEPTH STOP - Terminal input]"
+        "source_origin": "Energy authority API (e.g., OSHA, IEC 61400-25)",
+        "input_data": "Compliance requirements (e.g., noise limits, grid stability rules)",
+        "bound_reference": "N/A"
       },
       {
-        "name": "T",
-        "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "Vendor-specific API credentials (e.g., Vestas VPP API)",
-        "input_data": "Authentication tokens, actuator control permissions",
-        "bound_reference": "[DEPTH STOP - Terminal input]"
+        "name": "Current Turbine Settings",
+        "source_type": "DERIVABLE",
+        "source_origin": "Computed from Live Turbine Sensor Data (Input 1)",
+        "input_data": "Blade pitch angle, yaw position, generator torque settings",
+        "bound_reference": "Input 1"
+      },
+      {
+        "name": "Performance Baseline",
+        "source_type": "DERIVABLE",
+        "source_origin": "Computed from Historical Performance Data (Input 3)",
+        "input_data": "Average power output, mean time between failures (MTBF)",
+        "bound_reference": "Input 3"
       }
     ],
     "outputs": [
       "Adjusted Turbine Settings",
+      "Compliance Validation Report",
       "Performance Improvement Report",
-      "Safety Violation Alerts",
-      "Operational Efficiency Dashboard Update"
+      "Real-Time Alert Log",
+      "Updated Historical Performance Database"
     ],
-    "steps": [
-      "Uses: Live Turbine Sensor Data  \nAction: Poll SCADA API every 5 seconds for current metrics  \nProduces: Raw telemetry stream  \nStores/Sends To: Kafka topic \"turbine_live_data\"",
-      "Uses: Live Turbine Sensor Data, Safety Constraint Parameters  \nAction: Validate RPM < 1200 RPM AND vibration < 4.5 mm/s RMS  \nProduces: Compliance status matrix  \nStores/Sends To: In-memory validation buffer",
-      "Uses: Live Turbine Sensor Data, Safety Constraint Parameters  \nAction: Run gradient ascent algorithm to maximize power output within constraints  \nProduces: Proposed yaw angle, RPM setpoint, blade pitch adjustments  \nStores/Sends To: Redis cache \"optimized_settings\"",
-      "Uses: Turbine Control Interface Access, Proposed Settings  \nAction: PATCH /turbine/{id}/control endpoint with new parameters  \nProduces: Actuator command execution logs  \nStores/Sends To: Turbine control system API",
-      "Uses: Live Turbine Sensor Data, Historical Baseline Performance  \nAction: Calculate 15-minute rolling average of power output vs. baseline  \nProduces: Delta metrics (kW/h gain, vibration delta)  \nStores/Sends To: Time-series database (InfluxDB \"performance_delta\" bucket)",
-      "Uses: Safety Constraint Parameters, Safety Violation Alerts  \nAction: Compile audit log of all constraint checks and alert triggers  \nProduces: PDF report with timestamped compliance events  \nStores/Sends To: S3 bucket \"windfarm_reports/2024/Q3\"",
-      "Uses: Reporting KPI Definitions, Performance Improvement Report  \nAction: Email executives with executive summary dashboard link  \nProduces: Email delivery confirmation  \nStores/Sends To: SMTP server logs, Slack channel webhook"
-    ],
-    "raw_response": "Inputs:  \n1. Live Turbine Sensor Data  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Wind farm SCADA system / IoT telemetry API (e.g., Siemens Gamesa API)  \n   Input Data: Real-time metrics (RPM, vibration, temperature, power output, yaw angle)  \n   Bound Reference: [DEPTH STOP - Terminal input]  \n\n2. Safety Constraint Parameters  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Engineering team provides via CSV/JSON file upload  \n   Input Data: Maximum RPM, vibration thresholds, temperature limits, operational boundaries  \n   Bound Reference: Requires explicit user provision or linkage.  \n   Note: [DEPTH STOP - Terminal input]  \n\n3. Reporting KPI Definitions  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Operations manager defines via form or config file  \n   Input Data: Target metrics (e.g., % efficiency gain, ROI threshold, downtime tolerance)  \n   Bound Reference: Requires explicit user provision or linkage.  \n   Note: [DEPTH STOP - Terminal input]  \n\n4. Historical Baseline Performance  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Internal data warehouse (e.g., Snowflake \"wind_performance\" table)  \n   Input Data: Pre-adjustment power output averages, failure rates, maintenance logs  \n   Bound Reference: [DEPTH STOP - Terminal input]  \n\n5. Turbine Control Interface Access  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Vendor-specific API credentials (e.g., Vestas VPP API)  \n   Input Data: Authentication tokens, actuator control permissions  \n   Bound Reference: [DEPTH STOP - Terminal input]  \n\nOutputs:  \n1. Adjusted Turbine Settings  \n   Type: System state change  \n   Verification: API response code 200 from turbine control interface  \n\n2. Performance Improvement Report  \n   Type: PDF/HTML document  \n   Verification: Generated file with before/after metrics comparison  \n\n3. Safety Violation Alerts  \n   Type: Email/SMS notifications  \n   Verification: Alert logs in monitoring system (e.g., PagerDuty)  \n\n4. Operational Efficiency Dashboard Update  \n   Type: Database record update  \n   Verification: New entries in Grafana/Power BI data source  \n\nSteps:  \nStep 1: Retrieve Live Turbine Data  \nUses: Live Turbine Sensor Data  \nAction: Poll SCADA API every 5 seconds for current metrics  \nProduces: Raw telemetry stream  \nStores/Sends To: Kafka topic \"turbine_live_data\"  \n\nStep 2: Process Metrics Against Constraints  \nUses: Live Turbine Sensor Data, Safety Constraint Parameters  \nAction: Validate RPM < 1200 RPM AND vibration < 4.5 mm/s RMS  \nProduces: Compliance status matrix  \nStores/Sends To: In-memory validation buffer  \n\nStep 3: Generate Optimized Settings  \nUses: Live Turbine Sensor Data, Safety Constraint Parameters  \nAction: Run gradient ascent algorithm to maximize power output within constraints  \nProduces: Proposed yaw angle, RPM setpoint, blade pitch adjustments  \nStores/Sends To: Redis cache \"optimized_settings\"  \n\nStep 4: Apply Settings to Turbines  \nUses: Turbine Control Interface Access, Proposed Settings  \nAction: PATCH /turbine/{id}/control endpoint with new parameters  \nProduces: Actuator command execution logs  \nStores/Sends To: Turbine control system API  \n\nStep 5: Monitor Post-Adjustment Performance  \nUses: Live Turbine Sensor Data, Historical Baseline Performance  \nAction: Calculate 15-minute rolling average of power output vs. baseline  \nProduces: Delta metrics (kW/h gain, vibration delta)  \nStores/Sends To: Time-series database (InfluxDB \"performance_delta\" bucket)  \n\nStep 6: Generate Compliance Report  \nUses: Safety Constraint Parameters, Safety Violation Alerts  \nAction: Compile audit log of all constraint checks and alert triggers  \nProduces: PDF report with timestamped compliance events  \nStores/Sends To: S3 bucket \"windfarm_reports/2024/Q3\"  \n\nStep 7: Distribute Performance Summary  \nUses: Reporting KPI Definitions, Performance Improvement Report  \nAction: Email executives with executive summary dashboard link  \nProduces: Email delivery confirmation  \nStores/Sends To: SMTP server logs, Slack channel webhook  \n\nDependency Consistency Check:  \n✅ All inputs used in steps  \n✅ No implicit data sources  \n✅ DERIVABLE inputs fully decomposed  \n✅ USER/SYSTEM sources explicitly classified  \n✅ [DEPTH STOP] markers correctly applied"
+    "steps": [],
+    "raw_response": "Inputs:  \n1. **Live Turbine Sensor Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: SCADA system/IoT platform (e.g., Siemens MindSphere, GE Predix)  \n   Input Data: Real-time metrics (RPM, vibration, temperature, power output) for all turbines  \n   Bound Reference: N/A  \n\n2. **Safety Constraints**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Wind farm operator/engineering team  \n   Input Data: Numeric thresholds (e.g., max RPM = 120, vibration limit = 5 mm/s)  \n   Note: Requires explicit user provision or linkage.  \n\n3. **Historical Performance Data**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Data warehouse (e.g., AWS Redshift, Snowflake)  \n   Input Data: Past turbine performance records (daily/seasonal trends, failure logs)  \n   Bound Reference: N/A  \n\n4. **Target Optimization Goal**  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Operations manager  \n   Input Data: Quantitative objective (e.g., \"increase energy efficiency by 8%\")  \n   Note: Requires explicit user provision or linkage.  \n\n5. **Regulatory Standards**  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Energy authority API (e.g., OSHA, IEC 61400-25)  \n   Input Data: Compliance requirements (e.g., noise limits, grid stability rules)  \n   Bound Reference: N/A  \n\n6. **Current Turbine Settings**  \n   Source Type: DERIVABLE  \n   Source Origin: Computed from Live Turbine Sensor Data (Input 1)  \n   Input Data: Blade pitch angle, yaw position, generator torque settings  \n   Bound Reference: Input 1  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n7. **Performance Baseline**  \n   Source Type: DERIVABLE  \n   Source Origin: Computed from Historical Performance Data (Input 3)  \n   Input Data: Average power output, mean time between failures (MTBF)  \n   Bound Reference: Input 3  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n---\n\nOutputs:  \n1. Adjusted Turbine Settings (JSON configuration file)  \n2. Compliance Validation Report (PDF/HTML)  \n3. Performance Improvement Report (PDF/HTML with visualizations)  \n4. Real-Time Alert Log (CSV/JSON for anomalies)  \n5. Updated Historical Performance Database (appended records)  \n\n---\n\nSteps:  \n**Step 1**:  \nUses: Live Turbine Sensor Data (Input 1)  \nAction: Ingest and validate real-time sensor data streams  \nProduces: Cleaned sensor data buffer  \nStores/Sends To: In-memory processing queue (e.g., Apache Kafka)  \n\n**Step 2**:  \nUses: Safety Constraints (Input 2), Regulatory Standards (Input 5), Current Turbine Settings (Input 6)  \nAction: Validate live settings against safety and regulatory thresholds  \nProduces: Compliance check results (pass/fail with violations)  \nStores/Sends To: Alert system (e.g., PagerDuty) and Step 3  \n\n**Step 3**:  \nUses: Target Optimization Goal (Input 4), Performance Baseline (Input 7), Live Turbine Sensor Data (Input 1)  \nAction: Run optimization algorithm (e.g., gradient ascent) to compute new settings  \nProduces: Proposed Turbine Settings (JSON)  \nStores/Sends To: Configuration queue (secured message broker)  \n\n**Step 4**:  \nUses: Proposed Turbine Settings (Step 3 output), Compliance check results (Step 2 output)  \nAction: Deploy settings if compliant; otherwise, revert to safe defaults  \nProduces: Adjusted Turbine Settings (Output 1)  \nStores/Sends To: SCADA system actuator interface  \n\n**Step 5**:  \nUses: Live Turbine Sensor Data (Input 1), Adjusted Turbine Settings (Output 1), Performance Baseline (Input 7)  \nAction: Compare post-adjustment performance against baseline  \nProduces: Performance Delta Metrics (numeric comparisons)  \nStores/Sends To: Reporting engine  \n\n**Step 6**:  \nUses: Compliance check results (Step 2 output), Performance Delta Metrics (Step 5 output)  \nAction: Generate composite report with compliance status and improvement metrics  \nProduces: Performance Improvement Report (Output 3)  \nStores/Sends To: Internal dashboard (e.g., Grafana) and stakeholder email  \n\n**Step 7**:  \nUses: Live Turbine Sensor Data (Input 1), Adjusted Turbine Settings (Output 1)  \nAction: Log all sensor data and settings changes to historical database  \nProduces: Updated Historical Performance Database (Output 5)  \nStores/Sends To: Data warehouse (Input 3 endpoint)  \n\n--- \n\nDependency Consistency Check:  \n✅ All inputs used in steps  \n✅ No implicit data sources  \n✅ DERIVABLE inputs fully decomposed to USER/SYSTEM sources  \n✅ [DEPTH STOP] applied only to terminal inputs  \n✅ Output provenance explicitly traced to steps"
   },
   "aeb_analysis": {
-    "steps_count": 7,
-    "aeb_analysis_raw": "### AEB Analysis Results\n\n---\n\n**Step 1**  \n- **Step**: Poll SCADA API every 5 seconds for current metrics  \n- **Is AEB**: No  \n- **Reason**: The \"every 5 seconds\" clause introduces **sequencing** (repetition over time), violating the AEB requirement of no sequencing. An AEB must be a single, atomic action, not a recurring task.  \n- **If No, suggest**: Break into two AEBs:  \n  1. **Fetch current metrics from SCADA API** (single API call).  \n  2. **Schedule recurring execution** (handled externally, not part of the AEB).  \n\n---\n\n**Step 2**  \n- **Step**: Validate RPM < 1200 RPM AND vibration < 4.5 mm/s RMS  \n- **Is AEB**: No  \n- **Reason**: **Validation** (branching logic) is explicitly excluded from AEBs. The step involves conditional checks (RPM and vibration thresholds), which violate the \"no branching\" rule.  \n- **If No, suggest**: Split into two AEBs:  \n  1. **Check RPM < 1200 RPM** (single condition).  \n  2. **Check vibration < 4.5 mm/s RMS** (single condition).  \n\n---\n\n**Step 3**  \n- **Step**: Run gradient ascent algorithm to maximize power output within constraints  \n- **Is AEB**: Yes  \n- **Reason**:  \n  - Single intent: Optimize turbine settings.  \n  - No branching/sequencing: Algorithm runs to completion.  \n  - One system boundary: Writes to Redis cache.  \n  - Can be implemented as a single function (e.g., `optimize_settings()`).  \n\n---\n\n**Step 4**  \n- **Step**: PATCH /turbine/{id}/control endpoint with new parameters  \n- **Is AEB**: Yes  \n- **Reason**:  \n  - Single intent: Send control parameters to turbine API.  \n  - No branching/sequencing: Direct API call.  \n  - One system boundary: Interacts with turbine control system.  \n\n---\n\n**Step 5**  \n- **Step**: Calculate 15-minute rolling average of power output vs. baseline  \n- **Is AEB**: No  \n- **Reason**:  \n  - **Sequencing**: Requires historical data aggregation over time (15-minute window).  \n  - **Multiple data sources**: Uses both live sensor data and historical baseline data.  \n- **If No, suggest**: Split into two AEBs:  \n  1. **Fetch historical baseline performance data**.  \n  2. **Calculate delta metrics using live and historical data**.  \n\n---\n\n**Step 6**  \n- **Step**: Compile audit log of all constraint checks and alert triggers  \n- **Is AEB**: No  \n- **Reason**: Combines **report generation** (PDF creation) and **storage** (S3 upload), violating the \"single intent\" rule.  \n- **If No, suggest**: Split into two AEBs:  \n  1. **Generate PDF report from audit log**.  \n  2. **Upload PDF to S3 bucket**.  \n\n---\n\n**Step 7**  \n- **Step**: Email executives with executive summary dashboard link  \n- **Is AEB**: No  \n- **Reason**: Interacts with **two system boundaries** (SMTP server and Slack webhook), violating the \"one system boundary\" rule.  \n- **If No, suggest**: Split into two AEBs:  \n  1. **Send email via SMTP server**.  \n  2. **Post summary link to Slack webhook**.  \n\n---\n\n### Summary Table\n\n| Step | Is AEB? | Key Violation (If No)                | Suggested Split (If No)                          |\n|------|--------|--------------------------------------|--------------------------------------------------|\n| 1    | No     | Sequencing (polling interval)          | Fetch metrics + Schedule recurrence              |\n| 2    | No     | Validation/branching                   | Check RPM + Check vibration                      |\n| 3    | Yes    | ✅ Meets all criteria                  | N/A                                              |\n| 4    | Yes    | ✅ Meets all criteria                  | N/A                                              |\n| 5    | No     | Sequencing + multiple data sources     | Fetch baseline + Calculate delta                 |\n| 6    | No     | Multiple intents (generate + store)    | Generate PDF + Upload to S3                      |\n| 7    | No     | Two system boundaries (SMTP + Slack)   | Email executives + Post to Slack                 |",
-    "analysis_complete": true
+    "steps_count": 0,
+    "aeb_analysis": []
   },
   "io_decomposed": true
 }

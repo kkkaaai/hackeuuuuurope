@@ -1,0 +1,14 @@
+{
+  "task_id": "83b02870d394",
+  "input": "Optimize the autonomous delivery fleet by analyzing live data, adjusting parameters within safety constraints, monitoring results, and reporting performance improvements.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

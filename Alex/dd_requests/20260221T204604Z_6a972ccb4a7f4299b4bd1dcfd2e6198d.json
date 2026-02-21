@@ -1,0 +1,14 @@
+{
+  "task_id": "9249bc5679f4",
+  "input": "Analyze a pivotal clinical trial protocol to identify compliance gaps and safety risks, propose amendments, and deliver both a technical audit report and an executive summary.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

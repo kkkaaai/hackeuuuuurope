@@ -1,0 +1,14 @@
+{
+  "task_id": "dafd3ecd5f43",
+  "input": "Develop an end-to-end healthcare content campaign involving research, multi-format creation, channel consistency, and measurable goals.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

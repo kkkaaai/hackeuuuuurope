@@ -1,0 +1,7 @@
+{
+  "task_id": "bcc9bd7a94cc",
+  "input": "Create an automated workflow that triages hosting tickets, solves common issues automatically, escalates complex cases to human agents, and tracks resolution performance.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

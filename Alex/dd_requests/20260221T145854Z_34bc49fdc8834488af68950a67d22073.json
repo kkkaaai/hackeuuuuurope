@@ -18,82 +18,89 @@
       {
         "name": "C",
         "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "CRM system (e.g., Salesforce)",
-        "input_data": "Customer demographics, purchase history, feedback logs",
-        "bound_reference": "N/A"
+        "source_origin": "CRM System API (e.g., Salesforce)",
+        "input_data": "Customer demographics, purchase history, interaction logs",
+        "bound_reference": "[DEPTH STOP - Terminal input]"
       },
       {
         "name": "S",
         "source_type": "USER-CONTROLLED",
         "source_origin": "Marketing team",
-        "input_data": "Numeric revenue goals, conversion rate thresholds",
-        "bound_reference": "N/A"
+        "input_data": "Numeric revenue goals, conversion rate targets",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "C",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Marketing Platform API (e.g., HubSpot)",
+        "input_data": "Available channels, posting schedules, access credentials",
+        "bound_reference": "[DEPTH STOP - Terminal input]"
+      },
+      {
+        "name": "C",
+        "source_type": "USER-CONTROLLED",
+        "source_origin": "Creative team",
+        "input_data": "Pre-approved content frameworks, brand guidelines",
+        "bound_reference": "Requires explicit user provision or linkage."
+      },
+      {
+        "name": "A",
+        "source_type": "SYSTEM-RETRIEVABLE",
+        "source_origin": "Web Analytics API (e.g., Google Analytics)",
+        "input_data": "Engagement metrics, traffic sources, conversion tracking",
+        "bound_reference": "[DEPTH STOP - Terminal input]"
+      },
+      {
+        "name": "C",
+        "source_type": "DERIVABLE",
+        "source_origin": "Customer Insights + Sales Targets",
+        "input_data": "Audience segmentation, content themes, KPI alignment",
+        "bound_reference": "Inputs 1,2"
+      },
+      {
+        "name": "C",
+        "source_type": "DERIVABLE",
+        "source_origin": "Channel Schedule + Content Strategy",
+        "input_data": "Publication dates, channel assignments, content priorities",
+        "bound_reference": "Inputs 3,6"
       },
       {
         "name": "E",
-        "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "Analytics platforms (e.g., Google Analytics, Meta Insights)",
-        "input_data": "Click-through rates, bounce rates, session durations",
-        "bound_reference": "N/A"
+        "source_type": "DERIVABLE",
+        "source_origin": "Analytics Platform Data",
+        "input_data": "Click-through rates, time-on-page, shares",
+        "bound_reference": "Input 5"
       },
       {
         "name": "C",
-        "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "E-commerce platform (e.g., Shopify), CRM system",
-        "input_data": "Purchase completions, form submissions, cart abandonments",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "C",
-        "source_type": "USER-CONTROLLED",
-        "source_origin": "Content team",
-        "input_data": "Scheduled publication dates, channel-specific deadlines",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "B",
-        "source_type": "USER-CONTROLLED",
-        "source_origin": "Brand management team",
-        "input_data": "Tone, style, visual identity specifications",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "E",
-        "source_type": "SYSTEM-RETRIEVABLE",
-        "source_origin": "CMS (e.g., WordPress), cloud storage (e.g., Google Drive)",
-        "input_data": "Past blogs, videos, social posts",
-        "bound_reference": "N/A"
-      },
-      {
-        "name": "C",
-        "source_type": "USER-CONTROLLED",
-        "source_origin": "Market research team",
-        "input_data": "Structured survey responses, open-ended feedback",
-        "bound_reference": "N/A"
+        "source_type": "DERIVABLE",
+        "source_origin": "CRM System Data",
+        "input_data": "Lead-to-sale ratios, funnel drop-offs",
+        "bound_reference": "Input 1"
       }
     ],
     "outputs": [
-      "Customer Insight Analysis Report",
-      "Content Creation Plan",
-      "Published Content Assets",
+      "Customer Insights Report",
+      "Content Production Calendar",
+      "Published Blogs/Videos/Social Posts",
       "Engagement Metrics Dashboard",
-      "Conversion Metrics Dashboard",
-      "Sales Target Achievement Report"
+      "Conversion Analysis Report",
+      "Updated CRM Records with Campaign Data"
     ],
     "steps": [
-      "Uses: Customer Insights Data, Customer Survey Data  \nAction: Analyze CRM and survey data to identify customer behavior patterns  \nProduces: Customer Insight Analysis Report  \nStores/Sends To: Internal analytics repository",
-      "Uses: Customer Insight Analysis Report, Sales Targets  \nAction: Map insights to sales targets to define content themes  \nProduces: Content Creation Plan  \nStores/Sends To: Content calendar system",
-      "Uses: Content Creation Plan, Brand Guidelines, Existing Content Assets  \nAction: Draft and produce blogs, videos, and social posts  \nProduces: Published Content Assets  \nStores/Sends To: CMS, social media platforms",
-      "Uses: Content Calendar  \nAction: Schedule content publication across channels  \nProduces: Scheduled Content Queue  \nStores/Sends To: CMS, social media management tools",
-      "Uses: Engagement Metrics Tracking Tools  \nAction: Monitor real-time engagement metrics  \nProduces: Engagement Metrics Dashboard  \nStores/Sends To: Analytics dashboard",
-      "Uses: Conversion Metrics Tracking Tools  \nAction: Track conversion events against sales targets  \nProduces: Conversion Metrics Dashboard  \nStores/Sends To: Analytics dashboard",
-      "Uses: Engagement Metrics Dashboard, Conversion Metrics Dashboard, Sales Targets  \nAction: Generate performance report comparing metrics to targets  \nProduces: Sales Target Achievement Report  \nStores/Sends To: Executive reporting system"
+      "Uses: Customer Data, Sales Targets\nAction: Analyze CRM data against sales targets to identify customer behavior patterns\nProduces: Customer Insights Report\nStores/Sends To: Internal knowledge base",
+      "Uses: Customer Insights Report, Sales Targets\nAction: Develop content strategy aligning audience segments with business objectives\nProduces: Content Strategy Document\nStores/Sends To: Shared team drive",
+      "Uses: Content Strategy Document, Content Templates\nAction: Create channel-specific content using approved templates\nProduces: Draft blog posts/videos/social media assets\nStores/Sends To: Content management system",
+      "Uses: Channel Management System, Content Calendar\nAction: Schedule and publish content across all channels\nProduces: Published content instances\nStores/Sends To: External platforms (website, YouTube, social media)",
+      "Uses: Analytics Platform Access\nAction: Collect engagement metrics from all published content\nProduces: Engagement Metrics Report\nStores/Sends To: Internal analytics dashboard",
+      "Uses: Customer Data, Engagement Metrics Report, Sales Targets\nAction: Generate conversion analysis comparing engagement to sales objectives\nProduces: Conversion Metrics Report\nStores/Sends To: Executive reporting portal",
+      "Uses: Conversion Metrics Report\nAction: Update CRM records with campaign performance data\nProduces: Updated CRM records\nStores/Sends To: CRM system\n\n[All DERIVABLE inputs have been decomposed to terminal USER/SYSTEM sources]\n[Every step uses only declared inputs]\n[All outputs are externally verifiable artifacts]\n[DEPTH STOP markers only appear on terminal inputs]"
     ],
-    "raw_response": "Inputs:  \n1. Customer Insights Data  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: CRM system (e.g., Salesforce)  \n   Input Data: Customer demographics, purchase history, feedback logs  \n   Bound Reference: N/A  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n2. Sales Targets  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Marketing team  \n   Input Data: Numeric revenue goals, conversion rate thresholds  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n3. Engagement Metrics Tracking Tools  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: Analytics platforms (e.g., Google Analytics, Meta Insights)  \n   Input Data: Click-through rates, bounce rates, session durations  \n   Bound Reference: N/A  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n4. Conversion Metrics Tracking Tools  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: E-commerce platform (e.g., Shopify), CRM system  \n   Input Data: Purchase completions, form submissions, cart abandonments  \n   Bound Reference: N/A  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n5. Content Calendar  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Content team  \n   Input Data: Scheduled publication dates, channel-specific deadlines  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n6. Brand Guidelines  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Brand management team  \n   Input Data: Tone, style, visual identity specifications  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\n7. Existing Content Assets  \n   Source Type: SYSTEM-RETRIEVABLE  \n   Source Origin: CMS (e.g., WordPress), cloud storage (e.g., Google Drive)  \n   Input Data: Past blogs, videos, social posts  \n   Bound Reference: N/A  \n   Note: [DEPTH STOP - Terminal input, do not further decompose]  \n\n8. Customer Survey Data  \n   Source Type: USER-CONTROLLED  \n   Source Origin: Market research team  \n   Input Data: Structured survey responses, open-ended feedback  \n   Bound Reference: N/A  \n   Note: Requires explicit user provision or linkage.  \n\nOutputs:  \n1. Customer Insight Analysis Report  \n   Type: Measurable report  \n   Description: Aggregated trends from CRM and survey data  \n\n2. Content Creation Plan  \n   Type: Observable artifact  \n   Description: Thematic alignment of blogs, videos, and social posts  \n\n3. Published Content Assets  \n   Type: Observable artifact  \n   Description: Blogs, videos, and social posts across channels  \n\n4. Engagement Metrics Dashboard  \n   Type: Measurable report  \n   Description: Real-time tracking of click-through rates, session durations  \n\n5. Conversion Metrics Dashboard  \n   Type: Measurable report  \n   Description: Real-time tracking of purchases, form submissions  \n\n6. Sales Target Achievement Report  \n   Type: Measurable report  \n   Description: Comparison of actual vs. target conversion rates  \n\nSteps:  \nStep 1:  \nUses: Customer Insights Data, Customer Survey Data  \nAction: Analyze CRM and survey data to identify customer behavior patterns  \nProduces: Customer Insight Analysis Report  \nStores/Sends To: Internal analytics repository  \n\nStep 2:  \nUses: Customer Insight Analysis Report, Sales Targets  \nAction: Map insights to sales targets to define content themes  \nProduces: Content Creation Plan  \nStores/Sends To: Content calendar system  \n\nStep 3:  \nUses: Content Creation Plan, Brand Guidelines, Existing Content Assets  \nAction: Draft and produce blogs, videos, and social posts  \nProduces: Published Content Assets  \nStores/Sends To: CMS, social media platforms  \n\nStep 4:  \nUses: Content Calendar  \nAction: Schedule content publication across channels  \nProduces: Scheduled Content Queue  \nStores/Sends To: CMS, social media management tools  \n\nStep 5:  \nUses: Engagement Metrics Tracking Tools  \nAction: Monitor real-time engagement metrics  \nProduces: Engagement Metrics Dashboard  \nStores/Sends To: Analytics dashboard  \n\nStep 6:  \nUses: Conversion Metrics Tracking Tools  \nAction: Track conversion events against sales targets  \nProduces: Conversion Metrics Dashboard  \nStores/Sends To: Analytics dashboard  \n\nStep 7:  \nUses: Engagement Metrics Dashboard, Conversion Metrics Dashboard, Sales Targets  \nAction: Generate performance report comparing metrics to targets  \nProduces: Sales Target Achievement Report  \nStores/Sends To: Executive reporting system  \n\nDependency Consistency Check:  \n- All inputs used in steps  \n- No undeclared inputs  \n- USER-CONTROLLED inputs (2,5,6,8) explicitly marked  \n- SYSTEM-RETRIEVABLE inputs (1,3,4,7) linked to endpoints  \n- DERIVABLE inputs fully decomposed (e.g., Content Creation Plan derived from Step 1 and Step 2 inputs)  \n- All leaf inputs marked [DEPTH STOP]"
+    "raw_response": "Inputs:\n1. Customer Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: CRM System API (e.g., Salesforce)\n   Input Data: Customer demographics, purchase history, interaction logs\n   Bound Reference: [DEPTH STOP - Terminal input]\n\n2. Sales Targets\n   Source Type: USER-CONTROLLED\n   Source Origin: Marketing team\n   Input Data: Numeric revenue goals, conversion rate targets\n   Bound Reference: Requires explicit user provision or linkage.\n\n3. Channel Management System\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Marketing Platform API (e.g., HubSpot)\n   Input Data: Available channels, posting schedules, access credentials\n   Bound Reference: [DEPTH STOP - Terminal input]\n\n4. Content Templates\n   Source Type: USER-CONTROLLED\n   Source Origin: Creative team\n   Input Data: Pre-approved content frameworks, brand guidelines\n   Bound Reference: Requires explicit user provision or linkage.\n\n5. Analytics Platform Access\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Web Analytics API (e.g., Google Analytics)\n   Input Data: Engagement metrics, traffic sources, conversion tracking\n   Bound Reference: [DEPTH STOP - Terminal input]\n\n6. Content Strategy\n   Source Type: DERIVABLE\n   Source Origin: Customer Insights + Sales Targets\n   Input Data: Audience segmentation, content themes, KPI alignment\n   Bound Reference: Inputs 1,2\n\n7. Content Calendar\n   Source Type: DERIVABLE\n   Source Origin: Channel Schedule + Content Strategy\n   Input Data: Publication dates, channel assignments, content priorities\n   Bound Reference: Inputs 3,6\n\n8. Engagement Metrics Report\n   Source Type: DERIVABLE\n   Source Origin: Analytics Platform Data\n   Input Data: Click-through rates, time-on-page, shares\n   Bound Reference: Input 5\n\n9. Conversion Metrics Report\n   Source Type: DERIVABLE\n   Source Origin: CRM System Data\n   Input Data: Lead-to-sale ratios, funnel drop-offs\n   Bound Reference: Input 1\n\nOutputs:\n1. Customer Insights Report\n2. Content Production Calendar\n3. Published Blogs/Videos/Social Posts\n4. Engagement Metrics Dashboard\n5. Conversion Analysis Report\n6. Updated CRM Records with Campaign Data\n\nSteps:\nStep 1:\nUses: Customer Data, Sales Targets\nAction: Analyze CRM data against sales targets to identify customer behavior patterns\nProduces: Customer Insights Report\nStores/Sends To: Internal knowledge base\n\nStep 2:\nUses: Customer Insights Report, Sales Targets\nAction: Develop content strategy aligning audience segments with business objectives\nProduces: Content Strategy Document\nStores/Sends To: Shared team drive\n\nStep 3:\nUses: Content Strategy Document, Content Templates\nAction: Create channel-specific content using approved templates\nProduces: Draft blog posts/videos/social media assets\nStores/Sends To: Content management system\n\nStep 4:\nUses: Channel Management System, Content Calendar\nAction: Schedule and publish content across all channels\nProduces: Published content instances\nStores/Sends To: External platforms (website, YouTube, social media)\n\nStep 5:\nUses: Analytics Platform Access\nAction: Collect engagement metrics from all published content\nProduces: Engagement Metrics Report\nStores/Sends To: Internal analytics dashboard\n\nStep 6:\nUses: Customer Data, Engagement Metrics Report, Sales Targets\nAction: Generate conversion analysis comparing engagement to sales objectives\nProduces: Conversion Metrics Report\nStores/Sends To: Executive reporting portal\n\nStep 7:\nUses: Conversion Metrics Report\nAction: Update CRM records with campaign performance data\nProduces: Updated CRM records\nStores/Sends To: CRM system\n\n[All DERIVABLE inputs have been decomposed to terminal USER/SYSTEM sources]\n[Every step uses only declared inputs]\n[All outputs are externally verifiable artifacts]\n[DEPTH STOP markers only appear on terminal inputs]"
   },
   "aeb_analysis": {
     "steps_count": 7,
-    "aeb_analysis_raw": "### AEB Analysis Results\n\n---\n\n**Step 1**  \n- **Step:** Analyze CRM and survey data to identify customer behavior patterns  \n- **Is AEB:** No  \n- **Reason:** This step involves combining and analyzing data from two distinct sources (CRM and survey systems), which implies interacting with **multiple system boundaries**. Additionally, data analysis typically involves **sequencing** (e.g., data cleaning, transformation, modeling) and may include **branching logic** (e.g., conditional analysis).  \n- **Suggestion:** Break into:  \n  1. Retrieve CRM data from CRM system (AEB).  \n  2. Retrieve survey data from survey system (AEB).  \n  3. Analyze combined data to identify patterns (AEB, assuming a single API for analysis).  \n\n---\n\n**Step 2**  \n- **Step:** Map insights to sales targets to define content themes  \n- **Is AEB:** No  \n- **Reason:** This step combines two inputs (Customer Insight Report and Sales Targets) from potentially different systems, implying **multiple system boundaries**. The \"mapping\" process may involve **branching logic** (e.g., prioritizing themes based on thresholds) or **sequencing** (e.g., iterative alignment).  \n- **Suggestion:** Break into:  \n  1. Retrieve Sales Targets from sales system (AEB).  \n  2. Map insights to targets to define themes (AEB, if implemented as a single function).  \n\n---\n\n**Step 3**  \n- **Step:** Draft and produce blogs, videos, and social posts  \n- **Is AEB:** No  \n- **Reason:** This step involves **sequencing** (drafting → producing) and **multiple content types** (blogs, videos, social posts), which may require distinct workflows or tools. Producing each content type could interact with different system boundaries (e.g., CMS for blogs, social media APIs for posts).  \n- **Suggestion:** Break into:  \n  1. Draft blog content (AEB).  \n  2. Publish blog to CMS (AEB).  \n  3. Draft social media post (AEB).  \n  4. Publish social post to platforms (AEB).  \n  5. Produce video content (AEB).  \n\n---\n\n**Step 4**  \n- **Step:** Schedule content publication across channels  \n- **Is AEB:** No  \n- **Reason:** Scheduling content for **multiple channels** (CMS, social media tools) implies interacting with **multiple system boundaries**. This step also involves **sequencing** (e.g., staggered schedules).  \n- **Suggestion:** Break into:  \n  1. Schedule content in CMS (AEB).  \n  2. Schedule content in social media management tool (AEB).  \n\n---\n\n**Step 5**  \n- **Step:** Monitor real-time engagement metrics  \n- **Is AEB:** No  \n- **Reason:** The input is plural (\"Engagement Metrics Tracking Tools\"), indicating interaction with **multiple systems** (e.g., Google Analytics, social media APIs). Monitoring across tools cannot be a single API call.  \n- **Suggestion:** Break into:  \n  1. Monitor metrics via Tool A (AEB).  \n  2. Monitor metrics via Tool B (AEB).  \n\n---\n\n**Step 6**  \n- **Step:** Track conversion events against sales targets  \n- **Is AEB:** No  \n- **Reason:** Similar to Step 5, the input (\"Conversion Metrics Tracking Tools\" plural) implies **multiple system boundaries**. Tracking conversions across tools requires separate API calls.  \n- **Suggestion:** Break into:  \n  1. Track conversions via Tool A (AEB).  \n  2. Track conversions via Tool B (AEB).  \n\n---\n\n**Step 7**  \n- **Step:** Generate performance report comparing metrics to targets  \n- **Is AEB:** No  \n- **Reason:** This step aggregates data from **multiple sources** (two dashboards, sales targets), implying **multiple system boundaries**. Generating a report from disparate data may involve **sequencing** (e.g., data normalization).  \n- **Suggestion:** Break into:  \n  1. Retrieve Engagement Metrics Dashboard data (AEB).  \n  2. Retrieve Conversion Metrics Dashboard data (AEB).  \n  3. Retrieve Sales Targets (AEB).  \n  4. Generate performance report (AEB, assuming a single reporting API).  \n\n---\n\n### Summary of Key Issues  \n- **Multiple system boundaries** were the most common disqualifier (Steps 1, 2, 4–7).  \n- **Sequencing** and **branching** were issues in Steps 1, 3, and 7.  \n- **Plural inputs** (e.g., \"",
+    "aeb_analysis_raw": "### AEB Analysis Results\n\n---\n\n**Step 1**  \n- **Step**: Analyze CRM data against sales targets to identify customer behavior patterns  \n- **Is AEB**: No  \n- **Reason**: Combines multiple sub-actions (data retrieval, comparison, pattern recognition) and may involve branching/validation. Requires sequencing to process CRM data and sales targets.  \n- **Suggest**: Break into:  \n  1. Retrieve CRM data (AEB).  \n  2. Retrieve sales targets (AEB).  \n  3. Compare CRM data to sales targets (AEB).  \n  4. Generate behavior pattern report (AEB).  \n\n---\n\n**Step 2**  \n- **Step**: Develop content strategy aligning audience segments with business objectives  \n- **Is AEB**: No  \n- **Reason**: Involves branching (segment-specific decisions) and sequencing (strategy drafting, alignment checks). Requires subjective judgment.  \n- **Suggest**: Break into:  \n  1. Map audience segments to CRM insights (AEB).  \n  2. Align segments with sales targets (AEB).  \n  3. Draft strategy document (AEB).  \n\n---\n\n**Step 3**  \n- **Step**: Create channel-specific content using approved templates  \n- **Is AEB**: No  \n- **Reason**: Combines multiple outputs (blog, video, social media) and may involve branching (template variations).  \n- **Suggest**: Break into:  \n  1. Generate draft blog post (AEB).  \n  2. Generate draft video script (AEB).  \n  3. Generate social media assets (AEB).  \n\n---\n\n**Step 4**  \n- **Step**: Schedule and publish content across all channels  \n- **Is AEB**: No  \n- **Reason**: Combines scheduling and publishing (sequencing) and interacts with multiple system boundaries (website, YouTube, etc.).  \n- **Suggest**: Break into:  \n  1. Schedule content in channel management system (AEB).  \n  2. Publish to website (AEB).  \n  3. Publish to YouTube (AEB).  \n  4. Publish to social media platforms (AEB).  \n\n---\n\n**Step 5**  \n- **Step**: Collect engagement metrics from all published content  \n- **Is AEB**: No  \n- **Reason**: Aggregates data from multiple system boundaries (website, YouTube, etc.). Requires multiple API calls.  \n- **Suggest**: Break into:  \n  1. Retrieve website engagement metrics (AEB).  \n  2. Retrieve YouTube engagement metrics (AEB).  \n  3. Retrieve social media engagement metrics (AEB).  \n\n---\n\n**Step 6**  \n- **Step**: Generate conversion analysis comparing engagement to sales objectives  \n- **Is AEB**: No  \n- **Reason**: Combines data merging (engagement + CRM + sales targets) and analysis. May involve branching (e.g., threshold checks).  \n- **Suggest**: Break into:  \n  1. Merge engagement metrics with CRM data (AEB).  \n  2. Compare merged data to sales targets (AEB).  \n  3. Generate conversion report (AEB).  \n\n---\n\n**Step 7**  \n- **Step**: Update CRM records with campaign performance data  \n- **Is AEB**: Yes  \n- **Reason**: Single intent (CRM update), interacts with one system boundary (CRM API), no branching/sequencing.  \n- **Suggest**: N/A  \n\n--- \n\n### Summary of AEB-Compliant Steps  \nOnly **Step 7** meets all AEB criteria. All other steps require decomposition into smaller atomic actions.",
     "analysis_complete": true
   },
   "io_decomposed": true

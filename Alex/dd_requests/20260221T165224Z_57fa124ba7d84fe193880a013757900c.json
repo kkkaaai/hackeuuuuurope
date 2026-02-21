@@ -10,40 +10,5 @@
     "type": "dependency_driven",
     "graph": {},
     "total_subtasks": 0
-  },
-  "aeb_analysis": {
-    "steps_count": 7,
-    "aeb_analysis_raw": "1. **Step:** Retrieve order details from Order Management System  \n   **Is AEB:** Yes  \n   **Reason:** Single intent (retrieve order details), interacts with one system boundary (Order Management System), no branching/sequencing/validation.  \n   **Suggest:** N/A  \n\n2. **Step:** Compare current stock level against threshold for ordered product  \n   **Is AEB:** No  \n   **Reason:** Logical comparison (no system boundary interaction) and contains processing logic.  \n   **Suggest:** Split into two AEBs:  \n   - Retrieve stock level from Inventory Database  \n   - Evaluate stock status (in-memory logic, not an AEB)  \n\n3. **Step:** Deduct ordered quantity from inventory database  \n   **Is AEB:** Yes  \n   **Reason:** Single intent (deduct stock), interacts with one system boundary (Inventory Management System API), no branching/sequencing/validation.  \n   **Suggest:** N/A  \n\n4. **Step:** Initiate payment authorization through payment gateway  \n   **Is AEB:** Yes  \n   **Reason:** Single intent (payment authorization), interacts with one system boundary (Payment Gateway API), no branching/sequencing/validation.  \n   **Suggest:** N/A  \n\n5. **Step:** Update order status to \"Confirmed\" in order management system  \n   **Is AEB:** Yes  \n   **Reason:** Single intent (update status), interacts with one system boundary (Order Management System API), no branching/sequencing/validation.  \n   **Suggest:** N/A  \n\n6. **Step:** Create shipping manifest with logistics provider  \n   **Is AEB:** Yes  \n   **Reason:** Single intent (create shipment), interacts with one system boundary (Logistics Provider API), no branching/sequencing/validation.  \n   **Suggest:** N/A  \n\n7. **Step:** Generate and send customer confirmation email with tracking details  \n   **Is AEB:** No  \n   **Reason:** Combines in-memory processing (generating email content) with system interaction (sending via email API).  \n   **Suggest:** Split into two AEBs:  \n   - Generate email content (in-memory logic, not an AEB)  \n   - Send email via Email Service API (AEB)",
-    "analysis_complete": true
-  },
-  "io_decomposed": true,
-  "execution_plan": {
-    "model_used": "AI1",
-    "model_endpoint": "qwen/qwen3-235b-a22b",
-    "inputs": [
-      "Customer",
-      "Inventory",
-      "Low-Stock",
-      "Payment",
-      "Shipping",
-      "Low-Stock"
-    ],
-    "outputs": [
-      "Allocated Stock Record",
-      "Payment Confirmation",
-      "Updated Order Status Record",
-      "Shipping Confirmation ID",
-      "Customer Notification Email"
-    ],
-    "steps": [
-      "Uses: Customer Order\nAction: Retrieve order details from Order Management System\nProduces: Order Details Object\nStores/Sends To: In-memory processing context",
-      "Uses: Inventory Database, Low-Stock Threshold\nAction: Compare current stock level against threshold for ordered product\nProduces: Stock Status Evaluation\nStores/Sends To: In-memory processing context",
-      "Uses: Inventory Database, Customer Order\nAction: Deduct ordered quantity from inventory database\nProduces: Allocated Stock Record\nStores/Sends To: Inventory Management System (Endpoint: /api/inventory/v1/update)",
-      "Uses: Payment Processor API, Customer Order\nAction: Initiate payment authorization through payment gateway\nProduces: Payment Confirmation\nStores/Sends To: Payment Gateway Service (Endpoint: /api/payment/v2/authorize)",
-      "Uses: Allocated Stock Record, Payment Confirmation\nAction: Update order status to \"Confirmed\" in order management system\nProduces: Updated Order Status Record\nStores/Sends To: Order Management System (Endpoint: /api/orders/v1/update)",
-      "Uses: Shipping API, Customer Order\nAction: Create shipping manifest with logistics provider\nProduces: Shipping Confirmation ID\nStores/Sends To: Logistics Provider API (Endpoint: /api/shipping/v3/create_shipment)",
-      "Uses: Payment Confirmation, Shipping Confirmation ID\nAction: Generate and send customer confirmation email with tracking details\nProduces: Customer Notification Email\nStores/Sends To: Email Service (Endpoint: /api/notifications/v1/send_email)"
-    ],
-    "raw_response": "Inputs:\n1. Customer Order\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Order Management System API\n   Input Data: Order ID, Product ID, Quantity Requested, Customer ID\n   Bound Reference: None\n\n2. Inventory Database\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Inventory Management System (Endpoint: /api/inventory/v1/products)\n   Input Data: Current Stock Levels, Product IDs, Warehouse Locations\n   Bound Reference: None\n\n3. Low-Stock Threshold\n   Source Type: USER-CONTROLLED\n   Source Origin: Inventory Manager Configuration\n   Input Data: Minimum Stock Level (numeric), Product ID\n   Bound Reference: None\n   Note: Requires explicit user provision or linkage.\n\n4. Payment Processor API\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Payment Gateway Service (Endpoint: /api/payment/v2/authorize)\n   Input Data: Payment Method, Amount, Customer ID, Order ID\n   Bound Reference: None\n\n5. Shipping API\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Logistics Provider API (Endpoint: /api/shipping/v3/create_shipment)\n   Input Data: Shipping Address, Product Dimensions, Order ID\n   Bound Reference: None\n\n6. Low-Stock Alert\n   Source Type: DERIVABLE\n   Source Origin: Derived from Inventory Database and Low-Stock Threshold\n   Input Data: [Inventory Database, Low-Stock Threshold]\n   Bound Reference: Inputs 2,3\n   Note: [DEPTH STOP - Terminal input, do not further decompose]\n\nOutputs:\n1. Allocated Stock Record\n2. Payment Confirmation\n3. Updated Order Status Record\n4. Shipping Confirmation ID\n5. Customer Notification Email\n\nSteps:\nStep 1:\nUses: Customer Order\nAction: Retrieve order details from Order Management System\nProduces: Order Details Object\nStores/Sends To: In-memory processing context\n\nStep 2:\nUses: Inventory Database, Low-Stock Threshold\nAction: Compare current stock level against threshold for ordered product\nProduces: Stock Status Evaluation\nStores/Sends To: In-memory processing context\n\nStep 3:\nUses: Inventory Database, Customer Order\nAction: Deduct ordered quantity from inventory database\nProduces: Allocated Stock Record\nStores/Sends To: Inventory Management System (Endpoint: /api/inventory/v1/update)\n\nStep 4:\nUses: Payment Processor API, Customer Order\nAction: Initiate payment authorization through payment gateway\nProduces: Payment Confirmation\nStores/Sends To: Payment Gateway Service (Endpoint: /api/payment/v2/authorize)\n\nStep 5:\nUses: Allocated Stock Record, Payment Confirmation\nAction: Update order status to \"Confirmed\" in order management system\nProduces: Updated Order Status Record\nStores/Sends To: Order Management System (Endpoint: /api/orders/v1/update)\n\nStep 6:\nUses: Shipping API, Customer Order\nAction: Create shipping manifest with logistics provider\nProduces: Shipping Confirmation ID\nStores/Sends To: Logistics Provider API (Endpoint: /api/shipping/v3/create_shipment)\n\nStep 7:\nUses: Payment Confirmation, Shipping Confirmation ID\nAction: Generate and send customer confirmation email with tracking details\nProduces: Customer Notification Email\nStores/Sends To: Email Service (Endpoint: /api/notifications/v1/send_email)"
   }
 }

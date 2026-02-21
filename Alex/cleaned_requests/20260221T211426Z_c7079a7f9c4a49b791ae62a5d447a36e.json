@@ -1,0 +1,7 @@
+{
+  "task_id": "db71f01fa504",
+  "input": "Create a customer support automation workflow for a SaaS startup that triages tickets, automatically resolves simple issues, escalates complex cases, and tracks performance.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

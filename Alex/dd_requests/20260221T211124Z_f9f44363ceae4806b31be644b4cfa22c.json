@@ -1,0 +1,14 @@
+{
+  "task_id": "77101d859f7f",
+  "input": "Synthesize climate projections, case studies, and cost data into a report that prioritizes coastal adaptation strategies, clearly noting confidence levels for each recommendation.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

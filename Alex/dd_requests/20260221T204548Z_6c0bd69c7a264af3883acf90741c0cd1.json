@@ -1,0 +1,14 @@
+{
+  "task_id": "586940051c6f",
+  "input": "Design an end-to-end content campaign to launch an educational product, starting with audience research, then producing blog posts, videos, and social assets, ensuring consistent messaging across all platforms, and aiming for a 15% increase in demo requests.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

@@ -10,37 +10,5 @@
     "type": "dependency_driven",
     "graph": {},
     "total_subtasks": 0
-  },
-  "aeb_analysis": {
-    "steps_count": 7,
-    "aeb_analysis_raw": null,
-    "analysis_complete": true
-  },
-  "io_decomposed": true,
-  "execution_plan": {
-    "model_used": "AI1",
-    "model_endpoint": "qwen/qwen3-235b-a22b",
-    "inputs": [
-      "Live",
-      "Safety",
-      "Turbine",
-      "Historical",
-      "Optimization"
-    ],
-    "outputs": [
-      "Adjusted Turbine Parameters",
-      "Performance Improvement Report",
-      "Monitoring Dashboard Update"
-    ],
-    "steps": [
-      "Uses: Live Turbine Sensor Data, Turbine Specifications\nAction: Connect to SCADA system and manufacturer API to aggregate operational metrics\nProduces: Raw sensor data stream + technical parameter reference table\nStores/Sends To: Data lake (e.g., Amazon S3, Azure Data Lake)",
-      "Uses: Safety Constraints, Live Turbine Sensor Data\nAction: Compare real-time metrics against user-defined thresholds\nProduces: Compliance status matrix (boolean flags for each constraint)\nStores/Sends To: Validation service (in-memory state)",
-      "Uses: Live Turbine Sensor Data, Historical Performance Data\nAction: Calculate current efficiency ratio vs historical benchmarks\nProduces: Efficiency gap report (percentage deviation from optimal)\nStores/Sends To: Analytics database (e.g., PostgreSQL)",
-      "Uses: Optimization Algorithm, Efficiency gap report, Safety Constraints\nAction: Run ML model to generate constrained parameter adjustments\nProduces: Proposed parameter set (pitch angle Δ, yaw position Δ)\nStores/Sends To: Actuation queue (e.g., RabbitMQ, Kafka)",
-      "Uses: Proposed parameter set, Compliance status matrix\nAction: Push validated adjustments to turbine controllers via OPC UA protocol\nProduces: Execution confirmation log\nStores/Sends To: SCADA system audit trail",
-      "Uses: Live Turbine Sensor Data (post-adjustment), Efficiency gap report\nAction: Track key metrics before/after optimization in time-series database\nProduces: Delta analysis dashboard (energy output vs. pre-optimization)\nStores/Sends To: Grafana/Power BI instance",
-      "Uses: Delta analysis dashboard, Efficiency gap report\nAction: Generate PDF report with statistical significance calculations\nProduces: Final performance improvement documentation\nStores/Sends To: Document management system (e.g., SharePoint, Google Drive)\n\n[DEPTH STOP CONDITIONS MET: All DERIVABLE inputs (e.g., efficiency gap report) have been decomposed into SYSTEM-RETRIEVABLE/USER-CONTROLLED leaf inputs]"
-    ],
-    "raw_response": "Inputs:\n1. Live Turbine Sensor Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: SCADA system/IoT platform (e.g., OSIsoft PI, AWS IoT Core)\n   Input Data: Real-time metrics (wind speed, rotor RPM, power output, temperature)\n   Bound Reference: None\n\n2. Safety Constraints\n   Source Type: USER-CONTROLLED\n   Source Origin: Turbine operator/engineering team\n   Input Data: Numeric thresholds (max RPM, temperature limits, vibration tolerances)\n   Note: Requires explicit user provision or linkage.\n\n3. Turbine Specifications\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Manufacturer database (e.g., Siemens Gamesa, Vestas API)\n   Input Data: Technical parameters (rated capacity, cut-in wind speed, blade length)\n   Bound Reference: None\n\n4. Historical Performance Data\n   Source Type: SYSTEM-RETRIEVABLE\n   Source Origin: Data warehouse (e.g., Snowflake, Google BigQuery)\n   Input Data: Past operational metrics (monthly energy production, downtime records)\n   Bound Reference: None\n\n5. Optimization Algorithm\n   Source Type: USER-CONTROLLED\n   Source Origin: Data science team\n   Input Data: Machine learning model (parameter adjustment logic)\n   Note: Requires explicit user provision or linkage.\n\nOutputs:\n1. Adjusted Turbine Parameters\n   Type: System update\n   Description: New setpoints for pitch angle, yaw position, and generator torque\n   Verification: API response from turbine controllers\n\n2. Performance Improvement Report\n   Type: PDF/HTML document\n   Description: Comparative analysis (energy output increase, downtime reduction)\n   Verification: File checksum and timestamp\n\n3. Monitoring Dashboard Update\n   Type: System state change\n   Description: Real-time visualization of optimized metrics\n   Verification: Dashboard API endpoint response\n\nSteps:\nStep 1: Data Collection\nUses: Live Turbine Sensor Data, Turbine Specifications\nAction: Connect to SCADA system and manufacturer API to aggregate operational metrics\nProduces: Raw sensor data stream + technical parameter reference table\nStores/Sends To: Data lake (e.g., Amazon S3, Azure Data Lake)\n\nStep 2: Constraint Validation\nUses: Safety Constraints, Live Turbine Sensor Data\nAction: Compare real-time metrics against user-defined thresholds\nProduces: Compliance status matrix (boolean flags for each constraint)\nStores/Sends To: Validation service (in-memory state)\n\nStep 3: Efficiency Analysis\nUses: Live Turbine Sensor Data, Historical Performance Data\nAction: Calculate current efficiency ratio vs historical benchmarks\nProduces: Efficiency gap report (percentage deviation from optimal)\nStores/Sends To: Analytics database (e.g., PostgreSQL)\n\nStep 4: Parameter Optimization\nUses: Optimization Algorithm, Efficiency gap report, Safety Constraints\nAction: Run ML model to generate constrained parameter adjustments\nProduces: Proposed parameter set (pitch angle Δ, yaw position Δ)\nStores/Sends To: Actuation queue (e.g., RabbitMQ, Kafka)\n\nStep 5: Turbine Adjustment\nUses: Proposed parameter set, Compliance status matrix\nAction: Push validated adjustments to turbine controllers via OPC UA protocol\nProduces: Execution confirmation log\nStores/Sends To: SCADA system audit trail\n\nStep 6: Performance Monitoring\nUses: Live Turbine Sensor Data (post-adjustment), Efficiency gap report\nAction: Track key metrics before/after optimization in time-series database\nProduces: Delta analysis dashboard (energy output vs. pre-optimization)\nStores/Sends To: Grafana/Power BI instance\n\nStep 7: Reporting\nUses: Delta analysis dashboard, Efficiency gap report\nAction: Generate PDF report with statistical significance calculations\nProduces: Final performance improvement documentation\nStores/Sends To: Document management system (e.g., SharePoint, Google Drive)\n\n[DEPTH STOP CONDITIONS MET: All DERIVABLE inputs (e.g., efficiency gap report) have been decomposed into SYSTEM-RETRIEVABLE/USER-CONTROLLED leaf inputs]"
   }
 }

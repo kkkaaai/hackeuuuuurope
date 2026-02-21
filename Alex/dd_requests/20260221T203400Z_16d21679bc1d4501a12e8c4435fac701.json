@@ -1,0 +1,14 @@
+{
+  "task_id": "afff1d312b5b",
+  "input": "Research, plan, and produce a multi-format content series including videos, blogs, and infographics, maintain consistent messaging across all platforms to achieve specific engagement and conversion targets.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

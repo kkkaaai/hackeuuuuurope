@@ -1,0 +1,7 @@
+{
+  "task_id": "23ca81494108",
+  "input": "Design a support workflow that first triages tickets, auto-fixes simple issues, escalates complex cases, and tracks resolution metrics.",
+  "complexity_score": null,
+  "eval_gen": 1,
+  "subtasks": []
+}

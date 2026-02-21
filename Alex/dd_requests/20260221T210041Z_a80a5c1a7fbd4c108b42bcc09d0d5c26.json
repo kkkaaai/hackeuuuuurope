@@ -1,0 +1,14 @@
+{
+  "task_id": "734f0c0b11fe",
+  "input": "Create a healthcare content campaign from research through producing aligned assets across channels to meet trackable KPIs.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

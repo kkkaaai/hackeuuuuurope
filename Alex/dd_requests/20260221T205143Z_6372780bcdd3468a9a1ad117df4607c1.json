@@ -1,0 +1,14 @@
+{
+  "task_id": "b94c6b22a749",
+  "input": "A customer order triggers an inventory check, processes payment, updates all systems, and notifies the warehouse for shipment, resolving any stock or payment issues to complete the sale.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

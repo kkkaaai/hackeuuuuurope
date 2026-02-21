@@ -1,0 +1,14 @@
+{
+  "task_id": "d7d78d00494d",
+  "input": "Design a multi-case customer support automation workflow for a SaaS startup involving triage, auto-resolution, escalation, and performance tracking.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}

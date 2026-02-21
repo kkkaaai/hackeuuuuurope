@@ -1,0 +1,14 @@
+{
+  "task_id": "6407d5fef4ae",
+  "input": "Research and synthesize the latest AI fairness audit methods, comparing their effectiveness and limitations, to produce a concise evaluation framework for practical implementation.",
+  "required_inputs": [],
+  "outputs": [
+    "result"
+  ],
+  "subtasks": [],
+  "dependency_structure": {
+    "type": "dependency_driven",
+    "graph": {},
+    "total_subtasks": 0
+  }
+}
