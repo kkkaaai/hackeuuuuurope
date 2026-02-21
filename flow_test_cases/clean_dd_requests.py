@@ -12,8 +12,8 @@ from pathlib import Path
 from task_id_manager import generate_base_id, create_subtask_id
 
 
-BASE_DIR = os.path.dirname(__file__)
-CLEANED_DIR = os.path.join(BASE_DIR, "cleaned_requests")
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+SAMPLE_DIR = os.path.join(BASE_DIR, "sample_requests")
 DD_REQUESTS_DIR = os.path.join(BASE_DIR, "dd_requests")
 
 
@@ -201,24 +201,24 @@ def convert_to_dd_structure(cleaned_file_path: str, output_dir: str = DD_REQUEST
         return False, None
 
 
-def convert_all_to_dd(cleaned_dir: str = CLEANED_DIR, output_dir: str = DD_REQUESTS_DIR) -> list:
+def convert_all_to_dd(sample_dir: str = SAMPLE_DIR, output_dir: str = DD_REQUESTS_DIR) -> list:
     """
-    Convert all cleaned requests to dependency-driven structure.
+    Convert all sample requests to dependency-driven structure.
     
     Args:
-        cleaned_dir: Path to cleaned_requests directory
+        sample_dir: Path to sample_requests directory
         output_dir: Path to dd_requests directory
     
     Returns:
         list: Results of conversions
     """
-    if not os.path.exists(cleaned_dir):
-        print(f"Cleaned directory not found: {cleaned_dir}")
+    if not os.path.exists(sample_dir):
+        print(f"Sample directory not found: {sample_dir}")
         return []
     
-    json_files = glob.glob(os.path.join(cleaned_dir, "*.json"))
+    json_files = glob.glob(os.path.join(sample_dir, "*.json"))
     if not json_files:
-        print(f"No JSON files found in {cleaned_dir}")
+        print(f"No JSON files found in {sample_dir}")
         return []
     
     results = []
