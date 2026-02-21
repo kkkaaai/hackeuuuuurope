@@ -1,6 +1,5 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Play,
@@ -8,62 +7,24 @@ import {
   Workflow,
   Loader2,
   RefreshCw,
+  RotateCcw,
 } from "lucide-react";
-import {
-  listPipelines,
-  deletePipeline,
-  runPipeline,
-} from "@/lib/api";
 import { PipelineResultDisplay } from "@/components/pipeline/PipelineResultDisplay";
 import { CATEGORY_BG } from "@/lib/constants";
-import type { PipelineListItem, ExecutionResult } from "@/lib/types";
+import { useDashboard } from "@/lib/dashboard-context";
 
 export default function DashboardPage() {
-  const [pipelines, setPipelines] = useState<PipelineListItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [runningId, setRunningId] = useState<string | null>(null);
-  const [lastResult, setLastResult] = useState<ExecutionResult | null>(null);
-  const [runError, setRunError] = useState<string | null>(null);
-
-  const fetchPipelines = useCallback(async () => {
-    setLoading(true);
-    try {
-      const data = await listPipelines();
-      setPipelines(data);
-    } catch {
-      /* backend may not be running */
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    fetchPipelines();
-  }, [fetchPipelines]);
-
-  const handleRun = async (id: string) => {
-    setRunningId(id);
-    setLastResult(null);
-    setRunError(null);
-    try {
-      const result = await runPipeline(id);
-      setLastResult(result);
-      fetchPipelines();
-    } catch (err) {
-      setRunError(err instanceof Error ? err.message : "Pipeline execution failed");
-    } finally {
-      setRunningId(null);
-    }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deletePipeline(id);
-      setPipelines((prev) => prev.filter((p) => p.id !== id));
-    } catch {
-      /* ignore */
-    }
-  };
+  const {
+    pipelines,
+    loading,
+    runningId,
+    lastResult,
+    runError,
+    lastRunPipelineId,
+    fetchPipelines,
+    handleRun,
+    handleDelete,
+  } = useDashboard();
 
   const statusColors: Record<string, string> = {
     created: "bg-gray-500/20 text-gray-400",
@@ -100,11 +61,27 @@ export default function DashboardPage() {
               : "bg-red-500/5 border-red-500/30"
           }`}
         >
-          <p className={`text-sm font-medium mb-3 ${
-            lastResult.status === "completed" ? "text-green-400" : "text-red-400"
-          }`}>
-            Pipeline {lastResult.status}
-          </p>
+          <div className="flex items-center justify-between mb-3">
+            <p className={`text-sm font-medium ${
+              lastResult.status === "completed" ? "text-green-400" : "text-red-400"
+            }`}>
+              Pipeline {lastResult.status}
+            </p>
+            {lastResult.status === "failed" && lastRunPipelineId && (
+              <button
+                onClick={() => handleRun(lastRunPipelineId)}
+                disabled={!!runningId}
+                className="flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-md disabled:opacity-50 transition-colors"
+              >
+                {runningId === lastRunPipelineId ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  <RotateCcw className="w-3 h-3" />
+                )}
+                Retry
+              </button>
+            )}
+          </div>
           {lastResult.errors && lastResult.errors.length > 0 && (
             <p className="text-xs text-red-300 mb-3">{lastResult.errors.join(", ")}</p>
           )}
@@ -124,9 +101,25 @@ export default function DashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-4 p-4 rounded-lg border bg-red-500/5 border-red-500/30"
         >
-          <p className="text-sm font-medium text-red-400">
-            Run failed: {runError}
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-medium text-red-400">
+              Run failed: {runError}
+            </p>
+            {lastRunPipelineId && (
+              <button
+                onClick={() => handleRun(lastRunPipelineId)}
+                disabled={!!runningId}
+                className="flex items-center gap-1.5 px-3 py-1 text-xs font-medium text-red-400 hover:text-red-300 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 rounded-md disabled:opacity-50 transition-colors"
+              >
+                {runningId === lastRunPipelineId ? (
+                  <Loader2 className="w-3 h-3 animate-spin" />
+                ) : (
+                  <RotateCcw className="w-3 h-3" />
+                )}
+                Retry
+              </button>
+            )}
+          </div>
         </motion.div>
       )}
 

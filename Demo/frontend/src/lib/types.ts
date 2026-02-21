@@ -26,7 +26,7 @@ export interface BlockDefinition {
   api_type?: "real" | "mock";
   tier?: number;
   // Magnus fields
-  execution_type?: "llm" | "python";
+  execution_type?: "python" | "llm"; // all new blocks are "python"; "llm" is legacy
   prompt_template?: string;
   use_when?: string;
   tags?: string[];
@@ -107,7 +107,7 @@ export interface ClarifyResult {
 
 // ── SSE Event Types ──
 
-export type ThinkerStage = "decompose" | "match" | "create" | "wire";
+export type ThinkerStage = "decompose" | "search" | "create" | "wire";
 
 export interface SSEEvent {
   type: string;
@@ -138,17 +138,40 @@ export interface LLMResponseEvent extends SSEEvent {
   elapsed?: number;
 }
 
-export interface MatchFoundEvent extends SSEEvent {
-  type: "match_found";
-  block_id: string;
-  block_name?: string;
+export interface SearchFoundEvent extends SSEEvent {
+  type: "search_found";
+  suggested_id: string;
+  matched_block_id: string;
+  name?: string;
+  description?: string;
 }
 
-export interface MatchMissingEvent extends SSEEvent {
-  type: "match_missing";
+export interface SearchMissingEvent extends SSEEvent {
+  type: "search_missing";
   suggested_id: string;
   description?: string;
 }
+
+export interface DecomposeBlocksEvent extends SSEEvent {
+  type: "decompose_blocks";
+  blocks: Array<{ suggested_id: string; description: string; execution_type: string }>;
+}
+
+export interface BlockTestPassedEvent extends SSEEvent {
+  type: "block_test_passed";
+  block_id: string;
+}
+
+export interface BlockTestFailedEvent extends SSEEvent {
+  type: "block_test_failed";
+  block_id: string;
+  error: string;
+  retry: boolean;
+}
+
+// Legacy aliases for backward compat
+export type MatchFoundEvent = SearchFoundEvent;
+export type MatchMissingEvent = SearchMissingEvent;
 
 export interface BlockCreatedEvent extends SSEEvent {
   type: "block_created";

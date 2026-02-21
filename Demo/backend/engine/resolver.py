@@ -6,13 +6,18 @@ from typing import Any
 
 def resolve_templates(inputs: dict, state: dict) -> dict:
     """Resolve all {{ref}} templates in an inputs dict against pipeline state."""
-    resolved = {}
-    for key, value in inputs.items():
-        if isinstance(value, str):
-            resolved[key] = _resolve_string(value, state)
-        else:
-            resolved[key] = value
-    return resolved
+    return _resolve_value(inputs, state)
+
+
+def _resolve_value(value: Any, state: dict) -> Any:
+    """Recursively resolve templates in any value type."""
+    if isinstance(value, str):
+        return _resolve_string(value, state)
+    if isinstance(value, dict):
+        return {k: _resolve_value(v, state) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_resolve_value(item, state) for item in value]
+    return value
 
 
 def _resolve_string(value: str, state: dict) -> Any:

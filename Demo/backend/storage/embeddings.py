@@ -33,12 +33,39 @@ async def generate_embedding(text: str) -> list[float]:
     return await asyncio.to_thread(generate_embedding_sync, text)
 
 
+def _schema_type_to_natural(prop: dict) -> str:
+    """Convert a JSON Schema type to a descriptive natural language type."""
+    t = prop.get("type", "any")
+    desc = prop.get("description", "")
+    if t == "string":
+        return "text string"
+    elif t == "number":
+        return "floating point number"
+    elif t == "integer":
+        return "whole number"
+    elif t == "boolean":
+        return "true or false flag"
+    elif t == "array":
+        items = prop.get("items", {})
+        item_type = _schema_type_to_natural(items) if items else "items"
+        return f"list of {item_type}"
+    elif t == "object":
+        return "structured object"
+    return t
+
+
 def block_to_search_text(block: dict) -> str:
-    """Build a searchable text representation of a block for embedding."""
-    parts = [
-        block.get("name", ""),
-        block.get("description", ""),
-        block.get("use_when", "") or "",
-        " ".join(block.get("tags", [])),
-    ]
-    return " ".join(p for p in parts if p).strip()
+    """Build a plain-text embedding of a block focused on what it does.
+
+    Only includes functional description, use_when, and tags — no I/O schemas.
+    This keeps the embedding in the same semantic space as requirement descriptions,
+    so cosine similarity directly compares desired vs existing functionality.
+    """
+    parts = []
+    if block.get("description"):
+        parts.append(block["description"].rstrip(".") + ".")
+    if block.get("use_when"):
+        parts.append(f"Use when {block['use_when'].rstrip('.')}.")
+    if block.get("tags"):
+        parts.append(f"Related to: {', '.join(block['tags'])}.")
+    return " ".join(parts)
