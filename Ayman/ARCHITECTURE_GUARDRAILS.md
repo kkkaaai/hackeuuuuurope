@@ -1,3 +1,4 @@
+
 # MotherAgent — Architecture Guardrails
 
 These rules are non-negotiable and must be enforced in code review and CI.
@@ -31,22 +32,61 @@ Execution must bind to an explicit AgentDefinition version.
 
 ## 3. Control Plane vs Execution Plane Rule
 
-Node/TypeScript (Control Plane):
+Python FastAPI (Control Plane):
 - Owns persistence
 - Owns versioning
 - Owns validation
 - Owns orchestration
+- Connects to Supabase/PostgreSQL
+- Connects to S3 for file workflows
 
 Python (Execution Plane):
 - Owns graph execution only
 - Is stateless and ephemeral
 - Must not mutate AgentDefinition
 - Must not generate new blocks
-- Must not connect to PostgreSQL
+- Must not connect to Supabase/PostgreSQL
+- Must not connect to S3
+
+Node/TypeScript is not a control-plane runtime.
 
 ---
 
-## 4. REST Boundary Rule
+## 4. Infrastructure Lock Rule
+
+- Supabase is the system of record for auth + PostgreSQL + pgvector
+- S3 is the blob storage for per-user files
+
+---
+
+## 5. Knowledge Substrate Rule
+
+- Block DB + reference packages are the core knowledge substrate
+- Retrieval and prompt assembly must use these sources
+
+---
+
+## 6. Embed-Based Prompt Injection Rule
+
+Embed-based prompt injection is the primary intelligence mechanism and must be used for:
+- Decomposition
+- Block-checker
+- Runtime execution
+
+---
+
+## 7. Repo Structure Rule
+
+The repository must preserve this structure:
+- `apps/web` (Next.js frontend)
+- `apps/api` (Python FastAPI control plane)
+- `packages/block_db`
+- `packages/reference_packages`
+- `packages/prompt_injection`
+
+---
+
+## 8. REST Boundary Rule
 
 All cross-service communication must:
 - Be JSON serializable
@@ -56,7 +96,7 @@ All cross-service communication must:
 
 ---
 
-## 5. Paid AI Cost Tracing Rule (Native SDK Only)
+## 9. Paid AI Cost Tracing Rule (Native SDK Only)
 
 Paid AI traces costs by intercepting **native provider SDK calls**.
 
@@ -70,7 +110,7 @@ Any PR that introduces wrapper-based LLM routing is a blocker.
 
 ---
 
-## 6. Versioning Rule
+## 10. Versioning Rule
 
 - Blocks are immutable
 - AgentDefinitions are immutable
@@ -79,7 +119,7 @@ Any PR that introduces wrapper-based LLM routing is a blocker.
 
 ---
 
-## 7. LangGraph Isolation Rule
+## 11. LangGraph Isolation Rule
 
 - Graph compiled fresh per execution
 - No runtime graph mutation
@@ -89,7 +129,7 @@ Any PR that introduces wrapper-based LLM routing is a blocker.
 
 ---
 
-## 8. Python Dependency Rule (UV)
+## 12. Python Dependency Rule (UV)
 
 - All Python dependencies must be managed with UV
 - `pyproject.toml` is authoritative
@@ -99,7 +139,7 @@ Any PR that introduces wrapper-based LLM routing is a blocker.
 
 ---
 
-## 9. LLM Containment Rule
+## 13. LLM Containment Rule
 
 LLMs may:
 - Generate structured metadata and decomposition outputs
@@ -111,7 +151,7 @@ LLMs may NOT:
 
 ---
 
-## 10. Determinism Rule
+## 14. Determinism Rule
 
 Given the same AgentDefinition version and same initial state,
 execution must produce identical structured results (excluding timestamps and generated IDs).
