@@ -6,6 +6,17 @@
   --card: #111827;
   --card-border: #1f2937;
   --muted: #6b7280;
+
+  /* Glass & surface tokens */
+  --glass-bg: rgba(17, 24, 39, 0.50);
+  --glass-border: rgba(255, 255, 255, 0.06);
+  --surface-1: rgba(17, 24, 39, 0.80);
+  --surface-2: rgba(31, 41, 55, 0.50);
+
+  /* Glow tokens */
+  --glow-blue: rgba(59, 130, 246, 0.35);
+  --glow-green: rgba(34, 197, 94, 0.35);
+  --glow-purple: rgba(168, 85, 247, 0.35);
 }
 
 @theme inline {
@@ -24,30 +35,68 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* React Flow dark theme overrides */
+/* Subtle gradient mesh background for depth */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%, rgba(59, 130, 246, 0.04), transparent),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(168, 85, 247, 0.03), transparent);
+  pointer-events: none;
+}
+
+/* ── Glass utility ── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+/* ── Glow input ring ── */
+.input-glow:focus {
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.3),
+    0 0 20px rgba(59, 130, 246, 0.15),
+    0 0 40px rgba(59, 130, 246, 0.05);
+}
+
+/* ── React Flow dark theme overrides ── */
 .react-flow__background {
-  background: var(--card) !important;
+  background: #0a0f1a !important;
+}
+
+.react-flow__controls {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4) !important;
 }
 
 .react-flow__controls button {
-  background: #1f2937 !important;
-  border-color: #374151 !important;
+  background: rgba(17, 24, 39, 0.80) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: rgba(255, 255, 255, 0.06) !important;
+  color: #9ca3af !important;
+  fill: #9ca3af !important;
+}
+
+.react-flow__controls button:hover {
+  background: rgba(31, 41, 55, 0.80) !important;
   color: #f9fafb !important;
   fill: #f9fafb !important;
 }
 
-.react-flow__controls button:hover {
-  background: #374151 !important;
-}
-
-/* Custom animations */
+/* ── Custom animations ── */
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
-  50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.7); }
+  0%, 100% { box-shadow: 0 0 8px rgba(59, 130, 246, 0.25), 0 0 20px rgba(59, 130, 246, 0.1); }
+  50% { box-shadow: 0 0 12px rgba(59, 130, 246, 0.4), 0 0 30px rgba(59, 130, 246, 0.15); }
 }
 
 .node-running {
-  animation: pulse-glow 1.5s ease-in-out infinite;
+  animation: pulse-glow 2s ease-in-out infinite;
 }
 
 @keyframes fade-in-up {
@@ -57,4 +106,51 @@ body {
 
 .animate-fade-in-up {
   animation: fade-in-up 0.3s ease-out;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.03) 50%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.animate-float {
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+/* ── Scrollbar styling ── */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.15);
 }

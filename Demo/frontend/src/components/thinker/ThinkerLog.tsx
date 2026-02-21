@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Brain,
@@ -15,6 +15,7 @@ import {
   Zap,
   Clock,
   AlertCircle,
+  ArrowDown,
 } from "lucide-react";
 import type { SSEEvent } from "@/lib/types";
 
@@ -28,23 +29,27 @@ function EventItem({ event }: { event: SSEEvent }) {
   switch (event.type) {
     case "start":
       return (
-        <div className="flex items-center gap-2 text-blue-400 text-xs py-1">
+        <div className="flex items-center gap-2 text-blue-400 text-xs py-1.5">
           <Zap className="w-3.5 h-3.5" />
           <span>Pipeline creation started</span>
         </div>
       );
 
-    case "stage":
+    case "stage": {
+      const stageNumbers: Record<string, number> = { decompose: 1, match: 2, create: 3, wire: 4 };
+      const num = stageNumbers[String(event.stage)] ?? "";
       return (
-        <div className="flex items-center gap-2 text-white text-sm font-medium pt-3 pb-1 border-t border-gray-800 first:border-0 first:pt-0">
-          <Sparkles className="w-4 h-4 text-blue-400" />
-          <span className="capitalize">{String(event.stage)} Stage</span>
+        <div className="flex items-center gap-2 text-white text-sm font-medium pt-4 pb-1.5">
+          <div className="w-0.5 h-4 rounded-full bg-blue-400/60 mr-0.5" />
+          <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+          <span className="capitalize">{num ? `${num}. ` : ""}{String(event.stage)} Stage</span>
         </div>
       );
+    }
 
     case "stage_result":
       return (
-        <div className="flex items-center gap-2 text-green-400 text-xs py-1">
+        <div className="flex items-center gap-2 text-green-400 text-xs py-1.5">
           <Check className="w-3.5 h-3.5" />
           <span>{String(event.summary || `${event.stage} complete`)}</span>
         </div>
@@ -67,11 +72,12 @@ function EventItem({ event }: { event: SSEEvent }) {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <pre className="mt-1 p-2 bg-gray-950 rounded text-[10px] text-gray-500 overflow-x-auto max-h-32 overflow-y-auto">
-                  {event.system_prompt ? `[System]\n${String(event.system_prompt)}\n\n` : null}
-                  {event.user_prompt ? `[User]\n${String(event.user_prompt)}` : null}
+                <pre className="mt-1.5 p-2.5 bg-black/30 rounded-lg text-[10px] text-gray-500 overflow-x-auto max-h-32 overflow-y-auto thin-scrollbar border border-white/5">
+                  {(event.system || event.system_prompt) ? `[System]\n${String(event.system || event.system_prompt)}\n\n` : null}
+                  {(event.user || event.user_prompt) ? `[User]\n${String(event.user || event.user_prompt)}` : null}
                 </pre>
               </motion.div>
             )}
@@ -89,10 +95,10 @@ function EventItem({ event }: { event: SSEEvent }) {
             {expanded ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
             <Brain className="w-3.5 h-3.5 text-cyan-400" />
             <span>LLM Response</span>
-            {event.elapsed ? (
+            {(event.elapsed_s || event.elapsed) ? (
               <span className="text-gray-600 flex items-center gap-0.5">
                 <Clock className="w-2.5 h-2.5" />
-                {Number(event.elapsed).toFixed(1)}s
+                {Number(event.elapsed_s || event.elapsed).toFixed(1)}s
               </span>
             ) : null}
           </button>
@@ -102,10 +108,11 @@ function EventItem({ event }: { event: SSEEvent }) {
                 initial={{ height: 0, opacity: 0 }}
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
                 className="overflow-hidden"
               >
-                <pre className="mt-1 p-2 bg-gray-950 rounded text-[10px] text-gray-500 overflow-x-auto max-h-48 overflow-y-auto">
-                  {String(event.response || "")}
+                <pre className="mt-1.5 p-2.5 bg-black/30 rounded-lg text-[10px] text-gray-500 overflow-x-auto max-h-48 overflow-y-auto thin-scrollbar border border-white/5">
+                  {String(event.raw || event.response || "")}
                 </pre>
               </motion.div>
             )}
@@ -115,48 +122,75 @@ function EventItem({ event }: { event: SSEEvent }) {
 
     case "match_found":
       return (
-        <div className="flex items-center gap-2 text-xs py-1">
-          <Search className="w-3.5 h-3.5 text-green-400" />
-          <span className="px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/30 rounded text-[10px]">
-            {String(event.block_name || event.block_id)}
-          </span>
-          <span className="text-gray-500">matched</span>
+        <div className="py-1.5">
+          <div className="flex items-center gap-2 text-xs">
+            <Search className="w-3.5 h-3.5 text-green-400 flex-shrink-0" />
+            <span className="px-1.5 py-0.5 bg-green-500/10 text-green-400 border border-green-500/20 rounded text-[10px] font-mono">
+              {String(event.name || event.block_id)}
+            </span>
+            <span className="text-green-500/60">found in registry</span>
+          </div>
+          {typeof event.description === "string" && event.description && (
+            <p className="ml-6 mt-0.5 text-[10px] text-gray-600 leading-tight">{event.description}</p>
+          )}
         </div>
       );
 
     case "match_missing":
       return (
-        <div className="flex items-center gap-2 text-xs py-1">
-          <AlertCircle className="w-3.5 h-3.5 text-orange-400" />
-          <span className="px-1.5 py-0.5 bg-orange-500/10 text-orange-400 border border-orange-500/30 rounded text-[10px]">
-            {String(event.suggested_id || "unknown")}
-          </span>
-          <span className="text-gray-500">needs creation</span>
+        <div className="py-1.5">
+          <div className="flex items-center gap-2 text-xs">
+            <AlertCircle className="w-3.5 h-3.5 text-orange-400 flex-shrink-0" />
+            <span className="px-1.5 py-0.5 bg-orange-500/10 text-orange-400 border border-orange-500/20 rounded text-[10px] font-mono">
+              {String(event.suggested_id || event.block_id || "unknown")}
+            </span>
+            <span className="text-orange-400/60">will be created</span>
+          </div>
+          {typeof event.description === "string" && event.description && (
+            <p className="ml-6 mt-0.5 text-[10px] text-gray-600 leading-tight">{event.description}</p>
+          )}
         </div>
       );
 
     case "creating_block":
       return (
-        <div className="flex items-center gap-2 text-xs py-1 text-gray-400">
-          <Hammer className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
-          <span>Creating block...</span>
+        <div className="py-1.5">
+          <div className="flex items-center gap-2 text-xs text-gray-400">
+            <Hammer className="w-3.5 h-3.5 text-purple-400 animate-pulse flex-shrink-0" />
+            <span>Creating</span>
+            <span className="font-mono text-purple-300">{String(event.suggested_id || "block")}</span>
+            {typeof event.total === "number" && event.total > 1 && (
+              <span className="text-gray-600">({Number(event.index) + 1}/{event.total})</span>
+            )}
+          </div>
+          {typeof event.description === "string" && event.description && (
+            <p className="ml-6 mt-0.5 text-[10px] text-gray-600 leading-tight">{event.description}</p>
+          )}
         </div>
       );
 
     case "block_created":
       return (
-        <div className="flex items-center gap-2 text-xs py-1">
-          <Hammer className="w-3.5 h-3.5 text-purple-400" />
-          <span className="px-1.5 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/30 rounded text-[10px]">
-            {String(event.block_name || event.block_id)}
-          </span>
-          <span className="text-gray-500">created</span>
+        <div className="py-1.5">
+          <div className="flex items-center gap-2 text-xs">
+            <Hammer className="w-3.5 h-3.5 text-purple-400 flex-shrink-0" />
+            <span className="px-1.5 py-0.5 bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded text-[10px] font-mono">
+              {String(event.name || event.block_id)}
+            </span>
+            <span className="text-purple-400/60">created</span>
+            {typeof event.execution_type === "string" && (
+              <span className="text-[10px] text-gray-600">({event.execution_type})</span>
+            )}
+          </div>
+          {typeof event.description === "string" && event.description && (
+            <p className="ml-6 mt-0.5 text-[10px] text-gray-600 leading-tight">{event.description}</p>
+          )}
         </div>
       );
 
     case "validation":
       return (
-        <div className="flex items-center gap-2 text-xs py-1">
+        <div className="flex items-center gap-2 text-xs py-1.5">
           {event.valid ? (
             <>
               <Check className="w-3.5 h-3.5 text-green-400" />
@@ -173,7 +207,8 @@ function EventItem({ event }: { event: SSEEvent }) {
 
     case "complete":
       return (
-        <div className="flex items-center gap-2 text-green-400 text-xs py-2 border-t border-gray-800 mt-1">
+        <div className="flex items-center gap-2 text-green-400 text-xs py-2.5 mt-2">
+          <div className="w-0.5 h-4 rounded-full bg-green-400/60 mr-0.5" />
           <Check className="w-4 h-4" />
           <span className="font-medium">Pipeline created successfully</span>
         </div>
@@ -181,7 +216,7 @@ function EventItem({ event }: { event: SSEEvent }) {
 
     case "error":
       return (
-        <div className="flex items-center gap-2 text-red-400 text-xs py-1">
+        <div className="flex items-center gap-2 text-red-400 text-xs py-1.5">
           <X className="w-3.5 h-3.5" />
           <span>{String(event.message || event.error || "Error occurred")}</span>
         </div>
@@ -198,35 +233,70 @@ function EventItem({ event }: { event: SSEEvent }) {
 
 export function ThinkerLog({ events }: ThinkerLogProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+
+  const handleScroll = useCallback(() => {
+    if (!scrollRef.current) return;
+    const el = scrollRef.current;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 40;
+    setIsAtBottom(atBottom);
+  }, []);
+
+  const scrollToBottom = useCallback(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
+    }
+  }, []);
 
   useEffect(() => {
-    if (scrollRef.current) {
+    if (isAtBottom && scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, [events]);
+  }, [events, isAtBottom]);
 
   if (events.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-full text-gray-600">
-        <Brain className="w-8 h-8 mb-2 opacity-40" />
-        <p className="text-sm">Waiting for Thinker...</p>
+        <Brain className="w-8 h-8 mb-2 opacity-30" />
+        <p className="text-sm text-gray-600">Waiting for Thinker...</p>
       </div>
     );
   }
 
   return (
-    <div ref={scrollRef} className="h-full overflow-y-auto px-3 py-2 space-y-0.5">
+    <div className="relative h-full">
+      <div
+        ref={scrollRef}
+        onScroll={handleScroll}
+        className="h-full overflow-y-auto px-4 py-3 space-y-0.5 thin-scrollbar"
+      >
+        <AnimatePresence>
+          {events.map((event, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, x: -5 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <EventItem event={event} />
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Scroll to bottom button */}
       <AnimatePresence>
-        {events.map((event, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: -5 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.15 }}
+        {!isAtBottom && (
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            onClick={scrollToBottom}
+            className="absolute bottom-3 right-3 p-1.5 rounded-full bg-gray-800/80 backdrop-blur-sm border border-white/10 text-gray-400 hover:text-white hover:bg-gray-700/80 transition-colors shadow-lg"
           >
-            <EventItem event={event} />
-          </motion.div>
-        ))}
+            <ArrowDown className="w-3.5 h-3.5" />
+          </motion.button>
+        )}
       </AnimatePresence>
     </div>
   );

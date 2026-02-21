@@ -105,6 +105,56 @@ async def call_llm(
     raise ValueError(f"Unknown provider: {p}")
 
 
+async def call_llm_messages(
+    messages: list[dict],
+    provider: str | None = None,
+    model: str | None = None,
+) -> str:
+    """Call an LLM with a full messages array for multi-turn conversation."""
+    settings = Settings()
+    p = provider or settings.default_provider
+    m = model or settings.default_model
+
+    if p == "openai":
+        client = get_client("openai")
+
+        def _call_openai():
+            return client.chat.completions.create(
+                model=m,
+                temperature=settings.llm_temperature,
+                messages=messages,
+            )
+
+        response = await asyncio.to_thread(_call_openai)
+        return response.choices[0].message.content or ""
+
+    elif p == "anthropic":
+        client = get_client("anthropic")
+        system_msg = ""
+        conversation = []
+        for msg in messages:
+            if msg["role"] == "system":
+                system_msg = msg["content"]
+            else:
+                conversation.append(msg)
+
+        def _call_anthropic():
+            kwargs = {
+                "model": m,
+                "max_tokens": 4096,
+                "temperature": settings.llm_temperature,
+                "messages": conversation,
+            }
+            if system_msg:
+                kwargs["system"] = system_msg
+            return client.messages.create(**kwargs)
+
+        response = await asyncio.to_thread(_call_anthropic)
+        return response.content[0].text
+
+    raise ValueError(f"Unknown provider: {p}")
+
+
 def parse_json_output(text: str, schema: dict | None = None) -> dict:
     """Extract the first JSON object from LLM text output."""
     json_match = re.search(r"\{[\s\S]*\}", text)

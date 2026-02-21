@@ -1,5 +1,9 @@
 export type SSEEventHandler = (eventType: string, data: Record<string, unknown>) => void;
 
+// SSE must bypass Next.js rewrites (which buffer the response).
+// Call the backend directly for true streaming.
+const SSE_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
 export async function streamSSE(
   url: string,
   body: Record<string, unknown>,
@@ -8,7 +12,7 @@ export async function streamSSE(
   onComplete?: () => void
 ): Promise<void> {
   try {
-    const response = await fetch(url, {
+    const response = await fetch(`${SSE_BASE}${url}`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),

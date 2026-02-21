@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo } from "react";
 import ReactFlow, {
-  Background,
   Controls,
   useNodesState,
   useEdgesState,
@@ -45,7 +44,13 @@ export function PipelineGraph({
   }, [nodes, edges, nodeStatuses, setNodes, setEdges]);
 
   return (
-    <div className={mini ? "h-[280px]" : "h-[550px]"} style={{ width: "100%" }}>
+    <div
+      className={`${mini ? "h-[280px]" : "h-full"} rounded-xl overflow-hidden`}
+      style={{
+        width: "100%",
+        background: "linear-gradient(180deg, #060a14 0%, #0a0f1a 100%)",
+      }}
+    >
       <ReactFlow
         nodes={rfNodes}
         edges={rfEdges}
@@ -54,7 +59,7 @@ export function PipelineGraph({
         onEdgesChange={onEdgesChange}
         onNodeClick={(_, node) => onNodeClick?.(node.id)}
         fitView
-        fitViewOptions={{ padding: 0.3 }}
+        fitViewOptions={{ padding: 0.4 }}
         proOptions={{ hideAttribution: true }}
         panOnDrag={!mini}
         zoomOnScroll={!mini}
@@ -63,8 +68,7 @@ export function PipelineGraph({
         minZoom={0.3}
         maxZoom={1.5}
       >
-        <Background color="#374151" gap={20} size={1} />
-        {!mini && <Controls className="!bg-gray-800 !border-gray-700" />}
+        {!mini && <Controls position="bottom-right" />}
       </ReactFlow>
     </div>
   );

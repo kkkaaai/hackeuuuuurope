@@ -36,7 +36,6 @@ type NodeDisplayType =
 
 const HIDDEN_NODE_TYPES = new Set<NodeDisplayType>(["trigger", "branch", "notification", "confirmation"]);
 
-/** Detect what kind of output a node produced and render it nicely. */
 function classifyNode(data: Record<string, unknown>): NodeDisplayType {
   if (data.card && typeof data.card === "object") return "summary_card";
   if (typeof data.summary === "string" && Array.isArray(data.key_points)) return "summary";
@@ -59,22 +58,22 @@ function SummaryCardView({ data }: { data: Record<string, unknown> }) {
   const fields = card.fields as Array<Record<string, unknown>> | undefined;
 
   return (
-    <div className="rounded-lg border border-blue-500/30 bg-blue-500/5 p-4">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="rounded-xl bg-blue-500/[0.04] backdrop-blur-sm border border-blue-500/20 p-5 shadow-lg shadow-blue-500/5">
+      <div className="flex items-center gap-2.5 mb-3">
         <Newspaper className="w-4 h-4 text-blue-400" />
         <h3 className="text-sm font-semibold text-blue-300">{title}</h3>
       </div>
       {highlight && (
-        <p className="text-sm text-gray-200 mb-3 leading-relaxed">{highlight}</p>
+        <p className="text-sm text-gray-200 mb-4 leading-relaxed">{highlight}</p>
       )}
       {fields && fields.length > 0 && (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {fields.map((field, i) => (
-            <div key={i} className="flex gap-2">
-              <span className="text-xs font-medium text-gray-400 min-w-[80px]">
+            <div key={i} className="flex gap-3">
+              <span className="text-xs font-medium text-gray-400 min-w-[90px]">
                 {String(field.label || field.name || "")}
               </span>
-              <span className="text-xs text-gray-200">
+              <span className="text-xs text-gray-200 leading-relaxed">
                 {String(field.value || "")}
               </span>
             </div>
@@ -90,18 +89,18 @@ function SummaryView({ data }: { data: Record<string, unknown> }) {
   const keyPoints = data.key_points as string[];
 
   return (
-    <div className="rounded-lg border border-purple-500/30 bg-purple-500/5 p-4">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="rounded-xl bg-purple-500/[0.04] backdrop-blur-sm border border-purple-500/20 p-5 shadow-lg shadow-purple-500/5">
+      <div className="flex items-center gap-2.5 mb-3">
         <Brain className="w-4 h-4 text-purple-400" />
         <h3 className="text-sm font-semibold text-purple-300">Summary</h3>
       </div>
-      <p className="text-sm text-gray-200 mb-3 leading-relaxed">{summary}</p>
+      <p className="text-sm text-gray-200 mb-4 leading-relaxed">{summary}</p>
       {keyPoints.length > 0 && (
         <div>
-          <p className="text-xs font-medium text-gray-400 mb-1.5">Key Points</p>
-          <ul className="space-y-1">
+          <p className="text-xs font-medium text-gray-400 mb-2">Key Points</p>
+          <ul className="space-y-1.5">
             {keyPoints.map((point, i) => (
-              <li key={i} className="text-xs text-gray-300 flex gap-2">
+              <li key={i} className="text-xs text-gray-300 flex gap-2 leading-relaxed">
                 <span className="text-purple-400 mt-0.5">&#8226;</span>
                 <span>{point}</span>
               </li>
@@ -118,19 +117,19 @@ function SearchResultsView({ data }: { data: Record<string, unknown> }) {
   const query = data.query as string | undefined;
 
   return (
-    <div className="rounded-lg border border-cyan-500/30 bg-cyan-500/5 p-4">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="rounded-xl bg-cyan-500/[0.04] backdrop-blur-sm border border-cyan-500/20 p-5 shadow-lg shadow-cyan-500/5">
+      <div className="flex items-center gap-2.5 mb-3">
         <Search className="w-4 h-4 text-cyan-400" />
         <h3 className="text-sm font-semibold text-cyan-300">
           {query ? `Search: "${query}"` : "Search Results"}
         </h3>
         <span className="text-xs text-gray-500">{results.length} results</span>
       </div>
-      <div className="space-y-2.5">
+      <div className="space-y-3">
         {results.slice(0, 10).map((result, i) => (
-          <div key={i} className="group">
-            <div className="flex items-start gap-2">
-              <span className="text-xs text-gray-600 mt-0.5 min-w-[16px]">{i + 1}.</span>
+          <div key={i} className="group rounded-lg px-3 py-2 -mx-1 hover:bg-white/[0.03] transition-colors">
+            <div className="flex items-start gap-2.5">
+              <span className="text-xs text-gray-600 mt-0.5 min-w-[20px] font-mono">{i + 1}.</span>
               <div className="min-w-0">
                 {result.link && isSafeUrl(String(result.link)) ? (
                   <a
@@ -148,7 +147,7 @@ function SearchResultsView({ data }: { data: Record<string, unknown> }) {
                   </p>
                 )}
                 {result.snippet ? (
-                  <p className="text-xs text-gray-400 mt-0.5 line-clamp-2">
+                  <p className="text-xs text-gray-400 mt-0.5 line-clamp-2 leading-relaxed">
                     {String(result.snippet)}
                   </p>
                 ) : null}
@@ -167,20 +166,20 @@ function DecisionView({ data }: { data: Record<string, unknown> }) {
   const confidence = data.confidence as number | undefined;
 
   return (
-    <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="rounded-xl bg-amber-500/[0.04] backdrop-blur-sm border border-amber-500/20 p-5 shadow-lg shadow-amber-500/5">
+      <div className="flex items-center gap-2.5 mb-3">
         <Brain className="w-4 h-4 text-amber-400" />
         <h3 className="text-sm font-semibold text-amber-300">Decision</h3>
         {confidence !== undefined && (
           <span className="text-xs text-gray-500">{Math.round(confidence * 100)}% confidence</span>
         )}
       </div>
-      <div className="bg-amber-500/10 rounded-md p-2 mb-2">
+      <div className="bg-amber-500/10 rounded-lg p-3 mb-3">
         <p className="text-xs font-medium text-amber-200">
           {typeof chosen === "string" ? chosen : JSON.stringify(chosen)}
         </p>
       </div>
-      <p className="text-xs text-gray-300">{reasoning}</p>
+      <p className="text-xs text-gray-300 leading-relaxed">{reasoning}</p>
     </div>
   );
 }
@@ -205,8 +204,8 @@ function AudioView({ data }: { data: Record<string, unknown> }) {
 
 function PaymentView({ data }: { data: Record<string, unknown> }) {
   return (
-    <div className="rounded-lg border border-green-500/30 bg-green-500/5 p-3">
-      <div className="flex items-center gap-2 mb-1">
+    <div className="rounded-xl bg-green-500/[0.04] backdrop-blur-sm border border-green-500/20 p-4 shadow-lg shadow-green-500/5">
+      <div className="flex items-center gap-2.5 mb-2">
         <CreditCard className="w-4 h-4 text-green-400" />
         <h3 className="text-sm font-semibold text-green-300">Payment</h3>
       </div>
@@ -227,7 +226,6 @@ function EmailView({ data }: { data: Record<string, unknown> }) {
   );
 }
 
-/** Priority order: higher = show first. Internal/infrastructure nodes get low priority. */
 function getPriority(type: NodeDisplayType): number {
   switch (type) {
     case "summary_card": return 100;
@@ -286,18 +284,17 @@ export function PipelineResultDisplay({ sharedContext, errors }: Props) {
   }
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {visibleEntries.map((entry) => (
         <div key={entry.nodeId}>{renderNode(entry.type, entry.data)}</div>
       ))}
 
-      {/* Raw data fallback for power users */}
       {Object.keys(sharedContext).length > 0 && (
         <details className="text-xs">
-          <summary className="text-gray-500 cursor-pointer hover:text-gray-400">
+          <summary className="text-gray-500 cursor-pointer hover:text-gray-400 transition-colors">
             Raw output data
           </summary>
-          <pre className="mt-2 p-2 rounded bg-gray-900/50 text-gray-400 overflow-x-auto max-h-40 overflow-y-auto">
+          <pre className="mt-2 p-3 rounded-lg bg-black/20 border border-white/5 text-gray-400 overflow-x-auto max-h-40 overflow-y-auto thin-scrollbar">
             {JSON.stringify(sharedContext, null, 2)}
           </pre>
         </details>

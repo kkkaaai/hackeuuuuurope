@@ -12,6 +12,7 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+from engine.clarifier import clarify
 from engine.doer import run_pipeline
 from engine.thinker import run_thinker
 from engine.thinker_stream import run_thinker_stream
@@ -43,6 +44,17 @@ class CreateAgentResponse(BaseModel):
     missing_blocks: list[dict]
 
 
+class ClarifyRequest(BaseModel):
+    message: str
+    history: list[dict] = []
+
+
+class ClarifyResponseModel(BaseModel):
+    ready: bool
+    refined_intent: str | None = None
+    question: str | None = None
+
+
 class RunPipelineRequest(BaseModel):
     pipeline: dict
     user_id: str
@@ -61,6 +73,20 @@ class RunPipelineResponse(BaseModel):
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+
+# ── Clarify user intent (Q&A before pipeline creation) ──
+
+
+@app.post("/api/clarify", response_model=ClarifyResponseModel)
+async def clarify_endpoint(req: ClarifyRequest):
+    """Evaluate if the user's request is specific enough for pipeline creation."""
+    result = await clarify(req.message, req.history)
+    return ClarifyResponseModel(
+        ready=result.get("ready", True),
+        refined_intent=result.get("refined_intent"),
+        question=result.get("question"),
+    )
 
 
 # ── Create an agent (runs the Thinker) ──

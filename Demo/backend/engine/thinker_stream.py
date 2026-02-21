@@ -5,6 +5,7 @@ between each LLM call so the frontend can show live progress,
 including the full prompts sent and raw LLM responses received.
 """
 
+import asyncio
 import json
 import time
 from typing import AsyncGenerator
@@ -27,27 +28,6 @@ def _event(event_type: str, data: dict) -> str:
     return f"event: {event_type}\ndata: {payload}\n\n"
 
 
-async def _call_llm_with_events(system: str, user: str, stage: str):
-    """Call LLM and return (response_text, prompt_event, response_event)."""
-    prompt_ev = _event("llm_prompt", {
-        "stage": stage,
-        "system": system,
-        "user": user,
-    })
-
-    t0 = time.time()
-    response = await call_llm(system=system, user=user)
-    elapsed = round(time.time() - t0, 2)
-
-    response_ev = _event("llm_response", {
-        "stage": stage,
-        "raw": response,
-        "elapsed_s": elapsed,
-    })
-
-    return response, prompt_ev, response_ev
-
-
 async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, None]:
     """Async generator that yields SSE events for each Thinker stage."""
 
@@ -64,17 +44,25 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
     }
 
     yield _event("start", {"intent": intent, "user_id": user_id})
+    await asyncio.sleep(0)
 
     # ── Stage 1: DECOMPOSE ──
     yield _event("stage", {"stage": "decompose", "status": "running",
                            "message": "Breaking intent into atomic blocks..."})
+    await asyncio.sleep(0)
 
     blocks_available = registry.list_all()
     system, user = build_decompose_prompts(intent, blocks_available)
 
-    response, prompt_ev, response_ev = await _call_llm_with_events(system, user, "decompose")
-    yield prompt_ev
-    yield response_ev
+    yield _event("llm_prompt", {"stage": "decompose", "system": system, "user": user})
+    await asyncio.sleep(0)
+
+    t0 = time.time()
+    response = await call_llm(system=system, user=user)
+    elapsed = round(time.time() - t0, 2)
+
+    yield _event("llm_response", {"stage": "decompose", "raw": response, "elapsed_s": elapsed})
+    await asyncio.sleep(0)
 
     parsed = parse_json_output(response)
     required_blocks = parsed.get("required_blocks", [])
@@ -92,35 +80,48 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
         "required_blocks": required_blocks,
         "count": len(required_blocks),
     })
+    await asyncio.sleep(0)
 
     try:
         validate_stage_output("decompose", {"required_blocks": required_blocks})
         yield _event("validation", {"stage": "decompose", "valid": True})
     except Exception as e:
         yield _event("validation", {"stage": "decompose", "valid": False, "error": str(e)})
+    await asyncio.sleep(0)
 
     # ── Stage 2: MATCH ──
     yield _event("stage", {"stage": "match", "status": "running",
                            "message": "Matching blocks against registry..."})
+    await asyncio.sleep(0)
 
     matched = []
     missing = []
     for req in state["required_blocks"]:
         block_id = req.get("block_id")
+        description = req.get("description", "")
         if block_id:
             try:
                 block_def = registry.get(block_id)
                 matched.append(block_def)
-                yield _event("match_found", {"block_id": block_id, "name": block_def["name"], "block_def": block_def})
+                yield _event("match_found", {
+                    "block_id": block_id,
+                    "name": block_def["name"],
+                    "description": block_def.get("description", description),
+                    "block_def": block_def,
+                })
             except KeyError:
                 missing.append(req)
-                yield _event("match_missing", {"block_id": block_id})
+                yield _event("match_missing", {
+                    "block_id": block_id,
+                    "description": description,
+                })
         else:
             missing.append(req)
             yield _event("match_missing", {
                 "suggested_id": req.get("suggested_id", "?"),
-                "description": req.get("description", "new block"),
+                "description": description or "new block",
             })
+        await asyncio.sleep(0)
 
     state = {
         **state,
@@ -141,11 +142,20 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
         "missing": len(missing),
         "next": "create" if missing else "wire",
     })
+    await asyncio.sleep(0)
 
     # ── Stage 3: CREATE (if needed) ──
+    if not state["missing_blocks"]:
+        yield _event("stage", {"stage": "create", "status": "skipped",
+                                "message": "All blocks found in registry — skipping create."})
+        await asyncio.sleep(0)
+        yield _event("stage_result", {"stage": "create", "status": "skipped"})
+        await asyncio.sleep(0)
+
     if state["status"] == "creating" and state["missing_blocks"]:
         yield _event("stage", {"stage": "create", "status": "running",
                                "message": f"Creating {len(missing)} new block(s)..."})
+        await asyncio.sleep(0)
 
         created = []
         for i, spec in enumerate(state["missing_blocks"]):
@@ -156,11 +166,19 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
                 "suggested_id": block_name,
                 "description": spec.get("description", ""),
             })
+            await asyncio.sleep(0)
 
             system, user = build_create_block_prompt(spec)
-            response, prompt_ev, response_ev = await _call_llm_with_events(system, user, f"create:{block_name}")
-            yield prompt_ev
-            yield response_ev
+
+            yield _event("llm_prompt", {"stage": f"create:{block_name}", "system": system, "user": user})
+            await asyncio.sleep(0)
+
+            t0 = time.time()
+            response = await call_llm(system=system, user=user)
+            elapsed = round(time.time() - t0, 2)
+
+            yield _event("llm_response", {"stage": f"create:{block_name}", "raw": response, "elapsed_s": elapsed})
+            await asyncio.sleep(0)
 
             parsed = parse_json_output(response)
 
@@ -173,11 +191,13 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
             yield _event("block_created", {
                 "block_id": block_id,
                 "name": parsed["name"],
+                "description": parsed.get("description", ""),
                 "execution_type": parsed["execution_type"],
                 "has_prompt": bool(parsed.get("prompt_template")),
                 "has_python_file": parsed.get("execution_type") == "python",
                 "block_def": parsed,
             })
+            await asyncio.sleep(0)
 
         state = {
             **state,
@@ -192,15 +212,24 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
             "status": "done",
             "created": [b["id"] for b in created],
         })
+        await asyncio.sleep(0)
 
     # ── Stage 4: WIRE ──
     yield _event("stage", {"stage": "wire", "status": "running",
                            "message": "Wiring blocks into executable pipeline..."})
+    await asyncio.sleep(0)
 
     system, user = build_wire_prompts(state["user_intent"], state["matched_blocks"])
-    response, prompt_ev, response_ev = await _call_llm_with_events(system, user, "wire")
-    yield prompt_ev
-    yield response_ev
+
+    yield _event("llm_prompt", {"stage": "wire", "system": system, "user": user})
+    await asyncio.sleep(0)
+
+    t0 = time.time()
+    response = await call_llm(system=system, user=user)
+    elapsed = round(time.time() - t0, 2)
+
+    yield _event("llm_response", {"stage": "wire", "raw": response, "elapsed_s": elapsed})
+    await asyncio.sleep(0)
 
     parsed = parse_json_output(response)
 
@@ -223,16 +252,18 @@ async def run_thinker_stream(intent: str, user_id: str) -> AsyncGenerator[str, N
         yield _event("validation", {"stage": "wire", "valid": True})
     except Exception as e:
         yield _event("validation", {"stage": "wire", "valid": False, "error": str(e)})
+    await asyncio.sleep(0)
 
     yield _event("stage_result", {
         "stage": "wire",
         "status": "done",
         "pipeline_json": parsed,
     })
+    await asyncio.sleep(0)
 
     # ── Done ──
     yield _event("complete", {
         "status": state["status"],
-        "pipeline_json": state["pipeline_json"],
+        "pipeline": state["pipeline_json"],
         "log": state["log"],
     })

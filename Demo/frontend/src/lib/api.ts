@@ -6,8 +6,25 @@ import type {
   ExecutionDetail,
   Notification,
   MagnusPipeline,
+  ChatMessage,
+  ClarifyResult,
 } from "./types";
 import { streamSSE, type SSEEventHandler } from "./sse";
+
+// ── Intent Clarification ──
+
+export async function clarifyIntent(
+  message: string,
+  history: ChatMessage[]
+): Promise<ClarifyResult> {
+  const res = await fetch("/api/clarify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message, history }),
+  });
+  if (!res.ok) throw new Error(`Clarify failed: ${res.status}`);
+  return res.json();
+}
 
 // ── Agent Creation (Magnus Thinker) ──
 

@@ -5,10 +5,10 @@ import { Puzzle, Search, Hammer, GitBranch, Check } from "lucide-react";
 import type { ThinkerStage } from "@/lib/types";
 
 const STAGES: { key: ThinkerStage; label: string; icon: typeof Puzzle }[] = [
-  { key: "decompose", label: "Decompose", icon: Puzzle },
-  { key: "match", label: "Match", icon: Search },
-  { key: "create", label: "Create", icon: Hammer },
-  { key: "wire", label: "Wire", icon: GitBranch },
+  { key: "decompose", label: "1. Decompose", icon: Puzzle },
+  { key: "match", label: "2. Match", icon: Search },
+  { key: "create", label: "3. Create", icon: Hammer },
+  { key: "wire", label: "4. Wire", icon: GitBranch },
 ];
 
 interface StageProgressBarProps {
@@ -18,7 +18,7 @@ interface StageProgressBarProps {
 
 export function StageProgressBar({ currentStage, completedStages }: StageProgressBarProps) {
   return (
-    <div className="flex items-center justify-center gap-1 py-3 px-4">
+    <div className="flex items-center gap-0.5 py-2 px-4">
       {STAGES.map((stage, i) => {
         const isActive = currentStage === stage.key;
         const isCompleted = completedStages.has(stage.key);
@@ -26,52 +26,59 @@ export function StageProgressBar({ currentStage, completedStages }: StageProgres
 
         return (
           <div key={stage.key} className="flex items-center">
-            {/* Stage dot */}
-            <div className="flex flex-col items-center gap-1">
+            {/* Stage dot + label */}
+            <div className="flex items-center gap-1.5">
               <motion.div
-                className={`relative w-9 h-9 rounded-full flex items-center justify-center border-2 transition-colors ${
+                className={`relative w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300 ${
                   isCompleted
-                    ? "bg-green-500/20 border-green-500 text-green-400"
+                    ? "bg-green-500/20 text-green-400"
                     : isActive
-                    ? "bg-blue-500/20 border-blue-500 text-blue-400"
-                    : "bg-gray-800 border-gray-700 text-gray-600"
+                    ? "bg-blue-500/20 text-blue-400"
+                    : "bg-white/5 text-gray-600"
                 }`}
                 animate={isActive ? { scale: [1, 1.1, 1] } : {}}
-                transition={isActive ? { repeat: Infinity, duration: 1.5 } : {}}
+                transition={isActive ? { repeat: Infinity, duration: 2 } : {}}
               >
                 {isCompleted ? (
-                  <Check className="w-4 h-4" />
+                  <Check className="w-3 h-3" />
                 ) : (
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-3 h-3" />
                 )}
                 {isActive && (
                   <motion.div
-                    className="absolute inset-0 rounded-full border-2 border-blue-400"
-                    animate={{ opacity: [0.5, 0, 0.5], scale: [1, 1.3, 1] }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
+                    className="absolute inset-0 rounded-full border border-blue-400/50"
+                    animate={{ opacity: [0.5, 0, 0.5], scale: [1, 1.4, 1] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
                   />
                 )}
               </motion.div>
-              <span
-                className={`text-[10px] font-medium ${
-                  isCompleted
-                    ? "text-green-400"
-                    : isActive
-                    ? "text-blue-400"
-                    : "text-gray-600"
-                }`}
-              >
-                {stage.label}
-              </span>
+              {(isActive || isCompleted) && (
+                <motion.span
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: "auto" }}
+                  className={`text-[11px] font-medium whitespace-nowrap ${
+                    isCompleted ? "text-green-400/70" : "text-blue-400/70"
+                  }`}
+                >
+                  {stage.label}
+                </motion.span>
+              )}
             </div>
 
             {/* Connecting line */}
             {i < STAGES.length - 1 && (
-              <div
-                className={`w-8 h-0.5 mx-1 mt-[-16px] transition-colors ${
-                  isCompleted ? "bg-green-500/50" : "bg-gray-700"
-                }`}
-              />
+              <div className="relative w-8 h-px mx-1.5">
+                <div className="absolute inset-0 bg-white/10 rounded-full" />
+                {isCompleted && (
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-green-500/50 to-green-500/20 rounded-full"
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    style={{ transformOrigin: "left" }}
+                    transition={{ duration: 0.4 }}
+                  />
+                )}
+              </div>
             )}
           </div>
         );

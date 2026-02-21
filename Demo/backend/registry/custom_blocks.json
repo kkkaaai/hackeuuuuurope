@@ -368,5 +368,125 @@
       "runtime": "python",
       "entrypoint": "blocks/custom/rank_stories/main.py"
     }
+  },
+  {
+    "id": "score_stories_by_views",
+    "name": "Score Stories by Views",
+    "description": "Scores stories based on their view counts, assigning a higher score to stories with more views.",
+    "category": "process",
+    "execution_type": "python",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "stories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "headline": {
+                "type": "string",
+                "description": "The headline of the news story."
+              },
+              "view_count": {
+                "type": "integer",
+                "description": "The view count of the news story."
+              },
+              "link": {
+                "type": "string",
+                "description": "The URL link to the full news story."
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "stories"
+      ]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "scored_stories": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "headline": {
+                "type": "string",
+                "description": "The headline of the news story."
+              },
+              "score": {
+                "type": "integer",
+                "description": "The score based on view count."
+              },
+              "link": {
+                "type": "string",
+                "description": "The URL link to the full news story."
+              }
+            }
+          }
+        }
+      },
+      "required": [
+        "scored_stories"
+      ]
+    },
+    "use_when": "Use this block when you need to rank or prioritize news stories based on their popularity as indicated by view counts.",
+    "tags": [
+      "scoring",
+      "views",
+      "news",
+      "ranking"
+    ],
+    "examples": [
+      {
+        "inputs": {
+          "stories": [
+            {
+              "headline": "Story A",
+              "view_count": 150,
+              "link": "http://example.com/a"
+            },
+            {
+              "headline": "Story B",
+              "view_count": 300,
+              "link": "http://example.com/b"
+            },
+            {
+              "headline": "Story C",
+              "view_count": 450,
+              "link": "http://example.com/c"
+            }
+          ]
+        },
+        "outputs": {
+          "scored_stories": [
+            {
+              "headline": "Story A",
+              "score": 33,
+              "link": "http://example.com/a"
+            },
+            {
+              "headline": "Story B",
+              "score": 67,
+              "link": "http://example.com/b"
+            },
+            {
+              "headline": "Story C",
+              "score": 100,
+              "link": "http://example.com/c"
+            }
+          ]
+        }
+      }
+    ],
+    "metadata": {
+      "created_by": "thinker",
+      "tier": 2
+    },
+    "execution": {
+      "runtime": "python",
+      "entrypoint": "blocks/custom/score_stories_by_views/main.py"
+    }
   }
 ]

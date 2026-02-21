@@ -23,6 +23,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [runningId, setRunningId] = useState<string | null>(null);
   const [lastResult, setLastResult] = useState<ExecutionResult | null>(null);
+  const [runError, setRunError] = useState<string | null>(null);
 
   const fetchPipelines = useCallback(async () => {
     setLoading(true);
@@ -43,12 +44,13 @@ export default function DashboardPage() {
   const handleRun = async (id: string) => {
     setRunningId(id);
     setLastResult(null);
+    setRunError(null);
     try {
       const result = await runPipeline(id);
       setLastResult(result);
       fetchPipelines();
-    } catch {
-      /* ignore */
+    } catch (err) {
+      setRunError(err instanceof Error ? err.message : "Pipeline execution failed");
     } finally {
       setRunningId(null);
     }
@@ -112,6 +114,19 @@ export default function DashboardPage() {
               errors={lastResult.errors}
             />
           )}
+        </motion.div>
+      )}
+
+      {/* Run error */}
+      {runError && (
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-4 p-4 rounded-lg border bg-red-500/5 border-red-500/30"
+        >
+          <p className="text-sm font-medium text-red-400">
+            Run failed: {runError}
+          </p>
         </motion.div>
       )}
 

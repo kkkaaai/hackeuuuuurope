@@ -92,6 +92,19 @@ export interface MagnusPipeline {
   memory_keys?: string[];
 }
 
+// ── Chat Q&A Types ──
+
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ClarifyResult {
+  ready: boolean;
+  refined_intent?: string;
+  question?: string;
+}
+
 // ── SSE Event Types ──
 
 export type ThinkerStage = "decompose" | "match" | "create" | "wire";
