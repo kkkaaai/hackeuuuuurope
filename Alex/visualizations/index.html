@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Decomposition Visualizations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.1em;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            margin-bottom: 30px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 0.95em;
+        }
+        
+        .legend-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.2);
+        }
+        
+        .green { background-color: rgb(0, 200, 0); }
+        .yellow { background-color: rgb(200, 150, 0); }
+        .red { background-color: rgb(255, 0, 0); }
+        .grey { background-color: rgb(100, 100, 100); }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+        
+        .card a {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        
+        .card-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            word-break: break-word;
+        }
+        
+        .card-timestamp {
+            font-size: 0.85em;
+            color: #999;
+            margin-bottom: 12px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .card-link {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: opacity 0.3s;
+        }
+        
+        .card-link:hover {
+            opacity: 0.9;
+        }
+        
+        .stats {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 30px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.95em;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            opacity: 0.8;
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Task Decomposition Visualizations</h1>
+            <p class="subtitle">Interactive graphs showing task hierarchies, complexity scores, and decomposition trees</p>
+        </header>
+        
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box green"></div>
+                <span>Low Complexity (30-40)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box yellow"></div>
+                <span>Medium Complexity (50-70)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box red"></div>
+                <span>High Complexity (80+)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box grey"></div>
+                <span>Below Threshold / Unknown</span>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number" id="total-count">0</div>
+                    <div class="stat-label">Visualizations</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label" style="margin-top: 5px;">Use your mouse to zoom and pan each graph</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="grid" id="graph-grid">
+            <!-- Dynamically populated -->
+        </div>
+        
+        <footer>
+            <p>Generated by Task Decomposition Graph Visualizer</p>
+            <p>All graphs are interactive - zoom, pan, and hover for details</p>
+        </footer>
+    </div>
+    
+    <script>
+        // List of all visualization files
+        const visualizations = [
+            { file: '20260221T145854Z_34bc49fdc8834488af68950a67d22073_graph.html', title: ' Research customer insights to produce cohesive blogs, vi...' },
+            { file: '20260221T151338Z_9ecdad18d01e4e1abd842b999df4d034_graph.html', title: ' Analyze live turbine data, adjust settings within safety...' },
+            { file: '20260221T151518Z_4ad88093fcf3478e8ab4a4a14c26f2f5_graph.html', title: ' Analyze live turbine data, adjust parameters within safe...' },
+            { file: '20260221T152340Z_3d9eeb16b51d4be5ab7aae0719f6b204_graph.html', title: ' Process a flagged high-value international wire transfer...' },
+            { file: '20260221T152926Z_987ff0eecd094c09b083b2d887a12bf4_graph.html', title: ' Research patient concerns to develop consistent blogs, v...' },
+            { file: '20260221T153043Z_8673004420de45a49242f380d681de7b_graph.html', title: 'Research and produce a multi-format educational campaign ...' },
+            { file: '20260221T153148Z_6fbaaa508ddf42a1b3ebec2ed95a0798_graph.html', title: 'Conduct a structured audit analysis to pinpoint financial...' },
+            { file: '20260221T153217Z_f94d2208205941d0bc89d58e529fdce9_graph.html', title: 'Coordinate a patient&apos;s procedure by checking OR availabil...' },
+            { file: '20260221T153329Z_52484a512aef4989b8dfc344e03f9b3f_graph.html', title: 'Analyze a new market&apos;s entry potential by gathering data ...' },
+            { file: '20260221T153339Z_76cf73069d7247769430d1761fd91ea8_graph.html', title: 'Analyze a final clinical trial protocol for compliance ri...' },
+            { file: '20260221T153444Z_323b17e3210d4c39818b1f90f7b8c87e_graph.html', title: 'Create an end-to-end content campaign for a manufacturing...' },
+            { file: '20260221T153504Z_2bfae2893eda4713a4d95abe4240bfa3_graph.html', title: 'Triage incoming tickets, auto-fix common issues, escalate...' },
+            { file: '20260221T153530Z_b725d4436ca04069a26f0a1a5bfba0c7_graph.html', title: 'Design a system that routes tickets, automatically resolv...' },
+        ];
+        
+        function extractTimestamp(filename) {
+            const match = filename.match(/(\d{8}T\d{6}Z)/);
+            if (match) {
+                const ts = match[1];
+                // Format: 20260221T145854Z -> 2026-02-21 14:58:54
+                const year = ts.substring(0, 4);
+                const month = ts.substring(4, 6);
+                const day = ts.substring(6, 8);
+                const hour = ts.substring(9, 11);
+                const min = ts.substring(11, 13);
+                const sec = ts.substring(13, 15);
+                return `${year}-${month}-${day} ${hour}:${min}:${sec}`;
+            }
+            return filename;
+        }
+        
+        function populateGrid() {
+            const grid = document.getElementById('graph-grid');
+            
+            visualizations.forEach(viz => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                
+                const timestamp = extractTimestamp(viz.file);
+                const displayTitle = viz.title || viz.file;
+                
+                card.innerHTML = `
+                    <a href="${viz.file}">
+                        <div class="card-title">${displayTitle}</div>
+                        <div class="card-timestamp">${timestamp}</div>
+                        <div class="card-link">View Graph →</div>
+                    </a>
+                `;
+                
+                grid.appendChild(card);
+            });
+            
+            document.getElementById('total-count').textContent = visualizations.length;
+        }
+        
+        // Populate grid on page load
+        document.addEventListener('DOMContentLoaded', populateGrid);
+    </script>
+</body>
+</html>

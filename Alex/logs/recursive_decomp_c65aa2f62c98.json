@@ -1,0 +1,76 @@
+{
+  "root_task_id": "c65aa2f62c98",
+  "timestamp": "2026-02-21T15:52:42.271786+00:00Z",
+  "task_structure": {
+    "task_id": "c65aa2f62c98",
+    "input": "Triage incoming tickets, auto-fix common issues, escalate complex cases to engineers, and track resolution metrics.",
+    "complexity_score": 60,
+    "eval_gen": 1,
+    "subtasks": [
+      {
+        "task_id": "c65aa2f62c98.0",
+        "input": "Classify tickets based on issue type, severity, and urgency using predefined criteria.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "c65aa2f62c98.1",
+        "input": "Check categorized tickets against a database of known frequent issues requiring auto-fix.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "c65aa2f62c98.2",
+        "input": "Execute preconfigured automated solutions (e.g., password resets, account unlocks) for identified common issues.",
+        "complexity_score": 40,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "c65aa2f62c98.3",
+        "input": "Forward non-standard tickets to the appropriate engineering team with context and priority details.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "c65aa2f62c98.4",
+        "input": "Engineers diagnose and resolve complex issues through manual troubleshooting and fixes.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "c65aa2f62c98.5",
+        "input": "Mark tickets as resolved in the system after verification of successful auto-fix or engineer resolution.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "c65aa2f62c98.6",
+        "input": "Aggregate data on ticket resolution times, auto-fix success rates, and escalation frequencies from closed tickets.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "c65aa2f62c98.7",
+        "input": "Identify trends, bottlenecks, and areas for process improvement using collected metric data.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "c65aa2f62c98.8",
+        "input": "Compile insights and recommendations into a formal report for stakeholders.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      }
+    ]
+  },
+  "depth": 0
+}

@@ -1,0 +1,43 @@
+{
+  "id": "a889e1770df0416fb7c6acf352994080",
+  "timestamp": "2026-02-21T16:04:39.429057+00:00Z",
+  "template_key": "customer_support_and_service_automation",
+  "template": "Generate one single-sentence plain-English prompt describing a multi-case customer support automation workflow for a {business_type} that involves triage, automatic resolution of simple issues, escalation of complex cases, and performance tracking; output only the prompt text under 40 words.",
+  "filled_prompt": "Generate one single-sentence plain-English prompt describing a multi-case customer support automation workflow for a SaaS startup that involves triage, automatic resolution of simple issues, escalation of complex cases, and performance tracking; output only the prompt text under 40 words.",
+  "placeholders": {
+    "business_type": "SaaS startup"
+  },
+  "response": {
+    "id": "c009a1828dd9479b8ba1b062788d8983",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "Automate customer support for a SaaS startup by triaging requests, resolving simple issues automatically, escalating complex cases, and tracking performance.",
+          "role": "assistant",
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "First, I need to generate a single-sentence prompt in plain English. It should describe a multi-case customer support automation workflow for a SaaS startup. The workflow includes:\n\n- Triage\n- Automatic resolution of simple issues\n- Escalation of complex cases\n- Performance tracking\n\nThe prompt must be under 40 words. I should output only the prompt text, no additional explanations.\n\nI need to craft a concise sentence that covers all these elements. Let me list the key points:\n\n1. Triage: This means sorting or prioritizing customer issues.\n\n2. Automatic resolution of simple issues: Using automation to handle straightforward problems without human intervention.\n\n3. Escalation of complex cases: When issues are complex, they're escalated to human agents or higher support levels.\n\n4. Performance tracking: Monitoring and analyzing the workflow's effectiveness.\n\nNow, I'll try to combine these into one sentence. I need to keep it under 40 words, so I'll aim for brevity.\n\nPossible prompt: \"Create a customer support automation workflow that triages tickets, automatically resolves simple issues, escalates complex cases, and tracks performance metrics.\"\n\nLet me count the words: Create (1), a (2), customer (3), support (4), automation (5), workflow (6), that (7), triages (8), tickets (9), automatically (10), resolves (11), simple (12), issues (13), escalates (14), complex (15), cases (16), and (17), tracks (18), performance (19), metrics (20). That's 20 words, which is under 40. But is it clear and covers everything? Yes, it includes all elements.\n\nI could make it more natural. Perhaps: \"Design an automated support workflow that triages incoming requests, solves simple issues automatically, escalates complex ones, and monitors performance.\"\n\nWord count: Design (1), an (2), automated (3), support (4), workflow (5), that (6), triages (7), incoming (8), requests (9), solves (10), simple (11), issues (12), automatically (13), escalates (14), complex (15), ones (16), and (17), monitors (18), performance (19). Still 19 words.\n\nI need to specify it's for a SaaS startup. The original prompt says \"for a SaaS startup,\" so I should include that. But the instruction is to describe the workflow, so mentioning the context might be implicit. However, to be precise, I'll include \"for a SaaS startup\" in the sentence.\n\nRevised prompt: \"Create a customer support automation workflow for a SaaS startup that triages tickets, auto-resolves simple issues, escalates complex cases, and tracks performance.\"\n\nWord count: Create (1), a (2), customer (3), support (4), automation (5), workflow (6), for (7), a (8), SaaS (9), startup (10), that (11), triages (12), tickets (13), auto-resolves (14), simple (15), issues (16), escalates (17), complex (18), cases (19), and (20), tracks (21), performance (22). 22 words, under 40.\n\nI used \"auto-resolves\" to save words, but \"automatically resolves\" is fine too. Since it's plain English, \"auto-resolves\" might be acceptable.\n\nTo make it more concise, I can say: \"Design a support automation system that triages, auto-fixes simple issues, escalates complex ones, and tracks performance for a SaaS startup.\"\n\nWord count: Design (1), a (2), support (3), automation (4), system (5), that (6), triages (7), auto-fixes (8), simple (9), issues (10), escalates (11), complex (12), ones (13), and (14), tracks (15), performance (16), for (17), a (18), SaaS (19), startup (20). 20 words.\n\nI think the first version is clear, but let's ensure it's a single sentence and under 40 words.\n\nFinal check: The output should only be the prompt text, so I'll write it without any extra text.\n\nI'll go with: \"Create a customer support automation workflow for a SaaS startup that triages tickets, automatically resolves simple issues, escalates complex cases, and tracks performance metrics.\"\n\nBut to save words, I can remove \"metrics\" and just say \"tracks performance.\" Also, \"tickets\" might be implied, but it's good to specify.\n\nAnother option: \"Automate customer support for a SaaS startup by triaging requests, resolving simple issues automatically, escalating complex cases, and tracking performance.\"\n\nWord count: Automate (1), customer (2), support (3), for (4), a (5), SaaS (6), startup (7), by (8), triaging (9), requests (10), resolving (11), simple (12), issues (13), automatically (14), escalating (15), complex (16), cases (17), and (18), tracking (19), performance (20). 20 words.\n\nThis seems good. It's a single sentence, plain English, and covers all aspects.\n\nI'll use this as the final prompt."
+        },
+        "matched_stop": 1
+      }
+    ],
+    "created": 1771689881,
+    "model": "deepseek-ai/deepseek-v3.2",
+    "object": "chat.completion",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 1120,
+      "prompt_tokens": 54,
+      "total_tokens": 1174,
+      "prompt_tokens_details": null,
+      "reasoning_tokens": 0
+    },
+    "metadata": {
+      "weight_version": "default"
+    }
+  },
+  "children": []
+}

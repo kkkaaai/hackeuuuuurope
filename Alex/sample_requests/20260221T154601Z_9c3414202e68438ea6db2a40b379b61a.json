@@ -1,0 +1,43 @@
+{
+  "id": "b5caadeac3e541a8acf6241a2f966e96",
+  "timestamp": "2026-02-21T15:46:01.723370+00:00Z",
+  "template_key": "research_and_knowledge_work",
+  "template": "Generate one single-sentence plain-English prompt describing a complex research and analysis task in {broad_topic} that requires gathering information from multiple sources, synthesizing insights, handling uncertainty, and producing a structured deliverable; output only the prompt text under 45 words.",
+  "filled_prompt": "Generate one single-sentence plain-English prompt describing a complex research and analysis task in supply-chain resilience that requires gathering information from multiple sources, synthesizing insights, handling uncertainty, and producing a structured deliverable; output only the prompt text under 45 words.",
+  "placeholders": {
+    "broad_topic": "supply-chain resilience"
+  },
+  "response": {
+    "id": "aabc428a846543df9f6e6a511d725c0a",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "Develop a comprehensive resilience framework for a critical component's supply chain by synthesizing data from supplier assessments, market intelligence, and risk scenarios into a prioritized action plan.",
+          "role": "assistant",
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "Hmm, the user wants a concise single-sentence prompt for a complex supply-chain resilience task. The prompt needs to cover multiple aspects: gathering info from sources, synthesizing insights, handling uncertainty, and producing a structured deliverable—all under 45 words.\n\nLet me break it down. The core task is about supply-chain resilience, so the prompt should start there. It needs to explicitly mention gathering from multiple sources and synthesizing insights. Uncertainty handling is key, so I’ll include that. Finally, the deliverable should be structured, like a report or framework.\n\nOkay, I can combine these elements into one fluid sentence. Keep it active and direct. Avoid jargon to stay in plain English. Let me check the word count... yeah, it fits under 45 words. The prompt should flow naturally while hitting all the requirements."
+        },
+        "matched_stop": 1
+      }
+    ],
+    "created": 1771688762,
+    "model": "deepseek-ai/deepseek-v3.2",
+    "object": "chat.completion",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 203,
+      "prompt_tokens": 55,
+      "total_tokens": 258,
+      "prompt_tokens_details": null,
+      "reasoning_tokens": 0
+    },
+    "metadata": {
+      "weight_version": "default"
+    }
+  },
+  "children": []
+}

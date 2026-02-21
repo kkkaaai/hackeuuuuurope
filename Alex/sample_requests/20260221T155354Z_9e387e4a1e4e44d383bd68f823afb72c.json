@@ -1,0 +1,43 @@
+{
+  "id": "22adebab8a4b433ba46b0a7817eeb2e5",
+  "timestamp": "2026-02-21T15:53:54.533195+00:00Z",
+  "template_key": "domain_specific_professional_task",
+  "template": "Generate one single-sentence plain-English prompt describing a high-stakes professional task in {regulated_domain} that requires structured analysis, identifying risks or compliance issues, proposing revisions, and delivering both technical and executive summaries; output only the prompt text under 45 words.",
+  "filled_prompt": "Generate one single-sentence plain-English prompt describing a high-stakes professional task in pharmaceutical clinical trials that requires structured analysis, identifying risks or compliance issues, proposing revisions, and delivering both technical and executive summaries; output only the prompt text under 45 words.",
+  "placeholders": {
+    "regulated_domain": "pharmaceutical clinical trials"
+  },
+  "response": {
+    "id": "ff4aa1f614074320893878124840d425",
+    "choices": [
+      {
+        "finish_reason": "stop",
+        "index": 0,
+        "logprobs": null,
+        "message": {
+          "content": "Review this clinical trial protocol draft, analyze its risks and compliance gaps, propose revisions, and deliver both a technical assessment and an executive summary.",
+          "role": "assistant",
+          "function_call": null,
+          "tool_calls": null,
+          "reasoning_content": "Okay, the user wants me to generate a single-sentence prompt under 45 words for a high-stakes task in pharmaceutical clinical trials. Let me break down the requirements. \n\nFirst, the task needs to involve structured analysis, identifying risks or compliance issues, proposing revisions, and delivering technical and executive summaries. That means the prompt has to cover all these aspects concisely. \n\nHigh-stakes professional task suggests something critical, like a clinical study protocol or a data monitoring plan. Maybe reviewing a protocol draft since that involves analysis, risk assessment, and revisions. \n\nStructured analysis could mean evaluating the protocol for flaws. Risks might include patient safety or regulatory compliance. Proposing revisions would be suggesting changes to the protocol. Summaries would cater to both technical teams and executives. \n\nNeed to keep it under 45 words. Let me draft a sentence that ticks all boxes: review, analyze risks, propose changes, and provide summaries. \n\n\"Review this clinical trial protocol draft, analyze its risks and compliance gaps, propose revisions, and deliver both a technical assessment and an executive summary.\" \n\nCount the words: 21. Covers structured analysis (review), risks/compliance, revisions, and both summaries. Sounds professional and fits the scope."
+        },
+        "matched_stop": 1
+      }
+    ],
+    "created": 1771689236,
+    "model": "deepseek-ai/deepseek-v3.2",
+    "object": "chat.completion",
+    "system_fingerprint": null,
+    "usage": {
+      "completion_tokens": 280,
+      "prompt_tokens": 55,
+      "total_tokens": 335,
+      "prompt_tokens_details": null,
+      "reasoning_tokens": 0
+    },
+    "metadata": {
+      "weight_version": "default"
+    }
+  },
+  "children": []
+}

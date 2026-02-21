@@ -1,0 +1,688 @@
+{
+  "root_task_id": "b7eb2078a17e",
+  "timestamp": "2026-02-21T15:57:42.296322+00:00Z",
+  "task_structure": {
+    "task_id": "b7eb2078a17e",
+    "input": " Research customer insights to produce cohesive blogs, videos, and social posts across all channels while tracking engagement and conversion metrics to hit sales targets.",
+    "complexity_score": 80,
+    "eval_gen": 1,
+    "subtasks": [
+      {
+        "task_id": "b7eb2078a17e.0",
+        "input": "Gather data on customer demographics, preferences, pain points, and behavior through surveys, interviews, and analytics tools.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.1",
+        "input": "Evaluate competitors' blogs, videos, and social media strategies to identify gaps, trends, and opportunities.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.2",
+        "input": "Categorize customers into distinct groups based on shared characteristics and behaviors derived from research.",
+        "complexity_score": 65,
+        "eval_gen": 1,
+        "subtasks": [
+          {
+            "task_id": "b7eb2078a17e.2.0",
+            "input": "Aggregate raw customer data including demographics, purchase history, behavioral metrics, and survey responses from existing research databases and tools.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.2.1",
+            "input": "Remove duplicates, handle missing values, normalize numerical features, and encode categorical variables to prepare data for analysis.",
+            "complexity_score": 25,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.2.2",
+            "input": "Analyze data distributions, correlations, and patterns to identify key variables influencing customer segmentation.",
+            "complexity_score": 65,
+            "eval_gen": 1,
+            "subtasks": [
+              {
+                "task_id": "b7eb2078a17e.2.2.0",
+                "input": "Gather customer demographic, behavioral, and transactional data from databases, surveys, and CRM systems",
+                "complexity_score": 45,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.2.1",
+                "input": "Handle missing values, remove duplicates, normalize numerical features, and encode categorical variables",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.2.2",
+                "input": "Create histograms, box plots, and summary statistics to understand variable distributions and detect anomalies",
+                "complexity_score": 40,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.2.3",
+                "input": "Generate correlation matrices and visualize relationships between variables using heatmaps and scatter plots",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.2.4",
+                "input": "Apply clustering algorithms (e.g., K-means, DBSCAN) and dimensionality reduction (PCA) to detect natural groupings",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.2.5",
+                "input": "Use feature importance analysis (e.g., random forest, SHAP values) to identify variables most affecting segmentation",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.2.6",
+                "input": "Test identified variables through cross-validation, A/B testing, or statistical significance checks",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              }
+            ]
+          },
+          {
+            "task_id": "b7eb2078a17e.2.3",
+            "input": "Choose critical variables (e.g., age, spending frequency, product preferences) based on EDA insights and business objectives.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.2.4",
+            "input": "Select appropriate algorithms (e.g., K-means, DBSCAN, hierarchical clustering) based on data characteristics and segmentation goals.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.2.5",
+            "input": "Apply selected algorithms to the dataset, tuning hyperparameters to optimize cluster formation.",
+            "complexity_score": 60,
+            "eval_gen": 1,
+            "subtasks": [
+              {
+                "task_id": "b7eb2078a17e.2.5.0",
+                "input": "Import the dataset, handle missing values, normalize/scale features, and perform dimensionality reduction if necessary to prepare for clustering.",
+                "complexity_score": 42,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.5.1",
+                "input": "Choose the clustering algorithms to apply (e.g., K-Means, DBSCAN, Hierarchical Clustering) based on data characteristics and problem requirements.",
+                "complexity_score": 40,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.5.2",
+                "input": "Identify hyperparameters for each selected algorithm (e.g., number of clusters for K-Means, epsilon for DBSCAN) and specify ranges for optimization.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.5.3",
+                "input": "Run each selected algorithm on the preprocessed dataset using default or baseline hyperparameters to generate initial clusters.",
+                "complexity_score": 20,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.5.4",
+                "input": "Use metrics like silhouette score, Davies-Bouldin index, or domain-specific criteria to assess the quality of clusters produced by each algorithm.",
+                "complexity_score": 40,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.5.5",
+                "input": "Perform grid search, random search, or Bayesian optimization to tune hyperparameters for each algorithm, using evaluation metrics as feedback.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.5.6",
+                "input": "Re-run clustering algorithms with optimized hyperparameters and validate results against holdout data or stability metrics.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.5.7",
+                "input": "Record hyperparameter configurations, evaluation scores, and cluster characteristics for reproducibility and comparison.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.2.5.8",
+                "input": "Synthesize findings to propose the best-performing algorithm and hyperparameter set for the given clustering task.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              }
+            ]
+          },
+          {
+            "task_id": "b7eb2078a17e.2.6",
+            "input": "Assess clusters using metrics like silhouette score, inertia, and domain-specific validation to ensure meaningful separation.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.2.7",
+            "input": "Analyze cluster profiles to define distinct customer groups based on shared demographic, behavioral, or psychographic traits.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.2.8",
+            "input": "Collaborate with domain experts to confirm the practical relevance and business applicability of identified customer groups.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.2.9",
+            "input": "Create detailed profiles for each customer group, including defining features, size, and actionable insights for marketing or strategy.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          }
+        ]
+      },
+      {
+        "task_id": "b7eb2078a17e.3",
+        "input": "Create a unified plan outlining content themes, formats, and distribution channels tailored to each audience segment.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.4",
+        "input": "Write and edit blog posts aligned with the content strategy, incorporating SEO best practices and customer insights.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.5",
+        "input": "Develop scripts, film, and edit videos optimized for platforms like YouTube, TikTok, and Instagram Reels.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.6",
+        "input": "Craft engaging social media content, including visuals and captions, tailored to each platform's audience.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.7",
+        "input": "Determine optimal platforms, posting schedules, and paid promotion strategies for content delivery.",
+        "complexity_score": 60,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.8",
+        "input": "Schedule and deploy blogs, videos, and social posts across all identified channels using content management tools.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.9",
+        "input": "Monitor likes, shares, comments, views, and click-through rates using analytics tools like Google Analytics or social platform insights.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.10",
+        "input": "Measure sales, sign-ups, or other KPIs linked to content performance using UTM parameters and CRM data.",
+        "complexity_score": 65,
+        "eval_gen": 1,
+        "subtasks": [
+          {
+            "task_id": "b7eb2078a17e.10.0",
+            "input": "Identify specific KPIs (e.g., sales, sign-ups) and map them to relevant content sources (e.g., blog posts, social media) for tracking.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.10.1",
+            "input": "Add UTM parameters (source, medium, campaign) to URLs in content to track traffic sources and user behavior in analytics tools.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.10.2",
+            "input": "Collect and validate UTM-linked traffic data using tools like Google Analytics to ensure accurate attribution of user interactions.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.10.3",
+            "input": "Connect CRM systems (e.g., Salesforce, HubSpot) to extract sales, sign-up, or conversion data tied to user identifiers or campaign IDs.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.10.4",
+            "input": "Combine UTM traffic data with CRM conversion data to link content engagement (via UTMs) to downstream KPIs like sales or sign-ups.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.10.5",
+            "input": "Use analytics tools to process merged data, calculate KPI performance metrics (e.g., conversion rates, revenue per campaign), and identify trends.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.10.6",
+            "input": "Create visual dashboards or reports summarizing content performance against KPIs, highlighting top-performing campaigns or areas for improvement.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          }
+        ]
+      },
+      {
+        "task_id": "b7eb2078a17e.11",
+        "input": "Evaluate engagement and conversion metrics to identify successful content and areas for improvement.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.12",
+        "input": "Refine content themes, formats, and distribution based on data analysis to improve future performance.",
+        "complexity_score": null,
+        "eval_gen": 1,
+        "subtasks": []
+      },
+      {
+        "task_id": "b7eb2078a17e.13",
+        "input": "Adjust content focus and CTAs to directly support quarterly sales goals, ensuring alignment with marketing and sales teams.",
+        "complexity_score": 60,
+        "eval_gen": 1,
+        "subtasks": [
+          {
+            "task_id": "b7eb2078a17e.13.0",
+            "input": "Obtain specific sales targets, key metrics, and strategic priorities for the current quarter from sales leadership.",
+            "complexity_score": 8,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.13.1",
+            "input": "Review current website content, marketing materials, and call-to-action placements to identify gaps and misalignments with sales goals.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.13.2",
+            "input": "Conduct workshops or meetings to align on messaging frameworks, buyer personas, and value propositions that support both teams' objectives.",
+            "complexity_score": 40,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.13.3",
+            "input": "Create new CTAs that directly map to sales funnel stages and quarterly targets, incorporating agreed-upon messaging from cross-team alignment.",
+            "complexity_score": 62,
+            "eval_gen": 1,
+            "subtasks": [
+              {
+                "task_id": "b7eb2078a17e.13.3.0",
+                "input": "Identify and document each stage of the current sales funnel (e.g., awareness, consideration, Decision, etc.) including conversion metrics and lead progression criteria.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.3.1",
+                "input": "Establish specific, measurable targets (e.g., conversion rates, revenue, lead volume) for each funnel stage aligned with business objectives and historical performance.",
+                "complexity_score": 65,
+                "eval_gen": 1,
+                "subtasks": [
+                  {
+                    "task_id": "b7eb2078a17e.13.3.1.0",
+                    "input": "Identify strategic business goals and key performance indicators (KPIs) to ensure alignment with funnel targets.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.1.1",
+                    "input": "Define and document each stage of the sales funnel (e.g., awareness, consideration, Conversion) relevant to the business model.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.1.2",
+                    "input": "Aggregate historical metrics (e.g., conversion rates, revenue, lead volume) for each mapped funnel stage.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.1.3",
+                    "input": "Identify patterns, seasonal variations, and performance gaps in historical funnel data to establish baselines.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.1.4",
+                    "input": "Define specific, data-driven targets for each funnel stage using business objectives and historical analysis as inputs.",
+                    "complexity_score": 60,
+                    "eval_gen": 1,
+                    "subtasks": [
+                      {
+                        "task_id": "b7eb2078a17e.13.3.1.4.0",
+                        "input": "Collect and formalize high-level business goals (e.g., revenue growth, market share) that will guide funnel target definition",
+                        "complexity_score": null,
+                        "eval_gen": 1,
+                        "subtasks": []
+                      },
+                      {
+                        "task_id": "b7eb2078a17e.13.3.1.4.1",
+                        "input": "Extract quantitative metrics (conversion rates, drop-off points, revenue per stage) from past funnel performance across all available time periods",
+                        "complexity_score": null,
+                        "eval_gen": 1,
+                        "subtasks": []
+                      },
+                      {
+                        "task_id": "b7eb2078a17e.13.3.1.4.2",
+                        "input": "Define the sequential stages of the customer journey (e.g., Awareness, Consideration, Conversion) specific to the business model",
+                        "complexity_score": 20,
+                        "eval_gen": 1,
+                        "subtasks": []
+                      },
+                      {
+                        "task_id": "b7eb2078a17e.13.3.1.4.3",
+                        "input": "Calculate statistical baselines (mean, median, trends) for each funnel stage metric identified in subtask 2",
+                        "complexity_score": null,
+                        "eval_gen": 1,
+                        "subtasks": []
+                      },
+                      {
+                        "task_id": "b7eb2078a17e.13.3.1.4.4",
+                        "input": "Select KPIs (e.g., CTR, lead-to-opportunity rate) that align with business objectives and have actionable significance for each funnel stage",
+                        "complexity_score": null,
+                        "eval_gen": 1,
+                        "subtasks": []
+                      },
+                      {
+                        "task_id": "b7eb2078a17e.13.3.1.4.5",
+                        "input": "Calculate specific targets using statistical methods (percentile analysis, growth modeling) that bridge historical performance and business objectives",
+                        "complexity_score": null,
+                        "eval_gen": 1,
+                        "subtasks": []
+                      }
+                    ]
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.1.5",
+                    "input": "Review and refine proposed targets with relevant stakeholders (e.g., marketing, sales, leadership) to ensure feasibility and alignment.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.1.6",
+                    "input": "Finalize target documentation and disseminate to relevant teams via reports, dashboards, or meetings.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  }
+                ]
+              },
+              {
+                "task_id": "b7eb2078a17e.13.3.2",
+                "input": "Facilitate workshops with marketing, sales, and product teams to finalize key messaging frameworks, value propositions, and pain points to ensure consistency across CTAs.",
+                "complexity_score": 65,
+                "eval_gen": 1,
+                "subtasks": [
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.0",
+                    "input": "Schedule workshops with all three teams, define clear objectives for each session, and prepare materials like agendas, templates, and pre-work assignments.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.1",
+                    "input": "Facilitate structured sessions with marketing, sales, and product teams to gather input on messaging frameworks, value propositions, and pain points through collaborative exercises.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.2",
+                    "input": "Compile notes, feedback, and outputs from all workshops, then identify common themes, gaps, and alignment opportunities across teams.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.3",
+                    "input": "Create initial versions of messaging frameworks based on workshop insights, ensuring alignment with brand guidelines and market positioning.",
+                    "complexity_score": 40,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.4",
+                    "input": "Refine value propositions to ensure consistency with drafted messaging frameworks and validate them against product capabilities.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.5",
+                    "input": "Consolidate pain points from sales and marketing teams, then prioritize them based on impact and alignment with product roadmap.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.6",
+                    "input": "Combine finalized messaging frameworks, value propositions, and pain points into actionable CTAs that maintain consistency across teams.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.7",
+                    "input": "Circulate draft CTAs to all teams for feedback, resolve conflicts, and iterate until consensus is achieved.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  },
+                  {
+                    "task_id": "b7eb2078a17e.13.3.2.8",
+                    "input": "Formalize the finalized CTAs into shareable documentation and distribute to relevant stakeholders with implementation guidelines.",
+                    "complexity_score": null,
+                    "eval_gen": 1,
+                    "subtasks": []
+                  }
+                ]
+              },
+              {
+                "task_id": "b7eb2078a17e.13.3.3",
+                "input": "Create tailored CTA content (copy, visuals, offers) for each funnel stage, incorporating agreed messaging and explicitly linking to quarterly targets (e.g., 'Request Demo' for Decision stage).",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.3.4",
+                "input": "Deploy CTAs across channels (website, email, ads), integrate tracking parameters, and establish dashboards to monitor KPIs (e.g., click-through rates, conversions) against targets.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              }
+            ]
+          },
+          {
+            "task_id": "b7eb2078a17e.13.4",
+            "input": "Develop blog posts, landing pages, and promotional materials that reinforce the new CTAs and address identified content gaps.",
+            "complexity_score": 62,
+            "eval_gen": 1,
+            "subtasks": [
+              {
+                "task_id": "b7eb2078a17e.13.4.0",
+                "input": "Audit current blog posts, landing pages, and promotional materials to identify missing topics, underperforming areas, and opportunities aligned with user personas and business goals.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.1",
+                "input": "Conduct surveys, analyze competitor content, and review customer feedback to understand audience pain points, preferences, and language for effective messaging.",
+                "complexity_score": 45,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.2",
+                "input": "Document the objectives, messaging framework, and conversion goals of the new CTAs to ensure alignment across all content assets.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.3",
+                "input": "Develop a unified plan outlining content types, distribution channels, SEO keywords, and CTA placement rules based on research findings and business requirements.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.4",
+                "input": "Draft content briefs for 3-5 blog posts with titles, subheadings, keyword targets, and CTA integration points following the strategy document.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.5",
+                "input": "Create wireframes for 2-3 landing pages with visual hierarchy, form placement, and CTA positioning optimized for conversion rates.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.6",
+                "input": "Design email templates, social media post formats, and paid ad creatives that maintain brand consistency and emphasize CTAs.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.7",
+                "input": "Produce draft blog posts with SEO-optimized copy, data-driven arguments, and strategically placed CTAs for audience engagement.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.8",
+                "input": "Develop functional landing pages using CMS or HTML/CSS with A/B testing capabilities and mobile-responsive design.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.9",
+                "input": "Produce final graphics, email copy, and ad copy using approved templates with trackable CTA links and UTM parameters.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.10",
+                "input": "Schedule blog posts, launch landing pages, and deploy promotional materials across channels (website, email, social media, ads).",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.11",
+                "input": "Track CTR, conversion rates, bounce rates, and engagement metrics using analytics tools to evaluate content effectiveness.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              },
+              {
+                "task_id": "b7eb2078a17e.13.4.12",
+                "input": "Refine content assets through A/B testing, user testing, and stakeholder reviews to optimize CTA performance and address remaining gaps.",
+                "complexity_score": null,
+                "eval_gen": 1,
+                "subtasks": []
+              }
+            ]
+          },
+          {
+            "task_id": "b7eb2078a17e.13.5",
+            "input": "Run A/B tests on CTAs and conduct stakeholder reviews of content to ensure alignment with brand voice and sales objectives.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.13.6",
+            "input": "Publish finalized content across digital channels and update CTA placements in marketing automation tools and website templates.",
+            "complexity_score": 75,
+            "eval_gen": 1,
+            "subtasks": []
+          },
+          {
+            "task_id": "b7eb2078a17e.13.7",
+            "input": "Establish KPI dashboards to monitor CTA conversion rates and content engagement, with weekly optimization cycles based on performance data.",
+            "complexity_score": null,
+            "eval_gen": 1,
+            "subtasks": []
+          }
+        ]
+      }
+    ]
+  },
+  "depth": 0
+}
