@@ -4,6 +4,7 @@ import asyncio
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings
+from llm.service import call_llm
 
 
 class EmbeddingSettings(BaseSettings):
@@ -28,8 +29,50 @@ def generate_embedding_sync(text: str) -> list[float]:
     return response.data[0].embedding
 
 
-async def generate_embedding(text: str) -> list[float]:
+QUERY_FORMAT_PROMPT = """Convert the user's requested block characteristics into an embedding-ready query.
+
+Output plain text only in this exact format:
+
+Inputs:
+- name (type: descriptive natural language type): brief description
+
+Outputs:
+- name (type: descriptive natural language type): brief description
+
+Purpose:
+- 1-2 concise sentences describing the intended transformation and when the block should be used.
+
+Rules:
+- Use natural language types (e.g., "RGB image file", "floating point number", "list of text strings").
+- Do not include JSON or code.
+- Keep descriptions short but semantically clear.
+- Match the structure used for stored block embeddings.
+- No extra commentary."""
+
+
+async def format_query_for_embedding(
+    query: str,
+    input_schema: dict | None = None,
+    output_schema: dict | None = None,
+) -> str:
+    """Use an LLM to reformat a raw search query into structured embedding text."""
+    user_parts = [f"Task requested: {query}"]
+    if input_schema:
+        user_parts.append(f"Input schema: {input_schema}")
+    if output_schema:
+        user_parts.append(f"Output schema: {output_schema}")
+    return await call_llm(system=QUERY_FORMAT_PROMPT, user="\n".join(user_parts))
+
+
+async def generate_embedding(
+    text: str,
+    format_as_query: bool = False,
+    input_schema: dict | None = None,
+    output_schema: dict | None = None,
+) -> list[float]:
     """Generate an embedding vector for the given text (async wrapper)."""
+    if format_as_query:
+        text = await format_query_for_embedding(text, input_schema, output_schema)
     return await asyncio.to_thread(generate_embedding_sync, text)
 
 

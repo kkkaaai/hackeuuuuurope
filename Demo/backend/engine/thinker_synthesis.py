@@ -171,7 +171,12 @@ async def run_thinker_stream(
         query = description or suggested_id.replace("_", " ")
 
         # Hybrid search in Supabase
-        candidates = await registry.search(query, limit=5)
+        candidates = await registry.search(
+            query,
+            limit=5,
+            input_schema=req.get("input_schema"),
+            output_schema=req.get("output_schema"),
+        )
 
         # Find the best match
         found = False

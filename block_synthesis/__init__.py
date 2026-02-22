@@ -10,6 +10,14 @@ Architecture:
 Supports two sandbox backends:
 - subprocess (no Docker required, works everywhere)
 - docker (strongest isolation, supports pip install)
+
+Tiered Docker Images:
+- tier0: Base Python (stdlib only)
+- tier1: Common web packages (requests, httpx, etc.)
+- tier2: Data packages (numpy, pandas, pillow)
+- tier3: ML packages (scipy, sklearn, opencv)
+
+Use TierSelector to automatically pick the optimal tier based on required packages.
 """
 
 from .synthesizer import (
@@ -48,6 +56,12 @@ from .run_synthesis import (
     synthesize_from_prompt,
 )
 
+from .tier_selector import (
+    TierSelection,
+    TierSelector,
+    select_tier_for_packages,
+)
+
 __all__ = [
     # Synthesis (generation-time)
     "BaseSandbox",
@@ -79,4 +93,8 @@ __all__ = [
     "ParsedPrompt",
     "parse_block_prompt",
     "synthesize_from_prompt",
+    # Tier selection
+    "TierSelection",
+    "TierSelector",
+    "select_tier_for_packages",
 ]

@@ -653,38 +653,128 @@ sys.stdin = io.StringIO(input_data)
 
 
 class SandboxManager:
-    """Factory for creating the appropriate sandbox.
+    """Factory for creating the appropriate sandbox with tier selection.
     
     Automatically selects:
     - DockerSandbox if Docker is available and requested
     - SubprocessSandbox as fallback or when explicitly requested
     
+    Image selection modes:
+    - "master": Use the master image containing ALL packages (default, no runtime installs)
+    - "tiered": Select optimal tier based on required_packages (faster builds, smaller images)
+    - explicit image: Use the specified image name directly
+    
     For recursive/agentic workflows that need package installation,
     use backend="docker" with allow_pip_install=True.
     """
     
+    # Default master image containing all packages
+    MASTER_IMAGE = "block-sandbox-master:latest"
+    
     def __init__(
         self,
         backend: str = "auto",
-        image: str = "block-sandbox",
+        image: str | None = None,
         memory_limit_mb: int = 512,
         allow_network: bool = False,
         allow_pip_install: bool = False,
+        required_packages: list[str] | None = None,
+        use_tiers: bool = False,
     ):
         """
         Args:
             backend: "auto", "docker", or "subprocess"
-            image: Docker image name (only for docker backend)
+            image: Docker image name. Use "master" for master image, "tiered" for
+                   automatic tier selection, or a specific image name.
             memory_limit_mb: Memory limit
             allow_network: Enable network access in container (docker only)
             allow_pip_install: Allow pip install in container (docker only, implies network)
+            required_packages: Packages needed by the block (used for tier selection)
+            use_tiers: Whether to use tiered Docker images (default: False, uses master)
         """
         self.backend = backend
-        self.image = image
+        self._explicit_image = image
         self.memory_limit_mb = memory_limit_mb
         self.allow_network = allow_network
         self.allow_pip_install = allow_pip_install
+        self.required_packages = required_packages or []
+        self.use_tiers = use_tiers
         self._sandbox: BaseSandbox | None = None
+        self._tier_selection: Any = None
+        self._missing_packages: list[str] = []
+    
+    def _select_tier_image(self) -> str:
+        """Select optimal tier image based on required packages.
+        
+        Returns the image name and stores missing packages for later installation.
+        """
+        # Explicit "master" keyword
+        if self._explicit_image == "master":
+            self._missing_packages = []  # Master has everything
+            return self.MASTER_IMAGE
+        
+        # Explicit "tiered" keyword - use tier selection
+        if self._explicit_image == "tiered":
+            return self._select_from_tiers()
+        
+        # Explicit image name provided
+        if self._explicit_image:
+            self._missing_packages = self.required_packages
+            return self._explicit_image
+        
+        # Default: use master image (has all packages, no runtime installs needed)
+        if not self.use_tiers:
+            self._missing_packages = []  # Master has everything
+            return self.MASTER_IMAGE
+        
+        # Tiered mode: select optimal tier
+        return self._select_from_tiers()
+    
+    def _select_from_tiers(self) -> str:
+        """Select from tiered images based on required packages."""
+        if not self.required_packages:
+            self._missing_packages = []
+            return "block-sandbox-tier0:latest"
+        
+        try:
+            from .tier_selector import TierSelector
+            selector = TierSelector()
+            selection = selector.select_tier(self.required_packages)
+            self._tier_selection = selection
+            self._missing_packages = selection.missing_packages
+            logger.info(
+                "Selected tier: %s (%s). Missing packages: %s",
+                selection.tier_name,
+                selection.description,
+                selection.missing_packages or "(none)",
+            )
+            return selection.tier_image
+        except ImportError:
+            logger.warning("TierSelector not available, using master image")
+            self._missing_packages = []
+            return self.MASTER_IMAGE
+        except Exception as e:
+            logger.warning("Tier selection failed (%s), using master image", e)
+            self._missing_packages = []
+            return self.MASTER_IMAGE
+    
+    @property
+    def missing_packages(self) -> list[str]:
+        """Packages that need to be installed at runtime."""
+        return self._missing_packages
+    
+    @property
+    def tier_info(self) -> dict | None:
+        """Information about the selected tier, if available."""
+        if self._tier_selection:
+            return {
+                "name": self._tier_selection.tier_name,
+                "image": self._tier_selection.tier_image,
+                "description": self._tier_selection.description,
+                "packages": list(self._tier_selection.tier_packages),
+                "missing": self._tier_selection.missing_packages,
+            }
+        return None
     
     def _create_sandbox(self) -> BaseSandbox:
         """Create the appropriate sandbox based on backend setting."""
@@ -693,9 +783,11 @@ class SandboxManager:
                 logger.warning("allow_pip_install requires Docker backend, ignoring")
             return SubprocessSandbox(memory_limit_mb=self.memory_limit_mb)
         
+        image = self._select_tier_image()
+        
         if self.backend == "docker":
             return DockerSandbox(
-                image=self.image,
+                image=image,
                 allow_network=self.allow_network,
                 allow_pip_install=self.allow_pip_install,
                 memory_limit=f"{self.memory_limit_mb}m",
@@ -705,9 +797,9 @@ class SandboxManager:
             try:
                 client = docker.from_env()
                 client.ping()
-                logger.info("Docker available, using DockerSandbox")
+                logger.info("Docker available, using DockerSandbox with image: %s", image)
                 return DockerSandbox(
-                    image=self.image,
+                    image=image,
                     allow_network=self.allow_network,
                     allow_pip_install=self.allow_pip_install,
                     memory_limit=f"{self.memory_limit_mb}m",
@@ -1194,6 +1286,16 @@ class Orchestrator:
         try:
             self.sandbox.start()
             
+            # Install any packages that weren't in the selected tier
+            if self.sandbox.missing_packages:
+                logger.info(
+                    "Installing packages not in tier: %s", 
+                    self.sandbox.missing_packages
+                )
+                install_result = self.sandbox.install_packages(self.sandbox.missing_packages)
+                if not install_result.success:
+                    logger.warning("Initial package installation failed: %s", install_result.error)
+            
             logger.info("Generating initial block for: %s", request.purpose)
             synthesis = await self.synthesizer.generate_initial_block(request)
             logger.info("Initial block generated (format: %s)", synthesis.output_format.value)
@@ -1201,15 +1303,22 @@ class Orchestrator:
             for iteration in range(self.max_iterations):
                 logger.info("Iteration %d/%d", iteration + 1, self.max_iterations)
                 
+                # Install any additional packages requested by the LLM
                 if synthesis.required_packages:
-                    logger.info("Installing required packages: %s", synthesis.required_packages)
-                    install_result = self.sandbox.install_packages(synthesis.required_packages)
-                    if not install_result.success:
-                        logger.warning("Package installation failed: %s", install_result.error)
-                        result = install_result
-                        result.error = f"Failed to install packages: {install_result.stderr}"
-                        synthesis = await self.synthesizer.repair_block(request, synthesis, result)
-                        continue
+                    # Only install packages not already in the tier or previously installed
+                    new_packages = [
+                        p for p in synthesis.required_packages 
+                        if p not in (self.sandbox.tier_info or {}).get("packages", [])
+                    ]
+                    if new_packages:
+                        logger.info("Installing LLM-requested packages: %s", new_packages)
+                        install_result = self.sandbox.install_packages(new_packages)
+                        if not install_result.success:
+                            logger.warning("Package installation failed: %s", install_result.error)
+                            result = install_result
+                            result.error = f"Failed to install packages: {install_result.stderr}"
+                            synthesis = await self.synthesizer.repair_block(request, synthesis, result)
+                            continue
                 
                 result = self.sandbox.execute(synthesis.code, request.test_input)
                 
@@ -1259,8 +1368,10 @@ async def synthesize_block(
     provider: str = "openai",
     model: str = "gpt-4o",
     sandbox_backend: str = "auto",
-    docker_image: str = "block-sandbox",
+    docker_image: str | None = None,
     allow_pip_install: bool = False,
+    required_packages: list[str] | None = None,
+    use_tiers: bool = True,
     max_iterations: int = 6,
 ) -> str:
     """Convenience function to synthesize a block.
@@ -1275,8 +1386,10 @@ async def synthesize_block(
         provider: LLM provider (openai or anthropic)
         model: Model name
         sandbox_backend: "auto", "docker", or "subprocess"
-        docker_image: Docker image for sandbox (only if using docker)
+        docker_image: Docker image for sandbox (overrides tier selection)
         allow_pip_install: Allow dynamic package installation (requires docker)
+        required_packages: Packages required by the block (used for tier selection)
+        use_tiers: Whether to use tiered Docker images (default: True)
         max_iterations: Maximum repair attempts
         
     Returns:
@@ -1299,6 +1412,8 @@ async def synthesize_block(
         backend=sandbox_backend,
         image=docker_image,
         allow_pip_install=allow_pip_install,
+        required_packages=required_packages,
+        use_tiers=use_tiers,
     )
     validator = BlockValidator()
     orchestrator = Orchestrator(
