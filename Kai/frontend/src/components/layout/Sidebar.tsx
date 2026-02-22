@@ -17,13 +17,13 @@ export function Sidebar() {
   const { unreadCount, markAllRead } = useNotifications();
 
   return (
-    <aside className="w-64 border-r border-gray-800 bg-gray-950 flex flex-col">
-      <div className="p-6 border-b border-gray-800">
+    <aside className="w-64 border-r border-slate-200 bg-white flex flex-col">
+      <div className="p-6 border-b border-slate-200">
         <Link href="/chat" className="flex items-center gap-2">
-          <Workflow className="w-6 h-6 text-blue-500" />
-          <span className="text-lg font-semibold">AgentFlow</span>
+          <Workflow className="w-6 h-6 text-[#0000FF]" />
+          <span className="text-lg font-semibold text-slate-900">AgentFlow</span>
         </Link>
-        <p className="text-xs text-gray-500 mt-1">AI Automation Platform</p>
+        <p className="text-xs text-slate-400 mt-1">AI Automation Platform</p>
       </div>
 
       <nav className="flex-1 p-4 space-y-1">
@@ -36,14 +36,14 @@ export function Sidebar() {
               onClick={showBadge && active ? markAllRead : undefined}
               className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
                 active
-                  ? "bg-blue-500/10 text-blue-400"
-                  : "text-gray-400 hover:text-gray-200 hover:bg-gray-800/50"
+                  ? "bg-[#0000FF]/8 text-[#0000FF] font-medium"
+                  : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
               }`}
             >
               <Icon className="w-4 h-4" />
               {label}
               {showBadge && unreadCount > 0 && (
-                <span className="ml-auto inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-medium leading-none bg-blue-500 text-white rounded-full min-w-[18px]">
+                <span className="ml-auto inline-flex items-center justify-center px-1.5 py-0.5 text-[10px] font-medium leading-none bg-[#0000FF] text-white rounded-full min-w-[18px]">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               )}
@@ -52,9 +52,9 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 border-t border-gray-800">
-        <div className="text-xs text-gray-600">
-          35 blocks &middot; 7 categories
+      <div className="p-4 border-t border-slate-200">
+        <div className="text-xs text-slate-400">
+          45 blocks &middot; 7 categories
         </div>
       </div>
     </aside>

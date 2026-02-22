@@ -67,8 +67,8 @@ export function PipelineGraph({
         minZoom={0.3}
         maxZoom={1.5}
       >
-        <Background color="#374151" gap={20} size={1} />
-        {!mini && <Controls className="!bg-gray-800 !border-gray-700" />}
+        <Background color="#e2e8f0" gap={20} size={1} />
+        {!mini && <Controls className="!bg-white !border-slate-200" />}
       </ReactFlow>
     </div>
   );

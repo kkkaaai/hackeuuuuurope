@@ -1,11 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #030712;
-  --foreground: #f9fafb;
-  --card: #111827;
-  --card-border: #1f2937;
-  --muted: #6b7280;
+  --background: #ffffff;
+  --foreground: #0f172a;
+  --card: #f8f9fc;
+  --card-border: #e2e6f0;
+  --muted: #94a3b8;
+  --primary: #0000FF;
+  --primary-hover: #2222FF;
 }
 
 @theme inline {
@@ -14,6 +16,8 @@
   --color-card: var(--card);
   --color-card-border: var(--card-border);
   --color-muted: var(--muted);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -30,14 +34,14 @@ body {
 }
 
 .react-flow__controls button {
-  background: #1f2937 !important;
-  border-color: #374151 !important;
-  color: #f9fafb !important;
-  fill: #f9fafb !important;
+  background: var(--card) !important;
+  border-color: var(--card-border) !important;
+  color: var(--foreground) !important;
+  fill: var(--foreground) !important;
 }
 
 .react-flow__controls button:hover {
-  background: #374151 !important;
+  background: var(--card-border) !important;
 }
 
 /* Custom animations */
@@ -73,6 +77,6 @@ body {
   background: transparent;
 }
 .thinking-scroll::-webkit-scrollbar-thumb {
-  background: #374151;
+  background: #cbd5e1;
   border-radius: 2px;
 }

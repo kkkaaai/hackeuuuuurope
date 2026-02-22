@@ -19,13 +19,13 @@ export const CATEGORY_COLORS: Record<string, string> = {
 };
 
 export const CATEGORY_BG: Record<string, string> = {
-  trigger: "bg-blue-500/10 text-blue-400 border-blue-500/30",
-  perceive: "bg-green-500/10 text-green-400 border-green-500/30",
-  think: "bg-purple-500/10 text-purple-400 border-purple-500/30",
-  act: "bg-orange-500/10 text-orange-400 border-orange-500/30",
-  communicate: "bg-cyan-500/10 text-cyan-400 border-cyan-500/30",
-  remember: "bg-pink-500/10 text-pink-400 border-pink-500/30",
-  control: "bg-gray-500/10 text-gray-400 border-gray-500/30",
+  trigger: "bg-blue-500/10 text-blue-600 border-blue-500/30",
+  perceive: "bg-green-500/10 text-green-600 border-green-500/30",
+  think: "bg-purple-500/10 text-purple-600 border-purple-500/30",
+  act: "bg-orange-500/10 text-orange-600 border-orange-500/30",
+  communicate: "bg-cyan-500/10 text-cyan-600 border-cyan-500/30",
+  remember: "bg-pink-500/10 text-pink-600 border-pink-500/30",
+  control: "bg-gray-500/10 text-gray-600 border-gray-500/30",
 };
 
 export const CATEGORY_ICONS: Record<string, typeof Zap> = {

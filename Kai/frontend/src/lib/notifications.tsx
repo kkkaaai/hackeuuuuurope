@@ -44,17 +44,17 @@ const LEVEL_ICON = {
 };
 
 const LEVEL_COLOR = {
-  info: "border-blue-500/30 bg-blue-500/10",
+  info: "border-[#0000FF]/30 bg-[#0000FF]/10",
   success: "border-green-500/30 bg-green-500/10",
   warning: "border-yellow-500/30 bg-yellow-500/10",
   error: "border-red-500/30 bg-red-500/10",
 };
 
 const LEVEL_TEXT = {
-  info: "text-blue-400",
-  success: "text-green-400",
-  warning: "text-yellow-400",
-  error: "text-red-400",
+  info: "text-[#0000FF]",
+  success: "text-green-600",
+  warning: "text-yellow-600",
+  error: "text-red-600",
 };
 
 function Toast({ notification, onDismiss }: { notification: Notification; onDismiss: () => void }) {
@@ -74,10 +74,10 @@ function Toast({ notification, onDismiss }: { notification: Notification; onDism
     >
       <Icon className={`w-4 h-4 mt-0.5 flex-shrink-0 ${LEVEL_TEXT[notification.level]}`} />
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-200 truncate">{notification.title}</p>
-        <p className="text-xs text-gray-400 mt-0.5 line-clamp-2">{notification.message}</p>
+        <p className="text-sm font-medium text-slate-900 truncate">{notification.title}</p>
+        <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{notification.message}</p>
       </div>
-      <button onClick={onDismiss} className="text-gray-500 hover:text-gray-300 flex-shrink-0">
+      <button onClick={onDismiss} className="text-slate-400 hover:text-slate-700 flex-shrink-0">
         <X className="w-3.5 h-3.5" />
       </button>
     </motion.div>
