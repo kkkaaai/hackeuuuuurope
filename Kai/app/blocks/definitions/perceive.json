@@ -250,5 +250,66 @@
     "examples": [
       { "input": { "url": "https://amazon.com/dp/B0BN2KY..." }, "output": { "price": 499.99, "currency": "EUR", "product_name": "PlayStation 5", "in_stock": true } }
     ]
+  },
+  {
+    "id": "crypto_get_price",
+    "name": "Get Crypto Price",
+    "description": "Fetch the current price of a cryptocurrency (BTC, ETH, SOL, etc.) from CoinGecko. No API key required.",
+    "category": "perceive",
+    "organ": "web",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "coin_id": { "type": "string", "description": "CoinGecko coin ID, e.g. 'bitcoin', 'ethereum', 'solana'" },
+        "currency": { "type": "string", "description": "Quote currency, e.g. 'usd', 'eur', 'gbp'. Default: usd" }
+      },
+      "required": ["coin_id"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "coin_id": { "type": "string" },
+        "price": { "type": "number" },
+        "currency": { "type": "string" },
+        "change_24h_pct": { "type": "number" },
+        "market_cap": { "type": "number" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "coin_id": "bitcoin", "currency": "usd" }, "output": { "coin_id": "bitcoin", "price": 62450.0, "currency": "usd", "change_24h_pct": -1.2, "market_cap": 1230000000000 } }
+    ]
+  },
+  {
+    "id": "stock_get_price",
+    "name": "Get Stock Price",
+    "description": "Fetch the current price of a stock or ETF by ticker symbol (e.g. AAPL, TSLA, SPY) using Yahoo Finance. No API key required.",
+    "category": "perceive",
+    "organ": "web",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "ticker": { "type": "string", "description": "Stock ticker symbol, e.g. 'AAPL', 'TSLA', 'SPY'" },
+        "currency": { "type": "string", "description": "Expected currency for display, e.g. 'USD'. Default: USD" }
+      },
+      "required": ["ticker"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "ticker": { "type": "string" },
+        "price": { "type": "number" },
+        "currency": { "type": "string" },
+        "change_pct": { "type": "number" },
+        "company_name": { "type": "string" },
+        "market_state": { "type": "string" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "ticker": "AAPL" }, "output": { "ticker": "AAPL", "price": 189.5, "currency": "USD", "change_pct": 0.8, "company_name": "Apple Inc.", "market_state": "REGULAR" } }
+    ]
   }
 ]

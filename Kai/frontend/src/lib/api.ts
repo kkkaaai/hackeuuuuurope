@@ -13,97 +13,32 @@ import type {
   ScheduleItem,
 } from "./types";
 
-// ── Edge normalization helpers ──
-// Demo backend stores edges as {from, to}; frontend uses {from_node, to_node, condition}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function toFrontendEdge(e: any): PipelineEdge {
-  return {
-    from_node: (e.from ?? e.from_node) as string,
-    to_node: (e.to ?? e.to_node) as string,
-    condition: (e.condition as string) ?? null,
-  };
-}
-
-function toBackendEdge(e: PipelineEdge): Record<string, unknown> {
-  return { from: e.from_node, to: e.to_node };
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function normalizePipeline(p: any): PipelineListItem {
-  const nodes: PipelineNode[] = (p.nodes ?? []).map((n: any) => ({
-    id: n.id,
-    block_id: n.block_id,
-    inputs: n.inputs ?? {},
-    config: n.config ?? {},
-  }));
-  const edges: PipelineEdge[] = (p.edges ?? []).map(toFrontendEdge);
-  return {
-    id: p.id as string,
-    user_intent: (p.user_intent ?? p.user_prompt ?? p.name ?? "") as string,
-    status: (p.status ?? "active") as string,
-    trigger_type: (p.trigger_type ?? (p.trigger as any)?.type ?? "manual") as string,
-    node_count: nodes.length,
-    nodes,
-    edges,
-    trigger: (p.trigger as TriggerConfig) ?? { type: "manual" },
-  };
-}
-
-// ── Chat → wraps Demo's /api/create-agent ──
-
 export async function sendChat(req: ChatRequest): Promise<ChatResponse> {
-  const res = await fetch("/api/create-agent", {
+  const payload: Record<string, unknown> = {
+    message: req.message,
+    auto_execute: req.auto_execute,
+  };
+  if (req.session_id) payload.session_id = req.session_id;
+
+  const res = await fetch("/api/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ intent: req.message, user_id: "default_user" }),
+    body: JSON.stringify(payload),
   });
   if (!res.ok) throw new Error(`Chat failed: ${res.status}`);
-  const data = await res.json();
-
-  // Demo returns {pipeline_json, status, log, missing_blocks}
-  const pj = data.pipeline_json;
-  if (!pj) {
-    const reason = (data.log ?? []).map((l: any) => l.error ?? l.step).join(", ");
-    throw new Error(reason || "No pipeline generated");
-  }
-
-  const nodes: PipelineNode[] = (pj.nodes ?? []).map((n: any) => ({
-    id: n.id,
-    block_id: n.block_id,
-    inputs: n.inputs ?? {},
-    config: {},
-  }));
-  const edges: PipelineEdge[] = (pj.edges ?? []).map(toFrontendEdge);
-
-  return {
-    response_type: "pipeline",
-    pipeline_id: pj.id,
-    user_intent: pj.user_prompt ?? pj.name ?? req.message,
-    trigger_type: "manual",
-    trigger: { type: "manual" },
-    nodes,
-    edges,
-    missing_blocks: data.missing_blocks ?? [],
-    execution_result: null,
-    session_id: "",
-    clarification_message: "",
-    questions: [],
-  };
+  return res.json();
 }
 
 export async function listPipelines(): Promise<PipelineListItem[]> {
   const res = await fetch("/api/pipelines");
   if (!res.ok) throw new Error(`List pipelines failed: ${res.status}`);
-  const data = await res.json();
-  return (data as any[]).map(normalizePipeline);
+  return res.json();
 }
 
 export async function getPipeline(id: string): Promise<Record<string, unknown>> {
   const res = await fetch(`/api/pipelines/${id}`);
   if (!res.ok) throw new Error(`Get pipeline failed: ${res.status}`);
-  const data = await res.json();
-  return normalizePipeline(data) as unknown as Record<string, unknown>;
+  return res.json();
 }
 
 export async function runPipeline(id: string): Promise<ExecutionResult> {
@@ -126,21 +61,10 @@ interface SavePipelinePayload {
 }
 
 export async function savePipeline(pipeline: SavePipelinePayload): Promise<{ id: string }> {
-  // Store both user_intent and user_prompt so Demo's Doer and our normalizePipeline both work
-  const backendPipeline = {
-    id: pipeline.id,
-    name: pipeline.user_intent,
-    user_prompt: pipeline.user_intent,
-    user_intent: pipeline.user_intent,
-    trigger: pipeline.trigger,
-    nodes: pipeline.nodes,
-    edges: pipeline.edges.map(toBackendEdge), // Doer requires {from, to}
-    memory_keys: [],
-  };
   const res = await fetch("/api/pipelines", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ pipeline: backendPipeline }),
+    body: JSON.stringify({ pipeline }),
   });
   if (!res.ok) throw new Error(`Save pipeline failed: ${res.status}`);
   return res.json();
@@ -188,7 +112,6 @@ export async function markNotificationRead(id: number): Promise<void> {
 
 export async function listSchedules(): Promise<ScheduleItem[]> {
   const res = await fetch("/api/schedules");
-  if (res.status === 404) return []; // Demo backend doesn't have this endpoint
   if (!res.ok) throw new Error(`List schedules failed: ${res.status}`);
   return res.json();
 }

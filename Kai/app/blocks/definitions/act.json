@@ -1,8 +1,43 @@
 [
   {
+    "id": "stripe_instant_purchase",
+    "name": "Instant Purchase (Stripe)",
+    "description": "Complete a purchase instantly on behalf of the user — the agent buys it for them, no checkout link needed. Creates a customer, attaches a payment method, and charges it in one step. This is AGENTIC COMMERCE: the AI agent acts as a personal shopper. Use this when the user says 'buy', 'purchase', 'order', or 'get me'. Prefer this over stripe_create_checkout or stripe_pay for actual purchases.",
+    "category": "act",
+    "organ": "stripe",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "product_name": { "type": "string", "description": "What is being purchased" },
+        "amount_cents": { "type": "integer", "description": "Total price in cents (e.g. 1500 = €15.00)" },
+        "currency": { "type": "string", "default": "eur" },
+        "customer_email": { "type": "string", "description": "Customer email for the receipt" },
+        "shipping_address": { "type": "string", "description": "Delivery address if physical product" }
+      },
+      "required": ["product_name", "amount_cents", "customer_email"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "payment_id": { "type": "string" },
+        "status": { "type": "string", "description": "succeeded = purchase complete" },
+        "amount_cents": { "type": "integer" },
+        "currency": { "type": "string" },
+        "customer_id": { "type": "string" },
+        "receipt_url": { "type": "string" },
+        "product_name": { "type": "string" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "product_name": "Soccer Ball", "amount_cents": 1000, "currency": "gbp", "customer_email": "kai@example.com", "shipping_address": "M1 5GB" }, "output": { "payment_id": "pi_abc123", "status": "succeeded", "amount_cents": 1000, "currency": "gbp", "customer_id": "cus_abc", "receipt_url": "https://pay.stripe.com/receipts/...", "product_name": "Soccer Ball" } }
+    ]
+  },
+  {
     "id": "stripe_pay",
     "name": "Make Payment (Stripe)",
-    "description": "Process a one-time payment using Stripe payment intent",
+    "description": "Process a one-time payment using Stripe payment intent. Use for single charges like purchases or tips.",
     "category": "act",
     "organ": "stripe",
     "input_schema": {
@@ -24,10 +59,215 @@
         "currency": { "type": "string" }
       }
     },
-    "api_type": "mock",
+    "api_type": "real",
     "tier": 1,
     "examples": [
-      { "input": { "amount_cents": 1500, "currency": "eur", "description": "Lunch order" }, "output": { "payment_id": "pi_abc123", "status": "succeeded", "amount_cents": 1500, "currency": "eur" } }
+      { "input": { "amount_cents": 1500, "currency": "eur", "description": "Lunch order" }, "output": { "payment_id": "pi_abc123", "status": "requires_payment_method", "amount_cents": 1500, "currency": "eur" } }
+    ]
+  },
+  {
+    "id": "stripe_create_checkout",
+    "name": "Create Checkout Session (Stripe)",
+    "description": "Generate a Stripe Checkout Session URL — a hosted payment page where customers can pay. Returns a shareable URL. Use when you need a one-click payment link for a specific amount.",
+    "category": "act",
+    "organ": "stripe",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "product_name": { "type": "string", "description": "Name of the product or service" },
+        "amount_cents": { "type": "integer", "description": "Amount in cents (e.g. 2900 = €29.00)" },
+        "currency": { "type": "string", "default": "eur" },
+        "quantity": { "type": "integer", "default": 1 },
+        "success_url": { "type": "string", "default": "https://agentflow.ai/success" },
+        "cancel_url": { "type": "string", "default": "https://agentflow.ai/cancel" }
+      },
+      "required": ["product_name", "amount_cents"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "checkout_url": { "type": "string", "description": "URL to the hosted checkout page" },
+        "session_id": { "type": "string" },
+        "status": { "type": "string" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "product_name": "Lunch Subscription", "amount_cents": 1500, "currency": "eur" }, "output": { "checkout_url": "https://checkout.stripe.com/c/pay/cs_test_...", "session_id": "cs_test_abc123", "status": "open" } }
+    ]
+  },
+  {
+    "id": "stripe_create_payment_link",
+    "name": "Create Payment Link (Stripe)",
+    "description": "Generate a reusable Stripe Payment Link URL — a permanent shareable link for accepting payments. Automatically creates the product and price in Stripe. Use for recurring sales or sharing a buy link.",
+    "category": "act",
+    "organ": "stripe",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "product_name": { "type": "string", "description": "Name of the product or service" },
+        "amount_cents": { "type": "integer", "description": "Amount in cents (e.g. 2900 = €29.00)" },
+        "currency": { "type": "string", "default": "eur" },
+        "recurring_interval": { "type": "string", "description": "If set, makes it a subscription link. One of: day, week, month, year. Leave empty for one-time." }
+      },
+      "required": ["product_name", "amount_cents"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "payment_link_url": { "type": "string", "description": "Shareable payment link URL" },
+        "link_id": { "type": "string" },
+        "product_id": { "type": "string" },
+        "price_id": { "type": "string" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "product_name": "Pro Plan", "amount_cents": 2900, "currency": "eur", "recurring_interval": "month" }, "output": { "payment_link_url": "https://buy.stripe.com/test_...", "link_id": "plink_abc123", "product_id": "prod_abc", "price_id": "price_abc" } }
+    ]
+  },
+  {
+    "id": "stripe_create_customer",
+    "name": "Create Customer (Stripe)",
+    "description": "Create a Stripe customer record. Required before creating subscriptions. Use when setting up recurring billing for a person.",
+    "category": "act",
+    "organ": "stripe",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "description": "Customer email address" },
+        "name": { "type": "string", "description": "Customer full name" },
+        "description": { "type": "string" }
+      },
+      "required": ["email"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "customer_id": { "type": "string" },
+        "email": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "email": "kai@example.com", "name": "Kai" }, "output": { "customer_id": "cus_abc123", "email": "kai@example.com", "name": "Kai" } }
+    ]
+  },
+  {
+    "id": "stripe_create_product",
+    "name": "Create Product (Stripe)",
+    "description": "Create a product in Stripe's catalog. Products represent goods or services you sell. Pair with stripe_create_price to set pricing.",
+    "category": "act",
+    "organ": "stripe",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Product name" },
+        "description": { "type": "string", "description": "Product description" }
+      },
+      "required": ["name"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "product_id": { "type": "string" },
+        "name": { "type": "string" },
+        "active": { "type": "boolean" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "name": "Weekly Grocery Box", "description": "Fresh groceries delivered weekly" }, "output": { "product_id": "prod_abc123", "name": "Weekly Grocery Box", "active": true } }
+    ]
+  },
+  {
+    "id": "stripe_create_price",
+    "name": "Create Price (Stripe)",
+    "description": "Attach a price to a Stripe product. Can be one-time or recurring (day/week/month/year). Required before creating subscriptions or payment links.",
+    "category": "act",
+    "organ": "stripe",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "product_id": { "type": "string", "description": "Stripe product ID (from stripe_create_product)" },
+        "amount_cents": { "type": "integer", "description": "Price in cents (e.g. 1200 = €12.00)" },
+        "currency": { "type": "string", "default": "eur" },
+        "recurring_interval": { "type": "string", "description": "Billing interval: day, week, month, or year. Omit for one-time price." }
+      },
+      "required": ["product_id", "amount_cents"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "price_id": { "type": "string" },
+        "amount_cents": { "type": "integer" },
+        "currency": { "type": "string" },
+        "recurring": { "type": "boolean" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "product_id": "prod_abc123", "amount_cents": 1200, "currency": "eur", "recurring_interval": "week" }, "output": { "price_id": "price_abc123", "amount_cents": 1200, "currency": "eur", "recurring": true } }
+    ]
+  },
+  {
+    "id": "stripe_create_subscription",
+    "name": "Create Subscription (Stripe)",
+    "description": "Create a recurring subscription for a customer. Requires a customer_id and price_id. The customer will be billed automatically at the price's interval.",
+    "category": "act",
+    "organ": "stripe",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "customer_id": { "type": "string", "description": "Stripe customer ID (from stripe_create_customer)" },
+        "price_id": { "type": "string", "description": "Stripe price ID (from stripe_create_price)" }
+      },
+      "required": ["customer_id", "price_id"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "subscription_id": { "type": "string" },
+        "status": { "type": "string" },
+        "current_period_end": { "type": "string" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "customer_id": "cus_abc123", "price_id": "price_abc123" }, "output": { "subscription_id": "sub_abc123", "status": "active", "current_period_end": "2026-03-22T00:00:00Z" } }
+    ]
+  },
+  {
+    "id": "stripe_get_balance",
+    "name": "Get Balance (Stripe)",
+    "description": "Retrieve the current Stripe account balance — available funds and pending amounts. Use to check how much money is in the account.",
+    "category": "act",
+    "organ": "stripe",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "currency_filter": { "type": "string", "description": "Optional: filter by currency (e.g. 'eur'). If omitted, returns all currencies." }
+      }
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "available_amount": { "type": "integer", "description": "Available balance in smallest currency unit (cents)" },
+        "pending_amount": { "type": "integer", "description": "Pending balance in smallest currency unit (cents)" },
+        "currency": { "type": "string" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": {}, "output": { "available_amount": 50000, "pending_amount": 1500, "currency": "eur" } }
     ]
   },
   {

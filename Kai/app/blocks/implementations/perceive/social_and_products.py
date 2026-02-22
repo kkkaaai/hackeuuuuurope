@@ -111,3 +111,80 @@ def _parse_price(text: str) -> float | None:
         return float(cleaned)
     except ValueError:
         return None
+
+
+COINGECKO_API = "https://api.coingecko.com/api/v3"
+
+
+@register_implementation("crypto_get_price")
+async def crypto_get_price(inputs: dict[str, Any]) -> dict[str, Any]:
+    """Fetch the current price of a cryptocurrency from CoinGecko (no API key required)."""
+    coin_id = inputs["coin_id"].lower().strip()
+    currency = inputs.get("currency", "usd").lower().strip()
+
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            f"{COINGECKO_API}/coins/markets",
+            params={
+                "vs_currency": currency,
+                "ids": coin_id,
+                "price_change_percentage": "24h",
+            },
+            timeout=10.0,
+            headers={"Accept": "application/json"},
+        )
+        resp.raise_for_status()
+        data = resp.json()
+
+    if not data:
+        raise ValueError(f"Coin '{coin_id}' not found on CoinGecko. Check the coin ID (e.g. 'bitcoin', 'ethereum').")
+
+    coin = data[0]
+    return {
+        "coin_id": coin["id"],
+        "price": coin["current_price"],
+        "currency": currency,
+        "change_24h_pct": coin.get("price_change_percentage_24h"),
+        "market_cap": coin.get("market_cap"),
+    }
+
+
+YAHOO_FINANCE_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{ticker}"
+
+
+@register_implementation("stock_get_price")
+async def stock_get_price(inputs: dict[str, Any]) -> dict[str, Any]:
+    """Fetch the current price of a stock by ticker symbol using Yahoo Finance (no API key required)."""
+    ticker = inputs["ticker"].upper().strip()
+
+    async with httpx.AsyncClient() as client:
+        resp = await client.get(
+            YAHOO_FINANCE_URL.format(ticker=ticker),
+            params={"interval": "1d", "range": "1d"},
+            timeout=10.0,
+            headers={
+                "User-Agent": "Mozilla/5.0",
+                "Accept": "application/json",
+            },
+        )
+        resp.raise_for_status()
+        data = resp.json()
+
+    result = data.get("chart", {}).get("result")
+    if not result:
+        error = data.get("chart", {}).get("error", {})
+        raise ValueError(f"Ticker '{ticker}' not found: {error.get('description', 'unknown error')}")
+
+    meta = result[0].get("meta", {})
+    price = meta.get("regularMarketPrice") or meta.get("chartPreviousClose")
+    prev_close = meta.get("chartPreviousClose") or meta.get("previousClose")
+    change_pct = ((price - prev_close) / prev_close * 100) if price and prev_close and prev_close != 0 else None
+
+    return {
+        "ticker": ticker,
+        "price": price,
+        "currency": meta.get("currency", "USD"),
+        "change_pct": round(change_pct, 2) if change_pct is not None else None,
+        "company_name": meta.get("longName") or meta.get("shortName") or ticker,
+        "market_state": meta.get("marketState", "UNKNOWN"),
+    }
