@@ -26,6 +26,8 @@ class BlockOrgan(str, Enum):
     WEB = "web"
     EMAIL = "email"
     TWITTER = "twitter"
+    GOOGLE = "google"
+    WHATSAPP = "whatsapp"
 
 
 class BlockExample(BaseModel):

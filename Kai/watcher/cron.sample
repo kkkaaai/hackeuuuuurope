@@ -1,0 +1,2 @@
+# Run watcher tasks every hour
+0 * * * * cd /path/to/hackeuuuuurope && /usr/bin/env python -m watcher.runner >> watcher/cron.log 2>&1

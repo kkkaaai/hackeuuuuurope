@@ -35,6 +35,11 @@ elevenlabs>=2.30
 # Social Media
 tweepy>=4.14
 
+# Google Calendar
+google-api-python-client>=2.100
+google-auth-oauthlib>=1.2
+google-auth-httplib2>=0.2
+
 # Testing
 pytest>=8.3
 pytest-asyncio>=0.25

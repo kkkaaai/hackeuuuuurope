@@ -10,6 +10,7 @@ from app.api.chat import router as chat_router
 from app.api.pipelines import router as pipelines_router
 from app.api.webhooks import router as webhooks_router
 from app.api.sse import router as sse_router
+from app.api.whatsapp import router as whatsapp_router
 from app.api.websocket import router as websocket_router
 from app.config import settings
 from app.database import init_db
@@ -52,6 +53,7 @@ app.include_router(blocks_router)
 app.include_router(webhooks_router)
 app.include_router(sse_router)
 app.include_router(websocket_router)
+app.include_router(whatsapp_router)
 
 
 @app.get("/health")
