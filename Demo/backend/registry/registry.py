@@ -118,13 +118,24 @@ class BlockRegistry:
 
         return blocks
 
-    async def search(self, query: str, limit: int = 10) -> list[dict]:
+    async def search(
+        self,
+        query: str,
+        limit: int = 10,
+        input_schema: dict | None = None,
+        output_schema: dict | None = None,
+    ) -> list[dict]:
         """Hybrid search: full-text + semantic via Supabase RPC."""
         sb = get_supabase()
 
         try:
             # Generate query embedding for semantic search
-            embedding = await generate_embedding(query)
+            embedding = await generate_embedding(
+                query,
+                format_as_query=True,
+                input_schema=input_schema,
+                output_schema=output_schema,
+            )
 
             result = sb.rpc("search_blocks", {
                 "query_text": query,
