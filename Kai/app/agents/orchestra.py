@@ -36,6 +36,7 @@ A Pipeline is a DAG (directed acyclic graph) of Blocks that execute in order.
 You MUST respond with ONLY valid JSON (no markdown, no code fences) matching this exact schema:
 
 {{
+  "pipeline_name": "Short, clean name for this automation (2-5 words, title case, e.g. 'Viral Trend Poster', 'Bitcoin Price Monitor', 'Daily News Briefing')",
   "trigger": {{
     "type": "manual|cron|webhook|file_upload",
     "schedule": "5-field cron expression if type=cron (e.g. '0 8 * * *'), else null",
@@ -266,9 +267,10 @@ class OrchestraAgent:
             for e in decomposition.get("edges", [])
         ]
 
+        pipeline_name = decomposition.get("pipeline_name") or user_request
         return Pipeline(
             id=pipeline_id,
-            user_intent=user_request,
+            user_intent=pipeline_name,
             trigger=trigger,
             nodes=nodes,
             edges=edges,
@@ -344,7 +346,12 @@ class OrchestraAgent:
         })
         edges.append({"from_node": last_node, "to_node": "notify"})
 
+        # Generate a clean short name from the request
+        words = user_request.strip().split()
+        pipeline_name = " ".join(words[:5]).title() if len(words) > 5 else user_request.strip().title()
+
         return {
+            "pipeline_name": pipeline_name,
             "trigger": {"type": trigger_type, "schedule": schedule},
             "nodes": nodes,
             "edges": edges,
