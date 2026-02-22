@@ -19,11 +19,11 @@ def loaded_registry():
 class TestBlockRegistry:
     def test_load_all_definitions(self, loaded_registry):
         """All block definitions should load."""
-        assert loaded_registry.count == 55
+        assert loaded_registry.count == 56
 
     def test_load_returns_count(self, empty_registry):
         count = empty_registry.load_from_directory()
-        assert count == 55
+        assert count == 56
 
     def test_get_existing_block(self, loaded_registry):
         block = loaded_registry.get("trigger_cron")
@@ -44,7 +44,7 @@ class TestBlockRegistry:
         )
         loaded_registry.register(new_block)
         assert loaded_registry.get("custom_block") is not None
-        assert loaded_registry.count == 56
+        assert loaded_registry.count == 57
 
     def test_list_by_category(self, loaded_registry):
         triggers = loaded_registry.list_by_category(BlockCategory.TRIGGER)
@@ -55,7 +55,7 @@ class TestBlockRegistry:
         assert len(think_blocks) == 5
 
         perceive_blocks = loaded_registry.list_by_category(BlockCategory.PERCEIVE)
-        assert len(perceive_blocks) == 10
+        assert len(perceive_blocks) == 11
 
         act_blocks = loaded_registry.list_by_category(BlockCategory.ACT)
         assert len(act_blocks) == 21

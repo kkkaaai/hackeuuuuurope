@@ -15,6 +15,7 @@ from app.api.websocket import router as websocket_router
 from app.config import settings
 from app.database import init_db
 from app.engine.scheduler import rehydrate_schedules, shutdown_scheduler, start_scheduler
+from app.integrations.paid_client import init_paid_tracing
 
 logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
@@ -25,6 +26,8 @@ logger = logging.getLogger("agentflow")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Paid.ai must init before any LLM client is created
+    init_paid_tracing()
     logger.info("Initializing database...")
     init_db()
     start_scheduler()

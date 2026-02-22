@@ -282,6 +282,61 @@
     ]
   },
   {
+    "id": "gemini_product_image_search",
+    "name": "Product Image Search (Gemini)",
+    "description": "Identify products in an image using Gemini Vision and return structured product info with names, brands, categories, estimated prices, and search queries for finding them online",
+    "category": "perceive",
+    "organ": "gemini",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "image_path": { "type": "string", "description": "Path or URL to product image" },
+        "query": { "type": "string", "description": "Optional hint about what to look for (e.g. 'shoes', 'electronics')" }
+      },
+      "required": ["image_path"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "description": "Product name" },
+              "category": { "type": "string", "description": "Product category (e.g. Footwear, Electronics)" },
+              "brand": { "type": "string", "description": "Brand if identifiable" },
+              "estimated_price": { "type": "string", "description": "Estimated price range" },
+              "description": { "type": "string", "description": "Brief product description" },
+              "search_query": { "type": "string", "description": "Suggested search query to find this product online" }
+            }
+          }
+        },
+        "product_count": { "type": "integer", "description": "Number of products identified" }
+      }
+    },
+    "api_type": "real",
+    "tier": 2,
+    "examples": [
+      {
+        "input": { "image_path": "/uploads/shoe_photo.jpg" },
+        "output": {
+          "products": [
+            {
+              "name": "Nike Air Max 90",
+              "category": "Footwear",
+              "brand": "Nike",
+              "estimated_price": "$120-$160",
+              "description": "Classic Nike Air Max 90 sneaker in white/blue colorway with visible Air unit",
+              "search_query": "Nike Air Max 90 white blue sneaker"
+            }
+          ],
+          "product_count": 1
+        }
+      }
+    ]
+  },
+  {
     "id": "stock_get_price",
     "name": "Get Stock Price",
     "description": "Fetch the current price of a stock or ETF by ticker symbol (e.g. AAPL, TSLA, SPY) using Yahoo Finance. No API key required.",

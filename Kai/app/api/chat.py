@@ -15,6 +15,7 @@ from app.agents.orchestra import OrchestraAgent
 from app.api.dependencies import get_registry
 from app.database import get_db
 from app.engine.runner import PipelineRunner
+from app.integrations.paid_client import emit_signal, trace_execution
 from app.memory.store import memory_store
 
 logger = logging.getLogger("agentflow.api.chat")
@@ -91,10 +92,13 @@ async def chat(request: ChatRequest) -> ChatResponse:
     if request.session_id:
         conversation_history = _load_session(request.session_id)
 
-    # Decompose with conversation context
+    # Decompose with conversation context (traced for cost attribution)
     try:
-        decomposition = await orchestra.decompose(
-            request.message,
+        decomposition = await trace_execution(
+            customer_id=session_id,
+            product_id="agentflow_chat",
+            fn=orchestra.decompose,
+            user_request=request.message,
             conversation_history=conversation_history or None,
         )
     except Exception:
@@ -151,5 +155,6 @@ async def chat(request: ChatRequest) -> ChatResponse:
         runner = PipelineRunner(registry=registry, memory=memory_store)
         result = await runner.run(pipeline)
         response.execution_result = result.model_dump()
+        emit_signal("pipeline_executed", customer_id=session_id, data={"pipeline_id": pipeline.id})
 
     return response

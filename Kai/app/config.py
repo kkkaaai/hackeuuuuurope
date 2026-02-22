@@ -8,6 +8,9 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     google_gemini_api_key: str = ""
 
+    # Monetisation & Cost Tracking (Paid.ai)
+    paid_api_key: str = ""
+
     # Voice
     elevenlabs_api_key: str = ""
 
