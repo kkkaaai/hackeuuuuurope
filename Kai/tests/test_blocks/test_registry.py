@@ -19,11 +19,11 @@ def loaded_registry():
 class TestBlockRegistry:
     def test_load_all_definitions(self, loaded_registry):
         """All block definitions should load."""
-        assert loaded_registry.count == 45
+        assert loaded_registry.count == 47
 
     def test_load_returns_count(self, empty_registry):
         count = empty_registry.load_from_directory()
-        assert count == 45
+        assert count == 47
 
     def test_get_existing_block(self, loaded_registry):
         block = loaded_registry.get("trigger_cron")
@@ -44,7 +44,7 @@ class TestBlockRegistry:
         )
         loaded_registry.register(new_block)
         assert loaded_registry.get("custom_block") is not None
-        assert loaded_registry.count == 46
+        assert loaded_registry.count == 48
 
     def test_list_by_category(self, loaded_registry):
         triggers = loaded_registry.list_by_category(BlockCategory.TRIGGER)
@@ -58,7 +58,7 @@ class TestBlockRegistry:
         assert len(perceive_blocks) == 10
 
         act_blocks = loaded_registry.list_by_category(BlockCategory.ACT)
-        assert len(act_blocks) == 12
+        assert len(act_blocks) == 14
 
         communicate_blocks = loaded_registry.list_by_category(BlockCategory.COMMUNICATE)
         assert len(communicate_blocks) == 4
@@ -71,7 +71,7 @@ class TestBlockRegistry:
 
     def test_list_by_tier(self, loaded_registry):
         tier1 = loaded_registry.list_by_tier(1)
-        assert len(tier1) == 45  # All blocks are Tier 1
+        assert len(tier1) == 47  # All blocks are Tier 1
 
     def test_search_by_keyword(self, loaded_registry):
         results = loaded_registry.search("payment stripe")

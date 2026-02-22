@@ -271,6 +271,75 @@
     ]
   },
   {
+    "id": "twitter_post",
+    "name": "Post Tweet (X/Twitter)",
+    "description": "Post a tweet to X (Twitter). The AI agent posts on your behalf — true social media automation. Use when the user says 'tweet', 'post to X', 'post to Twitter', or 'share on X'.",
+    "category": "act",
+    "organ": "twitter",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "text": { "type": "string", "description": "Tweet text (max 280 characters)" },
+        "reply_to_tweet_id": { "type": "string", "description": "Optional: tweet ID to reply to" }
+      },
+      "required": ["text"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "tweet_id": { "type": "string" },
+        "tweet_url": { "type": "string" },
+        "text": { "type": "string" },
+        "created_at": { "type": "string" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "text": "Hello from AgentFlow! Built with AI agents." }, "output": { "tweet_id": "1234567890", "tweet_url": "https://x.com/user/status/1234567890", "text": "Hello from AgentFlow! Built with AI agents.", "created_at": "2026-02-22T12:00:00Z" } }
+    ]
+  },
+  {
+    "id": "twitter_read_timeline",
+    "name": "Read Twitter Timeline",
+    "description": "Read recent tweets from a Twitter/X user's timeline. Use when the user wants to see what someone has been tweeting, monitor a person's posts, or gather social media data.",
+    "category": "act",
+    "organ": "twitter",
+    "input_schema": {
+      "type": "object",
+      "properties": {
+        "username": { "type": "string", "description": "Twitter username (without @)" },
+        "count": { "type": "integer", "default": 10, "description": "Number of tweets to fetch (max 100)" }
+      },
+      "required": ["username"]
+    },
+    "output_schema": {
+      "type": "object",
+      "properties": {
+        "tweets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "text": { "type": "string" },
+              "created_at": { "type": "string" },
+              "likes": { "type": "integer" },
+              "retweets": { "type": "integer" }
+            }
+          }
+        },
+        "username": { "type": "string" },
+        "tweet_count": { "type": "integer" }
+      }
+    },
+    "api_type": "real",
+    "tier": 1,
+    "examples": [
+      { "input": { "username": "elonmusk", "count": 5 }, "output": { "tweets": [{ "id": "123", "text": "Sample tweet", "created_at": "2026-02-22T10:00:00Z", "likes": 1000, "retweets": 200 }], "username": "elonmusk", "tweet_count": 5 } }
+    ]
+  },
+  {
     "id": "email_send",
     "name": "Send Email",
     "description": "Send an email via SendGrid with subject, body, and optional attachments",

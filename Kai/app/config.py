@@ -15,6 +15,12 @@ class Settings(BaseSettings):
     # Communication
     sendgrid_api_key: str = ""
 
+    # Social Media — Twitter/X
+    twitter_api_key: str = ""
+    twitter_api_secret: str = ""
+    twitter_access_token: str = ""
+    twitter_access_token_secret: str = ""
+
     # Web Search
     serper_api_key: str = ""
 

@@ -69,7 +69,7 @@ class TestBlocksEndpoint:
         resp = client.get("/api/blocks")
         assert resp.status_code == 200
         blocks = resp.json()
-        assert len(blocks) == 45
+        assert len(blocks) == 47
 
     def test_list_blocks_by_category(self, client):
         resp = client.get("/api/blocks?category=trigger")

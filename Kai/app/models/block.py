@@ -25,6 +25,7 @@ class BlockOrgan(str, Enum):
     SYSTEM = "system"
     WEB = "web"
     EMAIL = "email"
+    TWITTER = "twitter"
 
 
 class BlockExample(BaseModel):
