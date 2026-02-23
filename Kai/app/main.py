@@ -1,5 +1,7 @@
 import logging
+import logging.handlers
 from contextlib import asynccontextmanager
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -17,10 +19,25 @@ from app.database import init_db
 from app.engine.scheduler import rehydrate_schedules, shutdown_scheduler, start_scheduler
 from app.integrations.paid_client import init_paid_tracing
 
-logging.basicConfig(
-    level=logging.DEBUG if settings.debug else logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+LOG_FMT = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+LOG_LEVEL = logging.DEBUG if settings.debug else logging.INFO
+
+# Console handler (stdout)
+logging.basicConfig(level=LOG_LEVEL, format=LOG_FMT)
+
+# File handler — rotates daily, keeps 30 days
+_file_handler = logging.handlers.TimedRotatingFileHandler(
+    LOG_DIR / "agentflow.log",
+    when="midnight",
+    backupCount=30,
+    encoding="utf-8",
 )
+_file_handler.setFormatter(logging.Formatter(LOG_FMT))
+_file_handler.setLevel(LOG_LEVEL)
+logging.getLogger().addHandler(_file_handler)
+
 logger = logging.getLogger("agentflow")
 
 

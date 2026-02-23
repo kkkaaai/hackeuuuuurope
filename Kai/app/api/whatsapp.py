@@ -109,6 +109,15 @@ async def receive_webhook(request: Request):
 
 async def _handle_message(msg: IncomingMessage) -> None:
     try:
+        log.info(
+            "WhatsApp input — wa_id=%s name=%s text=%r phone_number_id=%s msg_id=%s timestamp=%s",
+            msg.wa_id,
+            msg.contact_name,
+            msg.text,
+            msg.phone_number_id,
+            msg.message_id,
+            msg.timestamp,
+        )
         if not msg.wa_id:
             return
 
